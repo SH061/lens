@@ -110,6 +110,23 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .u2{margin-top:4px;font-size:12px}.u2 .pp{color:#7048e8;font-size:13px}.up1 small{display:inline-block;margin-right:8px}
  .rep.cls .rh{display:flex}
 }
+.cw{position:relative}
+.gchips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.gchips button{border-radius:99px;font-size:12px;padding:3px 11px;font-weight:600;color:var(--gc,var(--ink2));border-color:var(--gc,var(--line));background:var(--card)}
+.gchips button.on{background:var(--gc,var(--ac));color:#fff;border-color:var(--gc,var(--ac))}
+.dualrow{display:grid;grid-template-columns:1fr 1fr;gap:16px}.dualrow>.cd2{margin-bottom:16px}
+.sw{margin-top:8px;font-size:12.5px;display:grid;gap:2px}
+@media(max-width:900px){.dualrow{grid-template-columns:1fr}}
+@media print{
+ .cd2{border:1px solid #ddd;border-radius:8px;padding:10px 12px;margin-bottom:9px;break-inside:avoid}
+ .cd2.nop,.gchips{display:none!important}
+ .cd2 h3{display:flex;align-items:center;gap:6px;font-size:12px;margin:0 0 6px}.cd2 h3 .ci{display:inline-flex}
+ .sub2{font-size:10px;color:#555;margin:-2px 0 6px}
+ .dualrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dualrow>.cd2{margin-bottom:9px}
+ .up1{border:1px solid #ddd;border-radius:8px;padding:6px 10px;margin:4px 0;break-inside:avoid}.u1{display:flex;gap:8px;align-items:baseline}.u1 .uh{margin-left:auto;font-size:10px}.u1 i,.u1 em{font-style:normal}
+ .tsum .tile,.tcol .tile{text-align:center}
+ .cw canvas{max-width:100%}
+}
 .okbox{background:var(--gbg);border:1px solid var(--gln);color:var(--gtx);border-radius:8px;padding:8px 10px;font-size:12px;margin:8px 0}
 .loaded{font-size:12px;color:var(--good);font-weight:600;margin-top:6px}
 details.map{margin-top:8px;font-size:12px}
@@ -389,7 +406,7 @@ const num=v=>{const m=String(v??'').replace(/,/g,'').match(/-?\d+(\.\d+)?/);retu
 const str=v=>String(v??'').trim();
 const f2=x=>isFinite(x)?(Math.round(x*100)/100).toFixed(2):'-';
 const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3500)};
-Chart.defaults.font.family='Moneygraphy,Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+Chart.defaults.font.size=11;Chart.defaults.font.family='Moneygraphy,Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';
 
 /* ───── 아이콘 ───── */
 const IC={search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M7.5 12l2.5-2.5 2 2 2.5-3"/>',panel:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/>',
@@ -841,10 +858,28 @@ const ink=()=>getComputedStyle(document.documentElement).getPropertyValue('--ink
 const lineCfg=(labels,datasets,S)=>({type:'line',data:{labels,datasets},options:{responsive:false,animation:false,devicePixelRatio:2,spanGaps:true,
   scales:{y:{reverse:true,min:1,max:S,ticks:{stepSize:1,callback:v=>v+'등급'}}},plugins:{legend:{position:'bottom',labels:{boxWidth:12}}}}});
 const radarCfg=(labels,vals,S,color)=>({type:'radar',data:{labels,datasets:[{data:vals.map(v=>S+1-v),backgroundColor:color+'33',borderColor:color,pointBackgroundColor:color}]},
-  options:{responsive:false,animation:false,devicePixelRatio:2,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${f2(vals[c.dataIndex])}등급`}}},
-  scales:{r:{min:0,max:S,ticks:{stepSize:1,backdropColor:'transparent',callback:v=>v>=1?(S+1-v):''}}}}});
+  options:{responsive:false,animation:false,devicePixelRatio:2,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${f2((c.chart._vals||vals)[c.dataIndex])}등급`}}},
+  scales:{r:{min:0,max:S,pointLabels:{font:{size:12,weight:'600'}},ticks:{stepSize:1,font:{size:10},backdropColor:'transparent',callback:v=>v>=1?(S+1-v)+'등급':''}}}}});
 const ds=(label,data,color,dash)=>({label,data,borderColor:color,backgroundColor:color,tension:.25,borderDash:dash?[5,4]:[],pointRadius:3});
 
+const gs=g=>g==='기타'?'예체능·기타':g, gb=g=>g==='기타'?'예체능·기타':g+'계열';
+const SUBPAL=['#0f9d8a','#e5484d','#2f6fed','#f5a524','#8e4ec6','#12a594','#d6409f','#6b7280','#3b82f6','#ca8a04'];
+const TR={},CB={};
+const barLbl=S=>({id:'barLbl',afterDatasetsDraw(c){const {ctx}=c;ctx.save();ctx.font='700 11px '+Chart.defaults.font.family;ctx.textAlign='center';ctx.fillStyle=ink();
+  c.getDatasetMeta(0).data.forEach((b,i)=>{const v=S+1-c.data.datasets[0].data[i];ctx.fillText(f2(v)+'등급',b.x,b.y-5)});ctx.restore()}});
+function trSets(pre,g){const {keys,groups,rs}=TR[pre];
+  if(g==='*'){const sets=groups.map(x=>ds(gb(x),keys.map(k=>wavg(rs.filter(r=>sk(r)===k&&grp(r.subject)===x)).avg||null),PAL[x],true));
+    sets.push(ds('전체과목',keys.map(k=>wavg(rs.filter(r=>sk(r)===k)).avg||null),ink(),false));return sets}
+  return [...new Set(rs.filter(r=>grp(r.subject)===g).map(r=>r.subject))].map((sj,i)=>ds(sj,keys.map(k=>{const r=rs.find(r=>r.subject===sj&&sk(r)===k);return r&&isFinite(r.v)?r.v:null}),SUBPAL[i%SUBPAL.length]))}
+function chipOn(b){b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))}
+function trSel(pre,g,b){const c=Chart.getChart(pre+'tr');if(!c)return;c.data.datasets=trSets(pre,g);c.update();chipOn(b)}
+function cbSets(pre,mode){const {keys,rs}=CB[pre];return COMBOS.map(([n,set],i)=>ds(n,keys.map(k=>{const L=rs.filter(r=>(mode==='cum'?sk(r)<=k:sk(r)===k)&&inC(r,set));return L.length?wavg(L).avg:null}),['#1a1d23','#1553d6','#15803d','#b45309'][i],i>0))}
+function cbRange(sets,S,y){const v=sets.flatMap(d=>d.data).filter(x=>x!=null&&isFinite(x));if(!v.length)return;y.min=Math.max(1,Math.floor((Math.min(...v)-.2)*2)/2);y.max=Math.min(S,Math.ceil((Math.max(...v)+.2)*2)/2);y.ticks.stepSize=.5}
+function cbSel(pre,mode,b){const c=Chart.getChart(pre+'cb');if(!c)return;c.data.datasets=cbSets(pre,mode);cbRange(c.data.datasets,CB[pre].S,c.options.scales.y);c.update();chipOn(b)}
+function rdSel(pre,mode,b){const c=Chart.getChart(pre+'rd');if(!c)return;const {rs,groups,S}=TR[pre];
+  const lab=mode==='g'?groups.map(gs):[...new Set(rs.map(r=>r.subject))];
+  const vals=mode==='g'?groups.map(g=>wavg(rs.filter(r=>grp(r.subject)===g)).avg):lab.map(sj=>wavg(rs.filter(r=>r.subject===sj)).avg);
+  c._vals=vals;c.data.labels=lab;c.data.datasets[0].data=vals.map(v=>S+1-v);c.update();chipOn(b)}
 /* ───── 내신 리포트 ───── */
 function report(name,pre=''){
   const a=analyze(name),{rs,keys,groups,S}=a,charts=[];
@@ -872,23 +907,26 @@ function report(name,pre=''){
   h+=`</tbody></table><div class="note">「위치」는 소수점 등급입니다. 정수 부분이 실제(또는 예상) 등급이고, 소수점은 그 등급 구간 안에서 석차가 어디쯤인지입니다. 4.05는 4등급 위쪽(조금만 더 하면 3등급), 4.82는 아래쪽(5등급으로 내려갈 수도)입니다. 석차·수강자수가 있는 과목만 계산하며 평균에는 쓰이지 않습니다.</div>`;
 
   const base=a.all.avg,st=groups.filter(g=>a.gAvg[g].avg<=base-.3),wk=groups.filter(g=>a.gAvg[g].avg>=base+.3);
-  h+=`<h3>강점 · 약점</h3><div class="dual"><div class="card"><b class="t">교과군별 등급 (바깥쪽일수록 좋음)</b>${groups.length>=3?`<canvas id="${pre}rd" width="380" height="300"></canvas>`:'<div class="mut">교과군이 3개 이상일 때 표시됩니다.</div>'}</div>
-    <div class="card"><b class="t">교과군별 등급 (막대가 높을수록 좋음)</b><canvas id="${pre}bar" width="380" height="300"></canvas></div></div>
-    <p><b class="up">강점</b> ${st.length?st.map(g=>`${g} ${f2(a.gAvg[g].avg)}`).join(' · '):'뚜렷한 강점 교과 없음'} &nbsp; <b class="dn">약점</b> ${wk.length?wk.map(g=>`${g} ${f2(a.gAvg[g].avg)}`).join(' · '):'뚜렷한 약점 교과 없음'}<br><small>전체 평균 ${f2(base)}등급보다 0.3등급 이상 좋으면 강점, 나쁘면 약점입니다.</small></p>`;
-  if(groups.length>=3)charts.push([pre+'rd',radarCfg(groups,groups.map(g=>a.gAvg[g].avg),S,'#1553d6')]);
-  charts.push([pre+'bar',{type:'bar',data:{labels:groups,datasets:[{data:groups.map(g=>S+1-a.gAvg[g].avg),backgroundColor:groups.map(g=>PAL[g])}]},
-    options:{responsive:false,animation:false,devicePixelRatio:2,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`평균 ${f2(a.gAvg[groups[c.dataIndex]].avg)}등급`}}},scales:{y:{min:0,max:S,ticks:{stepSize:1,callback:v=>v>=1?(S+1-v)+'등급':''}}}}}]);
-
-  h+=`<h3>등급 변화 추이</h3>`;
+  TR[pre]={keys,groups,rs,S};CB[pre]={keys,rs,S};
+  h+=`<h3>등급 변화 추이</h3><div class="sub2">위로 갈수록 좋은 등급입니다. 「전체과목」은 교과마다 그 학기 과목들의 평균을 선 하나로 이어 한 그림에 겹쳐 보여 주고, 점을 올리면 그 학기 평균 등급이 나옵니다. 탭으로 교과 하나만 볼 수도 있습니다. 인쇄에는 들어가지 않습니다 — 인쇄물에서는 아래 「반영 조합별 평균 추이」와 과목별 성적표가 이 내용을 대신합니다.</div>`;
   if(keys.length>=2){
-    const sets=groups.map(g=>ds(g,keys.map(k=>wavg(rs.filter(r=>sk(r)===k&&grp(r.subject)===g)).avg||null),PAL[g]));
-    sets.push(ds('전체',keys.map(k=>wavg(rs.filter(r=>sk(r)===k)).avg||null),ink(),true));
-    h+=`<div class="card"><canvas id="${pre}tr" width="860" height="300"></canvas></div>`;
-    charts.push([pre+'tr',lineCfg(keys.map(kl),sets,S)]);
+    h+=`<div class="gchips"><button class="on" style="--gc:#2b3140" onclick="trSel('${pre}','*',this)">전체과목 (${new Set(rs.map(r=>r.subject)).size})</button>${groups.map(g=>`<button style="--gc:${PAL[g]}" onclick="trSel('${pre}','${g}',this)">${gb(g)} (${new Set(rs.filter(r=>grp(r.subject)===g).map(r=>r.subject)).size})</button>`).join('')}</div><div class="cw"><canvas id="${pre}tr" width="900" height="280"></canvas></div>`;
+    charts.push([pre+'tr',lineCfg(keys.map(kl),trSets(pre,'*'),S)]);
   }else h+=`<div class="note">학기가 하나뿐이라 추이는 다음 학기부터 볼 수 있습니다.</div>`;
+  h+=`<h3>반영 조합별 평균 추이</h3><div class="sub2">대학이 많이 보는 조합으로 묶은 핵심 과목 평균입니다. 위로 갈수록 좋은 등급이고, 세로축은 차이가 보이도록 이 학생 범위로 확대했습니다.</div>`;
+  if(keys.length>=2){
+    h+=`<div class="gchips"><button class="on" onclick="cbSel('${pre}','sem',this)">학기별 평균</button><button onclick="cbSel('${pre}','cum',this)">그 학기까지 누적</button></div><div class="cw"><canvas id="${pre}cb" width="900" height="260"></canvas></div>`;
+    const cs=cbSets(pre,'sem'),cfg=lineCfg(keys.map(kl),cs,S);cbRange(cs,S,cfg.options.scales.y);charts.push([pre+'cb',cfg]);
+  }
   h+=`<table style="margin-top:8px"><thead><tr><th class="l">조합</th>${keys.map(k=>`<th>${kl(k)}</th>`).join('')}<th>첫 학기 대비</th></tr></thead><tbody>${COMBOS.map(([n])=>{
     const v=a.comboSem[n],ok=v.filter(isFinite);
     return `<tr><td class="l">${n}</td>${v.map(x=>`<td>${chip(x,S)}</td>`).join('')}<td>${ok.length>=2?delta(ok[ok.length-1]-ok[0]):'-'}</td></tr>`}).join('')}</tbody></table>`;
+  h+=`<h3>강점 · 약점 방사형</h3><div class="sub2">바깥쪽일수록 좋은 등급 · 학점 가중 평균 · 초록 점은 강점, 빨간 점은 약점</div><div class="gchips"><button class="on" onclick="rdSel('${pre}','g',this)">과목군별</button><button onclick="rdSel('${pre}','s',this)">과목별</button></div>${groups.length>=3?`<div class="cw"><canvas id="${pre}rd" width="440" height="320"></canvas></div>`:'<div class="mut">교과군이 3개 이상일 때 표시됩니다.</div>'}
+    <div class="sw"><div><b class="up">강점</b> ${st.length?st.map(g=>`${gs(g)} ${f2(a.gAvg[g].avg)}`).join(' · '):'없음'}</div><div><b class="dn">약점</b> ${wk.length?wk.map(g=>`${gs(g)} ${f2(a.gAvg[g].avg)}`).join(' · '):'없음'}</div><small>전체 평균 ${f2(base)}등급보다 0.3등급 이상 좋으면 강점, 나쁘면 약점입니다.</small></div>`;
+  if(groups.length>=3)charts.push([pre+'rd',radarCfg(groups.map(gs),groups.map(g=>a.gAvg[g].avg),S,'#0f9d8a')]);
+  h+=`<h3>과목군별 등급</h3><div class="sub2">막대가 높을수록 좋은 등급 · 학점이 많고 여러 학기 이수한 과목일수록 비중이 큽니다</div><div class="cw"><canvas id="${pre}bar" width="440" height="320"></canvas></div>`;
+  charts.push([pre+'bar',{type:'bar',plugins:[barLbl(S)],data:{labels:groups.map(gb),datasets:[{data:groups.map(g=>S+1-a.gAvg[g].avg),backgroundColor:groups.map(g=>PAL[g]+'cc'),borderRadius:6}]},
+    options:{responsive:false,animation:false,devicePixelRatio:2,layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`평균 ${f2(a.gAvg[groups[c.dataIndex]].avg)}등급`}}},scales:{y:{min:0,max:S,ticks:{stepSize:1,callback:v=>v>=1?(S+1-v)+'등급':''}}}}}]);
 
   const nm=rs.filter(r=>isFinite(r.v)&&r.rank>0&&r.n>0&&Math.round(r.v)>1).map(r=>{
     const g=Math.round(r.v),cut=r.grade>=3?CUT9:CUT5,max=Math.floor(cut[g-2]*r.n/100+1e-9);
@@ -1013,7 +1051,7 @@ function jeongsi(name,pre=''){
 /* ───── 화면 ───── */
 function destroy(list=charts){list.forEach(c=>c.destroy());list.length=0}
 const CI=[[/요약/,'user'],[/가상|한 등급|목표/,'target'],[/과목별 성적|회차별/,'table'],[/변화|추이|원점수/,'trend'],[/강점|성향|정시|조합/,'layers']];
-const CORD=[/^학생 요약/,/^가상/,/^과목별 성적/,/^등급 변화/,/^강점/,/^한 등급/,/^원점수/,/^목표/];
+const CORD=[/^학생 요약/,/^가상/,/^과목별 성적/,/^등급 변화/,/^반영 조합별 평균 추이/,/^강점/,/^과목군별/,/^한 등급/,/^원점수/,/^목표/];
 function cardify(rep,order){
   const secs=[];let cur=null;
   for(const e of [...rep.children]){
@@ -1024,13 +1062,17 @@ function cardify(rep,order){
     if(cur)cur.appendChild(e);
   }
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
-    const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c))}
+    const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
+    secs.forEach(c=>{if(/^등급 변화/.test(c.title))c.classList.add('nop')});
+    const A=secs.find(c=>/^강점/.test(c.title)),B=secs.find(c=>/^과목군별/.test(c.title));
+    if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}}
 }
 function bindCls(v){v.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>pick(b.dataset.pick));if($('#mvth'))$('#mvth').onchange=e=>{MVTH=+e.target.value;render()};if($('#hmr'))$('#hmr').onchange=e=>{HMR=e.target.value;render()};if($('#prx'))$('#prx').onclick=prioXlsx}
 function mount(el,rep,list=charts){
   el.insertAdjacentHTML('beforeend',rep.html);
   const box=el.lastElementChild;
-  for(const [id,cfg] of rep.charts){const cv=box.querySelector('#'+id);if(!cv)continue;const c=new Chart(cv,cfg);cv.style.cssText='width:100%;height:auto';list.push(c)}
+  for(const [id,cfg] of rep.charts){const cv=box.querySelector('#'+id);if(!cv)continue;const w=cv.parentNode.clientWidth;if(w>60){const r=cv.height/cv.width;cv.height=Math.min(340,Math.round(w*r));cv.width=w}
+    const c=new Chart(cv,cfg);cv.style.cssText='width:100%;height:auto';list.push(c)}
 }
 const EMPTY=(t,d,st=[0,0,0],x='')=>`<div class="empty">${svg('search',64)}<h3>${t}</h3><div>${d}</div><div class="steps">${['파일 올리기','학생 고르기','분석 누르기'].map((n,i)=>`<span class="${st[i]?'ok':st.indexOf(0)===i?'now':''}"><i>${st[i]?'✓':i+1}</i>${n}</span>`).join('')}</div>${x}</div>`;
 function render(){
@@ -1085,7 +1127,7 @@ function doPrint(all){
   const el=$('#printArea'),pc=[];el.innerHTML='';
   if(all){
     students.forEach((s,i)=>{
-      if(rows.some(r=>r.name===s))mount(el,report(s,`p${i}_`),pc);
+      if(rows.some(r=>r.name===s)){mount(el,report(s,`p${i}_`),pc);cardify(el.lastElementChild,true)}
       if(mock.some(m=>m.name===s)){mount(el,mockReport(s,`q${i}_`),pc);mount(el,jeongsi(s,`j${i}_`),pc)}
     });
     document.body.classList.add('pa');
@@ -1231,8 +1273,7 @@ $('#stu').onchange=e=>{cur=e.target.value;memoUI();if(shown)render()};
 $('#go').onclick=()=>{
   if(!students.length)return toast('먼저 성적 파일을 올려 주세요.');
   if(!cur){cur=students[0];$('#stu').value=cur;memoUI()}
-  shown=true;render();
-  if(innerWidth>900)document.body.classList.add('sbc');
+  shown=true;if(innerWidth>900)document.body.classList.add('sbc');render();
 };
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));render()});
 $('#pr1').onclick=()=>doPrint(false);$('#prA').onclick=()=>doPrint(true);
@@ -1243,8 +1284,8 @@ $('#pmA').onclick=()=>{
   const t=PHEAD+students.map(promptFor).join('\n\n---\n\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.download='성적돋보기_프롬프트.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e4);
 };
-$('#tg').onclick=()=>document.body.classList.toggle('sbc');
-$('#rail').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.body.classList.remove('sbc');const i=+b.dataset.ac,ds=[...document.querySelectorAll('aside details.acc')];if(i>=0){ds.forEach((d,j)=>d.open=j===i);ds[i].scrollIntoView({block:'start'})}else $('.lp').scrollTop=0};
+$('#tg').onclick=()=>{document.body.classList.toggle('sbc');if(shown)render()};
+$('#rail').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.body.classList.remove('sbc');if(shown)render();const i=+b.dataset.ac,ds=[...document.querySelectorAll('aside details.acc')];if(i>=0){ds.forEach((d,j)=>d.open=j===i);ds[i].scrollIntoView({block:'start'})}else $('.lp').scrollTop=0};
 $('#xl1').onclick=()=>exportOne(cur);
 $('#bHelp').onclick=()=>$('#help').showModal();
 $('#htabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#htabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('#help .hp').forEach(p=>{p.classList.toggle('on',p.dataset.p===b.dataset.h);if(p.dataset.p===b.dataset.h)p.scrollTop=0})};
