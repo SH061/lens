@@ -1117,7 +1117,7 @@ function memoUI(){
 }
 function refresh(){
   students=[...new Set([...rows.map(r=>r.name),...mock.map(m=>m.name)])].sort((a,b)=>a.localeCompare(b,'ko'));
-  $('#stu').innerHTML='<option value="">학생 선택</option>'+students.map(s=>`<option>${esc(s)}</option>`).join('');
+  $('#stu').innerHTML='<option value="">학생 선택</option>'+students.map((s,i)=>`<option value="${esc(s)}">${i+1}. ${esc(s)}</option>`).join('');
   if(!students.includes(cur))cur='';
   $('#stu').value=cur;
   const sems=[...new Set(rows.map(sk))].sort((a,b)=>a-b).map(k=>`${k/10|0}-${k%10}`).join(', ');
