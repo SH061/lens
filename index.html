@@ -1938,8 +1938,8 @@ function intro(){
 }
 load();setTheme(THEME,false);refresh();intro();cloudInit();
 
-/* 누르는 모션: 버튼 눌림(전체) · 클릭 물결(색 꽉 찬 버튼) · 탭 전환 (동작 줄이기 설정이면 끔) */
-const RM_=matchMedia('(prefers-reduced-motion:reduce)');
+/* 누르는 모션: 버튼 눌림(전체) · 클릭 물결(색 꽉 찬 버튼) · 탭 전환  */
+const RM_={matches:false}; // 윈도우 '애니메이션 표시' 꺼짐도 reduce로 잡혀 모션이 사라져서, 짧은 눌림 모션은 항상 켠다
 function motion(el,kf,ms){if(!el||RM_.matches||!el.animate)return;el.animate(kf,{duration:ms,easing:'cubic-bezier(.2,.7,.3,1)'})}
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||b.disabled||b.closest('#help,dialog')&&0)return;
