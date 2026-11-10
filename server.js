@@ -5,7 +5,7 @@
 // 환경변수: DATA_DIR(저장 폴더, 기본 외장하드), PORT(기본 3000)
 const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto');
 const DIR = process.env.DATA_DIR || '/Volumes/외장하드/성적돋보기-data';
-const PORT = +process.env.PORT || 3000;
+const PORT = +process.env.PORT || 3000, MAX_USERS = +process.env.MAX_USERS || 50; // 가입 가능한 최대 인원
 if (!fs.existsSync(path.dirname(DIR))) { console.error('저장 위치를 찾을 수 없습니다(외장하드 연결 확인):', DIR); process.exit(1); }
 fs.mkdirSync(path.join(DIR, 'data'), { recursive: true });
 const UF = path.join(DIR, 'users.json'), SF = path.join(DIR, 'secret.key');
@@ -54,6 +54,21 @@ http.createServer(async (req, res) => {
       const u = users()[e];
       if (!u || hash(password, u.salt) !== u.hash) { fails[k] = { n: f.n + 1, t: Date.now() }; return send(res, 401, { error: 'bad login' }); }
       delete fails[k];
+      const sec = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+      return send(res, 200, { email: e }, { 'set-cookie': `lens=${mkTok(e)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${30 * 86400}${sec}` });
+    }
+    if (url === '/api/signup' && req.method === 'POST') { // 누구나 가입 가능하되 인원 상한과 IP당 횟수 제한으로 남용을 막는다
+      const { email = '', password = '' } = JSON.parse(await body(req) || '{}'), e = email.trim().toLowerCase(), U = users();
+      const k = 'signup|' + req.socket.remoteAddress, f = fails[k] || { n: 0, t: Date.now() };
+      if (Date.now() - f.t > 3600e3) { f.n = 0; f.t = Date.now(); }
+      if (f.n >= 5) return send(res, 429, { error: 'too many' });
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) || password.length < 6) return send(res, 400, { error: 'invalid' });
+      if (U[e]) return send(res, 409, { error: 'exists' });
+      if (Object.keys(U).length >= MAX_USERS) return send(res, 403, { error: 'full' });
+      fails[k] = { n: f.n + 1, t: f.t };
+      const salt = crypto.randomBytes(16).toString('hex');
+      U[e] = { salt, hash: hash(password, salt), id: crypto.randomBytes(12).toString('hex') };
+      atomic(UF, JSON.stringify(U, null, 1));
       const sec = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
       return send(res, 200, { email: e }, { 'set-cookie': `lens=${mkTok(e)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${30 * 86400}${sec}` });
     }
