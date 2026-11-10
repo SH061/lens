@@ -1068,9 +1068,9 @@ function cardify(rep,order){
     if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}}
 }
 function bindCls(v){v.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>pick(b.dataset.pick));if($('#mvth'))$('#mvth').onchange=e=>{MVTH=+e.target.value;render()};if($('#hmr'))$('#hmr').onchange=e=>{HMR=e.target.value;render()};if($('#prx'))$('#prx').onclick=prioXlsx}
-function mount(el,rep,list=charts){
+function mount(el,rep,list=charts,post){
   el.insertAdjacentHTML('beforeend',rep.html);
-  const box=el.lastElementChild;
+  const box=el.lastElementChild;if(post)post(box); // 카드로 옮긴 뒤에 차트를 그려야 실제 칸 너비에 맞는다
   for(const [id,cfg] of rep.charts){const cv=box.querySelector('#'+id);if(!cv)continue;const w=cv.parentNode.clientWidth;if(w>60){const r=cv.height/cv.width;cv.height=Math.min(340,Math.round(w*r));cv.width=w}
     const c=new Chart(cv,cfg);cv.style.cssText='width:100%;height:auto';list.push(c)}
 }
@@ -1082,8 +1082,7 @@ function render(){
   if(!students.length){v.innerHTML=EMPTY('성적 파일을 올려 주세요','나이스에서 내려받은 학급 성적 파일을 올리면<br>과목별 추이와 상담 자료가 자동으로 만들어집니다.');return}
   if(!on&&!cls){const k=students.map(prio).filter(p=>p.score>0).length;v.innerHTML=EMPTY('학생을 고르고 분석을 눌러 주세요',`학생 ${students.length}명의 자료를 불러왔습니다.`,[1,cur?1:0,0],k?`<button class="cta" id="ctaP"><span><b>먼저 상담할 학생 보기</b><small>${students.length}명 중 ${k}명에게 살펴볼 신호가 있습니다</small></span><em>${k}명</em></button>`:'');const c=$('#ctaP');if(c)c.onclick=()=>{shown=true;tab='p';document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='p'));render()};return}
   if(cls){v.innerHTML=tab==='p'?prioHtml():classHtml();bindCls(v);return}
-  mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur));
-  cardify(v.lastElementChild,tab==='n');
+  mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur),charts,b=>cardify(b,tab==='n'));
   if(tab==='n'){v.insertAdjacentHTML('beforeend',classHtml());const c=v.lastElementChild;c.classList.add('cd2','cls','no-print');bindCls(v)}
   if(tab==='n'&&$('#sim_t'))sim();
   if($('#uni_sv')){
@@ -1127,7 +1126,7 @@ function doPrint(all){
   const el=$('#printArea'),pc=[];el.innerHTML='';
   if(all){
     students.forEach((s,i)=>{
-      if(rows.some(r=>r.name===s)){mount(el,report(s,`p${i}_`),pc);cardify(el.lastElementChild,true)}
+      if(rows.some(r=>r.name===s))mount(el,report(s,`p${i}_`),pc,b=>cardify(b,true));
       if(mock.some(m=>m.name===s)){mount(el,mockReport(s,`q${i}_`),pc);mount(el,jeongsi(s,`j${i}_`),pc)}
     });
     document.body.classList.add('pa');
@@ -1285,6 +1284,7 @@ $('#pmA').onclick=()=>{
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.download='성적돋보기_프롬프트.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e4);
 };
 $('#tg').onclick=()=>{document.body.classList.toggle('sbc');if(shown)render()};
+let rzT;addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>{if(shown&&cur&&!matchMedia('print').matches&&!document.body.classList.contains('pa'))render()},400)});
 $('#rail').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.body.classList.remove('sbc');if(shown)render();const i=+b.dataset.ac,ds=[...document.querySelectorAll('aside details.acc')];if(i>=0){ds.forEach((d,j)=>d.open=j===i);ds[i].scrollIntoView({block:'start'})}else $('.lp').scrollTop=0};
 $('#xl1').onclick=()=>exportOne(cur);
 $('#bHelp').onclick=()=>$('#help').showModal();
