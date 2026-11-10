@@ -118,14 +118,29 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
 .sw{margin-top:8px;font-size:12.5px;display:grid;gap:2px}
 @media(max-width:900px){.dualrow{grid-template-columns:1fr}}
 @media print{
- .cd2{border:1px solid #ddd;border-radius:8px;padding:10px 12px;margin-bottom:9px;break-inside:avoid}
+ #toast{display:none!important}
+ .cd2{border:0;border-radius:0;padding:0;margin:0 0 8px;break-inside:avoid;background:none}
  .cd2.nop,.gchips{display:none!important}
- .cd2 h3{display:flex;align-items:center;gap:6px;font-size:12px;margin:0 0 6px}.cd2 h3 .ci{display:inline-flex}
- .sub2{font-size:10px;color:#555;margin:-2px 0 6px}
- .dualrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dualrow>.cd2{margin-bottom:9px}
- .up1{border:1px solid #ddd;border-radius:8px;padding:6px 10px;margin:4px 0;break-inside:avoid}.u1{display:flex;gap:8px;align-items:baseline}.u1 .uh{margin-left:auto;font-size:10px}.u1 i,.u1 em{font-style:normal}
- .tsum .tile,.tcol .tile{text-align:center}
+ .cd2 h3,.rep h3{display:block;font-size:11px;margin:8px 0 4px}.cd2 h3 .ci{display:none}
+ .sub2{display:none}
+ .rh{border-bottom:1px solid #111;padding-bottom:6px;margin-bottom:6px}.rh h2{font-size:18px}.rm{font-size:9px;color:#666}
+ .tiles{gap:6px}.tile{border:1px solid #ddd;border-radius:6px;padding:4px 8px}.tile b{font-size:14px}.tile em{font-size:9px}.tile small{font-size:9px;color:#666}
+ .tsum .tile{text-align:center;padding:6px}.tsum .tile b{font-size:19px;display:block}
+ .tsum .tile:nth-child(1) b{color:#15803d}.tsum .tile:nth-child(2) b{color:#92400e}
+ .tcol .tile{text-align:left}.tcol .tile b{font-size:15px;display:block}
+ .tcol .tile:nth-child(2) b{color:#2f6fed}.tcol .tile:nth-child(3) b{color:#15803d}.tcol .tile:nth-child(4) b{color:#92400e}
+ table{font-size:10px}th,td{padding:3px 5px}
+ th{background:none;border-bottom:1px solid #999}
+ .note{background:none;padding:0;font-size:9.5px;color:#555;margin:4px 0}
+ .dualrow{display:grid;grid-template-columns:1fr 1fr;gap:14px}.dualrow>.cd2{margin-bottom:8px}
+ .sw{font-size:10px}
+ .ups{display:block}
+ .up1{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;border:0;border-bottom:1px solid #ddd;border-radius:0;padding:2px 0;margin:0;break-inside:avoid}
+ .u1{display:flex;gap:8px;align-items:baseline}.u1 .uh{display:none}.u1 i,.u1 em{font-style:normal}
+ .u2,.up1 small{font-size:9.5px;display:inline}
  .cw canvas{max-width:100%}
+ .pos{grid-template-columns:90px 1fr 150px!important;font-size:10px;margin:2px 0}.pos .pd{grid-column:auto!important}
+ .note{background:none!important}
 }
 .okbox{background:var(--gbg);border:1px solid var(--gln);color:var(--gtx);border-radius:8px;padding:8px 10px;font-size:12px;margin:8px 0}
 .loaded{font-size:12px;color:var(--good);font-weight:600;margin-top:6px}
@@ -1063,7 +1078,7 @@ function cardify(rep,order){
   }
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
-    secs.forEach(c=>{if(/^등급 변화/.test(c.title))c.classList.add('nop')});
+    secs.forEach(c=>{if(/^(등급 변화|가상)/.test(c.title))c.classList.add('nop')});
     const A=secs.find(c=>/^강점/.test(c.title)),B=secs.find(c=>/^과목군별/.test(c.title));
     if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}}
 }
