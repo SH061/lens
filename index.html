@@ -141,6 +141,12 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .cw canvas{max-width:100%}
  .pos{grid-template-columns:90px 1fr 150px!important;font-size:10px;margin:2px 0}.pos .pd{grid-column:auto!important}
  .note{background:none!important}
+ .cbx{display:grid;grid-template-columns:1.25fr 1fr;gap:0 12px;align-items:center}.cbx h3{grid-column:1/3}.cbx .cw{grid-column:1;grid-row:2}.cbx table{grid-column:2;grid-row:2;margin:0!important}
+ th,td{padding:1px 4px}.chip{font-size:10px;padding:0 5px}
+ .tsum .tile{padding:3px}.tsum .tile b{font-size:17px}.tcol .tile{padding:3px 8px}.cd2 h3,.rep h3{margin:5px 0 3px}.cd2{margin-bottom:5px}
+ .up1{padding:1px 0}.rh{margin-bottom:3px}
+ body.pa .dualrow .cw{width:68%}body.pa .cbx .cw{width:90%}
+ .dualrow .cw{width:82%;margin:0 auto}.foot{margin-top:4px;padding-top:4px}.ups+.note{display:none}
 }
 .okbox{background:var(--gbg);border:1px solid var(--gln);color:var(--gtx);border-radius:8px;padding:8px 10px;font-size:12px;margin:8px 0}
 .loaded{font-size:12px;color:var(--good);font-weight:600;margin-top:6px}
@@ -1078,7 +1084,7 @@ function cardify(rep,order){
   }
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
-    secs.forEach(c=>{if(/^(등급 변화|가상)/.test(c.title))c.classList.add('nop')});
+    secs.forEach(c=>{if(/^(등급 변화|가상)/.test(c.title))c.classList.add('nop');if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
     const A=secs.find(c=>/^강점/.test(c.title)),B=secs.find(c=>/^과목군별/.test(c.title));
     if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}}
 }
