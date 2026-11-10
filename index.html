@@ -450,7 +450,7 @@ async function cloudPull(){
   const {data,error}=srv?await api('GET','/api/state').then(d=>({data:{data:d}}),e=>({error:{message:'서버 오류 '+e}})):await sb.from('lens_state').select('data').maybeSingle();
   if(error){toast('불러오기 실패: '+error.message);return}
   if(data&&data.data&&Object.keys(data.data).length){ // 계정에 데이터가 있으면 그것을 따른다
-    if(hasData()&&!confirm('이 브라우저에 저장된 성적이 있습니다.\n확인 = 계정에 저장된 성적으로 바꾸기\n취소 = 이 브라우저의 성적을 계정에 덮어쓰기')){pulled=true;cloudPush()}
+    if(hasData()&&AT&&AT>(data.data.at||'')){pulled=true;cloudPush()} // 묻지 않고 더 나중에 저장한 쪽을 따른다
     else{apply(data.data);try{localStorage.setItem(KEY,JSON.stringify(snap()))}catch{}setTheme(THEME,false);refresh()}
   }else if(hasData()){pulled=true;cloudPush()}
   pulled=true;acctUi();
