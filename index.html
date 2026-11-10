@@ -345,7 +345,7 @@ async function authGo(signup){
   const email=$('#aEmail').value.trim(),password=$('#aPw').value;
   if(!email||password.length<6)return $('#aMsg').textContent='이메일과 6자 이상 비밀번호를 입력하세요.';
   $('#aMsg').textContent='처리 중…';
-  if(srv){try{const u=await api('POST',signup?'/api/signup':'/api/login',{email,password});uid=u.email;pulled=false;acctUi();$('#auth').close();$('#aPw').value='';cloudPull()}catch(e){$('#aMsg').textContent=({401:'이메일 또는 비밀번호가 맞지 않습니다.',429:'시도가 너무 많아 잠시 막혔습니다. 나중에 다시 하세요.',409:'이미 가입된 이메일입니다. 로그인하세요.',400:'올바른 이메일과 6자 이상 비밀번호를 입력하세요.',403:'가입 인원이 가득 찼습니다.'})[e]||'서버 오류 '+e}return}
+  if(srv){try{const u=await api('POST',signup?'/api/signup':'/api/login',{email,password});if(u.pending)return $('#aMsg').textContent='가입을 신청했습니다. 관리자 승인 후 로그인하세요.';uid=u.email;pulled=false;acctUi();$('#auth').close();$('#aPw').value='';cloudPull()}catch(e){$('#aMsg').textContent=({401:'이름 또는 비밀번호가 맞지 않습니다.',423:'관리자 승인을 기다리고 있습니다.',429:'시도가 너무 많아 잠시 막혔습니다. 나중에 다시 하세요.',409:'이미 가입된 이메일입니다. 로그인하세요.',400:'올바른 이메일과 6자 이상 비밀번호를 입력하세요.',403:'가입 인원이 가득 찼습니다.'})[e]||'서버 오류 '+e}return}
   const r=signup?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});
   if(r.error)return $('#aMsg').textContent=r.error.message.includes('Invalid login')?'이메일 또는 비밀번호가 맞지 않습니다.':r.error.message;
   if(signup&&!r.data.session)return $('#aMsg').textContent='가입 확인 메일을 보냈습니다. 메일의 링크를 누른 뒤 로그인하세요.';
