@@ -110,6 +110,20 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .u2{margin-top:4px;font-size:12px}.u2 .pp{color:#7048e8;font-size:13px}.up1 small{display:inline-block;margin-right:8px}
  .rep.cls .rh{display:flex}
 }
+.hs{font-size:12px;font-weight:400;color:var(--ink2);margin-left:6px}
+.tmk{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.tmk .tile{padding:10px 12px}.tmk .tile small{color:var(--ink2);font-size:11px}.tmk .tile b{font-size:26px;display:block;line-height:1.2}.tmk .tile b i{font-style:normal;font-size:12px;margin-left:2px;font-weight:600}
+.tmk b.g{color:var(--good)}.tmk b.r{color:var(--bad)}.tmk b.b{color:var(--ac)}
+.chgh{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-bottom:8px;flex-wrap:wrap}
+.chg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.chc{border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:grid;gap:4px;position:relative}.chc.best{border:2px solid var(--good)}
+.chc b{font-size:12px}.cg{font-size:12px;color:var(--ink2)}.cg strong{font-size:24px;color:var(--ink)}.cg span{font-size:16px}.cg em{font-style:normal;font-size:11px;margin-left:2px}
+.chc .bd{display:inline-block;width:fit-content;font-size:11px;font-weight:700;border-radius:6px;padding:1px 7px;background:var(--soft)}.cu .bd{background:var(--good);color:#fff}.cd .bd{background:var(--wbg);color:var(--bad)}
+.chc .sp{position:absolute;right:8px;bottom:22px;opacity:.7}.chc.cu .sp{color:var(--good)}.chc.cd .sp{color:var(--bad)}.chc small{font-size:11px;color:var(--ink2)}
+.mnote{background:#e8f1ff;border:1px solid #b9d3ff;border-radius:8px;padding:8px 12px;font-size:12.5px;margin-top:8px;color:#1d3f91}
+.mcks{display:flex;gap:6px;flex-wrap:wrap}.mck{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:12.5px;cursor:pointer}.mck.on{background:var(--gbg);border-color:var(--gln);color:var(--gtx);font-weight:600}
+.mcks+.sub2{margin-top:8px}
+.org{font-size:12px;font-weight:700;margin:6px 0 4px}
+.mt th.rk{background:var(--ac);color:#fff;writing-mode:vertical-rl;letter-spacing:1px;width:34px;border-radius:6px;font-size:12px}.mt th.rk small{display:block}.mt th.rl{background:var(--soft);text-align:left;width:70px;font-size:12px}.mt td{font-size:12.5px}
 .cw{position:relative}
 .gchips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
 .gchips button{border-radius:99px;font-size:12px;padding:3px 11px;font-weight:600;color:var(--gc,var(--ink2));border-color:var(--gc,var(--line));background:var(--card)}
@@ -139,6 +153,7 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .u1{display:flex;gap:8px;align-items:baseline}.u1 .uh{display:none}.u1 i,.u1 em{font-style:normal}
  .u2,.up1 small{font-size:9.5px;display:inline}
  .cw canvas{max-width:100%}
+ .mt th.rk{background:none!important;color:#111!important;border:1px solid #999}.mt th.rl{background:none}.chc,.mnote{break-inside:avoid}
  .pos{grid-template-columns:90px 1fr 150px!important;font-size:10px;margin:2px 0}.pos .pd{grid-column:auto!important}
  .note{background:none!important}
  .cbx{display:grid;grid-template-columns:1.25fr 1fr;gap:0 12px;align-items:center}.cbx h3{grid-column:1/3}.cbx .cw{grid-column:1;grid-row:2}.cbx table{grid-column:2;grid-row:2;margin:0!important}
@@ -1000,6 +1015,9 @@ function sim(){
 }
 
 /* ───── 모의고사 리포트 ───── */
+let MSEL=null,MMG=false;
+function mSel(a,on){const all=[...new Set(mock.map(m=>m.area))];if(!MSEL)MSEL=new Set(all.filter(x=>x!=='한국사'));on?MSEL.add(a):MSEL.delete(a);render()}
+function mMerge(on){MMG=on;render()}
 const rsort=(x,y)=>x.localeCompare(y,'ko',{numeric:true});
 function mockReport(name,pre=''){
   const ms=mock.filter(m=>m.name===name),charts=[];
@@ -1008,20 +1026,44 @@ function mockReport(name,pre=''){
   const AO=['국어','수학','영어','한국사','통합사회','통합과학'];
   const areas=[...new Set(ms.map(m=>m.area))].sort((x,y)=>{const i=AO.indexOf(x),j=AO.indexOf(y);return (i<0?99:i)-(j<0?99:j)});
   const cell=(r,a)=>ms.find(m=>m.round===r&&m.area===a);
-  const avgR=r=>{const g=ms.filter(m=>m.round===r).map(m=>m.g);return g.reduce((s,x)=>s+x,0)/g.length};
+  const sel=areas.filter(x=>MSEL?MSEL.has(x):x!=='한국사');
+  const gsOf=r=>{const x=sel.map(a=>cell(r,a)).filter(Boolean),t=x.filter(m=>dom(m.area)==='탐').map(m=>m.g),v=x.filter(m=>dom(m.area)!=='탐').map(m=>m.g);
+    if(t.length)MMG?v.push(t.reduce((p,q)=>p+q,0)/t.length):v.push(...t);return v};
+  const avgR=r=>{const g=gsOf(r);return g.length?g.reduce((p,q)=>p+q,0)/g.length:NaN};
+  const rtl=r=>String(r).replace(/^\d{4}[-.]\d{2}\s*/,'').replace(/^\d{4}년\s*/,'');
+  const orgOf=r=>/학력평가/.test(r)?'교육청 — 전국연합학력평가':/모의평가|수능/.test(r)?'평가원 — 모의평가':'';
   const last=rounds[rounds.length-1],prev=rounds[rounds.length-2];
   const lastM=ms.filter(m=>m.round===last).sort((x,y)=>x.g-y.g);
   const school=esc($('#school').value.trim());
+  const pv=r=>{const x=sel.map(a=>cell(r,a)).filter(m=>m&&dom(m.area)!==null),t=x.filter(m=>dom(m.area)==='탐').map(pctOf),v=x.filter(m=>dom(m.area)!=='탐').map(pctOf);
+    if(t.length)MMG?v.push(t.reduce((p,q)=>p+q,0)/t.length):v.push(...t);return v.length?v.reduce((p,q)=>p+q,0)/v.length:NaN};
+  const lg=gsOf(last).sort((x,y)=>x-y),top3=lg.slice(0,3).reduce((p,q)=>p+q,0),pa=pv(last),dA=prev?avgR(last)-avgR(prev):NaN;
+  const first=rounds[0];
   let h=`<div class="rep"><header class="rh"><h2>${esc(name)} 모의고사 분석</h2><div class="rm">${school} · 최근 회차: ${esc(last)}<br>출력일 ${new Date().toLocaleDateString('ko-KR')}</div></header>
-    <div class="tiles"><div class="tile"><small>응시 회차</small><b>${rounds.length}회</b></div>
-    <div class="tile"><small>최근 평균 등급</small><b>${f2(avgR(last))}</b>${prev?`<em>${delta(avgR(last)-avgR(prev))}</em>`:''}</div>
-    <div class="tile"><small>최고 영역</small><b>${esc(lastM[0].area)} ${lastM[0].g}등급</b></div>
-    <div class="tile"><small>최저 영역</small><b>${esc(lastM[lastM.length-1].area)} ${lastM[lastM.length-1].g}등급</b></div></div>
-    <h3>회차별 성적표</h3><div class="note">화살표는 직전 회차 대비 변화입니다. 위로 향한 화살표가 좋아진 것입니다.</div>
-    <table><thead><tr><th class="l">회차</th>${areas.map(a=>`<th>${esc(a)}</th>`).join('')}</tr></thead><tbody>${rounds.map((r,ri)=>`<tr><td class="l">${esc(r)}</td>${areas.map(a=>{
-      const m=cell(r,a);if(!m)return '<td class="mut">-</td>';
-      const p=ri?cell(rounds[ri-1],a):null;
-      return `<td>${chip(m.g,9)}<br><small>${[isFinite(m.pct)&&'백분위 '+m.pct,isFinite(m.std)&&'표준 '+m.std,isFinite(m.raw)&&m.raw+'점'].filter(Boolean).join(' · ')}</small>${p?`<br>${m.g<p.g?`<span class="up">↑${p.g-m.g}</span>`:m.g>p.g?`<span class="dn">↓${m.g-p.g}</span>`:'<span class="mut">–</span>'}`:''}</td>`}).join('')}</tr>`).join('')}</tbody></table>
+    <h3>${esc(name)} · 모의고사 요약 <span class="hs">최근 회차: ${esc(last)}</span></h3>
+    <div class="tiles tmk">
+    <div class="tile"><small>응시 회차</small><b class="g">${rounds.length}<i>회</i></b><small>${esc(rtl(first))}${rounds.length>1?' ~ '+esc(rtl(last)):''}</small></div>
+    <div class="tile"><small>주요과목 평균등급</small><b class="r">${f2(avgR(last))}<i>등급</i></b><small>${prev?`직전 대비 ${dA<0?'상승':dA>0?'하락':'변동 없음'}${Math.abs(dA)>.005?' '+f2(Math.abs(dA))+'등급':''}`:'비교할 이전 회차 없음'}</small></div>
+    <div class="tile"><small>국수영탐 백분위 평균</small><b class="b">${isFinite(pa)?pa.toFixed(1):'-'}</b><small>${isFinite(pa)?'상위 '+(100-pa).toFixed(1)+'%':''}</small></div>
+    <div class="tile"><small>최고 영역</small><b class="g">${lastM[0].g}<i>등급</i></b><small>${esc(lastM[0].area)}</small></div>
+    <div class="tile"><small>최저 영역</small><b class="r">${lastM[lastM.length-1].g}<i>등급</i></b><small>${esc(lastM[lastM.length-1].area)}</small></div>
+    <div class="tile"><small>상위 3개 등급합</small><b class="r">${lg.length>=3?top3:'-'}</b><small>${lg.length>=3?(top3<=9?'수능 최저 충족 가능권':top3<=15?'최저 충족 여부 확인 필요':'최저 없는 전형 권장'):''}</small></div></div>`;
+  if(rounds.length>=2){
+    const rows2=areas.map(a=>{const f=cell(first,a),l=cell(last,a);return f&&l?{a,f:f.g,l:l.g,d:f.g-l.g,pd:isFinite(f.pct)&&isFinite(l.pct)?l.pct-f.pct:NaN,gs:rounds.map(r=>cell(r,a)?.g)}:null}).filter(Boolean);
+    const bestD=Math.max(0,...rows2.map(x=>x.d)),bestA=bestD>0?rows2.find(x=>x.d===bestD):null,nUp=rows2.filter(x=>x.d>0).length,nDn=rows2.filter(x=>x.d<0).length;
+    const spark=gs=>{const v=gs.filter(g=>g!=null),w=70,hh=22,pts=v.map((g,i)=>`${v.length>1?i*w/(v.length-1):w/2},${2+(g-1)/8*(hh-4)}`);return `<svg width="${w}" height="${hh}" viewBox="0 0 ${w} ${hh}"><polyline points="${pts.join(' ')}" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="${pts[pts.length-1].split(',')[0]}" cy="${pts[pts.length-1].split(',')[1]}" r="2.5" fill="currentColor"/></svg>`};
+    h+=`<h3>첫 회차 → 최근 회차 변화</h3><div class="chgh"><span><b>${esc(rtl(first))} → ${esc(rtl(last))}</b> 주요과목 평균 ${f2(avgR(first))} → ${f2(avgR(last))}등급 ${delta(avgR(last)-avgR(first))}</span><span class="mut">오른 영역 ${nUp} · 내린 영역 ${nDn}</span></div>
+      <div class="chg">${rows2.map(x=>`<div class="chc${bestA&&x.a===bestA.a?' best':''} ${x.d>0?'cu':x.d<0?'cd':''}"><b>${esc(x.a)}</b><div class="cg"><span>${x.f}</span> › <strong>${x.l}</strong><em>등급</em></div><span class="bd">${x.d>0?'↑ '+x.d+'등급':x.d<0?'↓ '+(-x.d)+'등급':'유지'}</span><span class="sp">${spark(x.gs)}</span><small>${isFinite(x.pd)?'백분위 '+(x.pd>0?'+':'')+x.pd.toFixed(1):''}</small></div>`).join('')}</div>
+      <div class="mnote">${bestA?`가장 많이 오른 영역은 <b>${esc(bestA.a)}</b>입니다 (${bestA.f}등급 → ${bestA.l}등급). 상담에서 먼저 칭찬할 거리로 쓰기 좋습니다.`:'첫 회차보다 오른 영역이 없습니다. 내린 영역부터 원인을 함께 살펴보세요.'}</div>`;
+  }
+  h+=`<h3>평균등급 반영 과목</h3><div class="mcks">${areas.map(x=>`<label class="mck${sel.includes(x)?' on':''}"><input type="checkbox" ${sel.includes(x)?'checked':''} onchange="mSel('${esc(x)}',this.checked)">${esc(x)}</label>`).join('')}<label class="mck${MMG?' on':''}"><input type="checkbox" ${MMG?'checked':''} onchange="mMerge(this.checked)">탐구 2과목을 1과목으로 평균</label></div><div class="sub2">지망 대학의 수능 반영 영역에 맞춰 체크하면 평균등급·판정이 그 기준으로 다시 계산됩니다.</div>`;
+  const orgs=[...new Set(rounds.map(orgOf))];
+  const dl=(c,p)=>p==null?'':c<p?`<span class="up">↑${p-c}</span>`:c>p?`<span class="dn">↓${c-p}</span>`:'<span class="mut">–</span>';
+  const dp=(c,p)=>!isFinite(c)||!isFinite(p)?'':Math.abs(c-p)<.05?'<span class="mut">–</span>':c>p?`<span class="up">↑ ${(c-p).toFixed(1)}</span>`:`<span class="dn">↓ ${(p-c).toFixed(1)}</span>`;
+  h+=`<h3>회차별 성적표</h3><div class="sub2">화살표는 직전 회차 대비 변화입니다. 위로 향한 화살표가 좋아진 것입니다.</div>${orgs.length===1&&orgs[0]?`<div class="org">${orgs[0]}</div>`:''}
+    <table class="mt"><thead><tr><th colspan="2"></th>${areas.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${rounds.map((r,ri)=>['원점수','표준점수','백분위','등급'].map((lab,li)=>`<tr>${li?'':`<th class="rk" rowspan="4">${esc(rtl(r))}${orgs.length>1&&orgOf(r)?`<small>${orgOf(r).split(' ')[0]}</small>`:''}</th>`}<th class="rl">${lab}</th>${areas.map(x=>{
+      const m=cell(r,x);if(!m)return '<td class="mut">-</td>';const p=ri?cell(rounds[ri-1],x):null;
+      return `<td>${lab==='원점수'?(isFinite(m.raw)?m.raw:'—'):lab==='표준점수'?(isFinite(m.std)?m.std:'—'):lab==='백분위'?(isFinite(m.pct)?m.pct+(p?' '+dp(m.pct,p.pct):''):'—'):chip(m.g,9)+(p?' '+dl(m.g,p.g):'')}</td>`}).join('')}</tr>`).join('')).join('')}</tbody></table>
     <h3>추이와 현재 위치</h3><div class="dual"><div class="card"><b class="t">영역별 등급 추이</b><canvas id="${pre}mtr" width="430" height="300"></canvas></div>
     <div class="card"><b class="t">최근 회차 영역별 등급 (바깥쪽일수록 좋음)</b>${lastM.length>=3?`<canvas id="${pre}mrd" width="380" height="300"></canvas>`:'<div class="mut">영역이 3개 이상일 때 표시됩니다.</div>'}</div></div>`;
   charts.push([pre+'mtr',lineCfg(rounds,areas.map((a,i)=>ds(a,rounds.map(r=>cell(r,a)?.g??null),Object.values(PAL)[i%6])),9)]);
@@ -1100,9 +1142,10 @@ function cardify(rep,order){
       const ic=(CI.find(([re])=>re.test(t.textContent))||[0,'file'])[1];t.insertAdjacentHTML('afterbegin',`<span class="ci">${svg(ic,16)}</span>`);secs.push(cur);rep.insertBefore(cur,e)}
     if(cur)cur.appendChild(e);
   }
+  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영)/.test(c.title))c.classList.add('nop')});
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
-    secs.forEach(c=>{if(/^(등급 변화|가상)/.test(c.title))c.classList.add('nop');if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
+    secs.forEach(c=>{if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
     const A=secs.find(c=>/^강점/.test(c.title)),B=secs.find(c=>/^과목군별/.test(c.title));
     if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}}
 }
@@ -1166,7 +1209,7 @@ function doPrint(all){
   if(all){
     students.forEach((s,i)=>{
       if(rows.some(r=>r.name===s))mount(el,report(s,`p${i}_`),pc,b=>cardify(b,true));
-      if(mock.some(m=>m.name===s)){mount(el,mockReport(s,`q${i}_`),pc);mount(el,jeongsi(s,`j${i}_`),pc)}
+      if(mock.some(m=>m.name===s)){mount(el,mockReport(s,`q${i}_`),pc,b=>cardify(b,false));mount(el,jeongsi(s,`j${i}_`),pc,b=>cardify(b,false))}
     });
     document.body.classList.add('pa');
   }
