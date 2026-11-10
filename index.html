@@ -458,6 +458,22 @@ dialog li{margin:6px 0}
 .chg{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}.chc{min-width:0;overflow:hidden}.chc .sp{max-width:46%;height:auto}
 @media screen and (max-width:1000px){.chc .sp{display:none}.chc{padding:6px 7px}.cg strong{font-size:19px}.cg span{font-size:13px}.chc b,.chc small{font-size:10px}.chc .bd{font-size:10px;padding:1px 5px}}
 @media screen and (max-width:700px){.chg{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.itabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.itb{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 14px;font-size:13px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.itb.sm{padding:3px 11px;font-size:12px}.itb:hover{border-color:var(--ac)}
+.itb.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.itl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:2px 0 14px}
+.itl>div{background:var(--soft);border-radius:10px;padding:8px 12px}.itl span{display:block;font-size:12px;color:var(--ink2)}.itl b{font-size:20px}.itl b.bd{color:var(--bad)}.itl b.wn{color:var(--wtx)}
+.isub{font-size:13px;font-weight:600;margin:0 0 6px}
+.ibr{display:grid;grid-template-columns:64px 1fr 80px;gap:10px;align-items:center;font-size:13px;margin:6px 0}.ibr small{color:var(--ink2);font-size:11px}
+.ibar{display:flex;height:16px;border-radius:5px;overflow:hidden;background:var(--soft)}.ibar i{height:100%;display:block}
+.ibar .ok,.ilg .ok{background:#2f9e5f}.ibar .ng,.ilg .ng{background:#e5484d}.ibar .bl,.ilg .bl{background:#f5a524}
+.ilg{display:flex;gap:12px;font-size:12px;color:var(--ink2);margin:6px 0 4px}.ilg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+.isg{font-size:12px;color:var(--ink2);margin:8px 0 2px}
+.isr{display:grid;grid-template-columns:92px 1fr 72px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
+.itr{position:relative;height:10px;background:var(--soft);border-radius:5px}.itr i{position:absolute;left:0;top:0;height:10px;border-radius:5px;background:var(--ac)}.itr u{position:absolute;top:-3px;width:2px;height:16px;background:var(--ink);text-decoration:none}
+@media(max-width:560px){.itl{grid-template-columns:repeat(2,minmax(0,1fr))}.ibr{grid-template-columns:52px 1fr 64px}.isr{grid-template-columns:76px 1fr 60px}}
 </style>
 </head>
 <body>
@@ -666,7 +682,7 @@ const DEF_UNIV='의약계열 · 최상위권,98\n최상위권,95.5\n상위권,92
 const KN={a:'석차등급(1~9)을 그대로 읽습니다. 5등급제·9등급제는 학기별로 자동 판별합니다.',b:'원점수와 석차로 <b>가상 등급</b>을 만듭니다. 수강자수는 파일에서 읽고, 5등급·9등급은 학년으로 판별합니다. 등급이 이미 적힌 파일이라면 위의 「교과학습발달상황」을 고르세요.'};
 
 /* ───── 상태 ───── */
-let rows=[], mock=[], students=[], cur='', tab='n', shown=false, charts=[], ctx=null, map={}, SIM={};
+let rows=[], mock=[], ITM=[], ITR='', ITA='전체', students=[], cur='', tab='n', shown=false, charts=[], ctx=null, map={}, SIM={};
 let EX=new Set(), MEMO={}, UNIV=DEF_UNIV, THEME='light', NFILES=[], AT='', KIND='a';
 const knUI=k=>{KIND=k;const e=$('#kn');e.className=k==='a'?'okbox':'infobox';e.innerHTML=KN[k];drop1UI()};
 const KNAME={a:'교과학습발달상황',b:'전과목 성적일람표'};
@@ -675,9 +691,9 @@ function drop1UI(){const d=$('#drop1');if(!d)return;
   else{d.className='drop';d.innerHTML=`<span>${svg('up',26)}</span><b>NEIS ${KNAME[KIND]} 파일을 올리세요</b><small>클릭하거나 파일을 끌어다 놓으세요 · .xlsx .xls .csv</small>`}}
 const KEY='lens-school-v1';
 const revive=o=>{for(const k in o)if(o[k]===null)o[k]=NaN;return o};
-const snap=()=>({rows,mock,school:$('#school').value,memo:MEMO,univ:UNIV,ex:[...EX],theme:THEME,dg:$('#dg').value,ds:$('#ds').value,nf:NFILES,at:(AT=new Date().toISOString())});
+const snap=()=>({rows,mock,itm:ITM,school:$('#school').value,memo:MEMO,univ:UNIV,ex:[...EX],theme:THEME,dg:$('#dg').value,ds:$('#ds').value,nf:NFILES,at:(AT=new Date().toISOString())});
 function apply(d){
-  rows=(d.rows||[]).map(revive);mock=(d.mock||[]).map(revive);MEMO=d.memo||{};UNIV=(d.univ&&d.univ!==OLD_UNIV)?d.univ:DEF_UNIV;EX=new Set(d.ex||[]);THEME=d.theme||'light';
+  rows=(d.rows||[]).map(revive);mock=(d.mock||[]).map(revive);ITM=d.itm||[];MEMO=d.memo||{};UNIV=(d.univ&&d.univ!==OLD_UNIV)?d.univ:DEF_UNIV;EX=new Set(d.ex||[]);THEME=d.theme||'light';
   NFILES=d.nf||[];AT=d.at||'';$('#school').value=d.school||'';$('#dg').value=d.dg||1;$('#ds').value=d.ds||1;
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(snap()))}catch{}cloudPush()}
@@ -687,7 +703,7 @@ function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d)a
 const SB_URL='https://luxjsyoygzdkeinnfabb.supabase.co', SB_KEY='sb_publishable_My4jQoaOKiRJRbcf1me5cA_-fT1PdGi'; // 공개용 키: 접근은 RLS가 막는다
 let sb=null, uid=null, pushT=0, pulled=false, srv=false; // srv: 맥 스튜디오 서버에서 열렸을 때(/api가 있음)
 const api=async(m,p,b)=>{const r=await fetch(p,{method:m,headers:{'content-type':'application/json'},body:b&&JSON.stringify(b)});if(!r.ok)throw r.status;return r.json()};
-const hasData=()=>rows.length||mock.length||Object.keys(MEMO).length;
+const hasData=()=>rows.length||mock.length||ITM.length||Object.keys(MEMO).length;
 function acctUi(msg){const b=$('#bAcct');if(b)b.textContent=uid?(msg||'동기화됨'):'로그인';}
 function cloudPush(){
   if(!(sb||srv)||!uid||!pulled)return; // 내려받기 전에 올리면 저장된 데이터를 덮어쓴다
@@ -1036,20 +1052,24 @@ async function pdfLines(page){ // 글자 조각을 y 좌표로 줄로 묶고, �
 }
 const T_A=/^([가-힣][가-힣\s]*?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+\d+~\d+\s+(\d+)\s+(\d+)\/(\d+)\s+(\d+)\/(\d+)\s+(\d+(?:\.\d+)?)\s+(\d)\s+\d+/; // 표준점수형: 국어·수학·탐구
 const T_B=/^([가-힣][가-힣\s]*?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+원점수에\s*의한\s*등급\s*\(\s*(\d)\s*\)/;          // 절대평가형: 영어·한국사
-function parseTongji(L){
+function tjHead(L){
   const head=L.slice(0,4).map(l=>l.replace(/\s/g,'')).join('|');
   const tm=head.match(/(\d{4})학년도(\d+)월(고\d|중\d)?([가-힣]*?)학교명/);
-  if(!tm)return []; // 해설 쪽 등
+  if(!tm)return null; // 해설 쪽 등
   const sm=L.slice(0,5).join('\n').match(/(\S*학교)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\S+)\s+\d{4}\.\s*\d+\.\s*\d+/);
-  if(!sm)return [];
-  const name=sm[5],round=`${tm[1]}-${tm[2].padStart(2,'0')} ${+tm[2]}월 ${tm[4].replace('전국연합','')||'모의고사'}`,out=[];
+  if(!sm)return null;
+  return {name:sm[5],round:`${tm[1]}-${tm[2].padStart(2,'0')} ${+tm[2]}월 ${tm[4].replace('전국연합','')||'모의고사'}`,g:tm[3]};
+}
+function parseTongji(L){
+  const H=tjHead(L);if(!H)return [];
+  const {name,round,g:tg}=H,out=[];
   for(const l of L){
     let m=l.match(T_A),r;
     if(m)r={raw:+m[3],std:+m[4],pct:+m[9],g:+m[10],rk:+m[7],rn:+m[8]};
     else if(m=l.match(T_B))r={raw:+m[3],std:NaN,pct:NaN,g:+m[4],rk:NaN,rn:NaN};
     else continue;
     let area=m[1].replace(/\s/g,'');
-    if(tm[3]==='고1'&&/^(사회|과학)$/.test(area))area='통합'+area;
+    if(tg==='고1'&&/^(사회|과학)$/.test(area))area='통합'+area;
     out.push({name,round,area,...r});
   }
   return out;
@@ -1060,6 +1080,53 @@ async function pdfRows(page){ // 셀 단위 줄: [{s,x}] — 간격이 아주 �
   return L.sort((a,b)=>b.y-a.y).map(l=>{const ts=l.t.sort((a,b)=>a.x-b.x),cs=[{s:ts[0].s,x:ts[0].x,e:ts[0].x+ts[0].w}];
     for(const t of ts.slice(1)){const c=cs[cs.length-1];if(t.x-c.e<1.2){c.s+=t.s;c.e=t.x+t.w}else cs.push({s:t.s,x:t.x,e:t.x+t.w})}
     return cs.map(({s,x})=>({s,x}))});
+}
+
+/* 성적통지표의 문항별 표(답안·정답·채점결과·정답률)와 세부영역 득점표를 읽는다. 열 위치(x)가 아니라 줄의 순서로 문항 번호를 매긴다. */
+const SUBN=[[0,170,70,'국어',['어휘·개념','사실적 이해','추론적 이해','비판적 이해','적용·창의']],[170,325,220,'수학',['계산','이해','추론','문제해결']],[325,470,370,'영어',['듣기','말하기','읽기','쓰기']]]; // shortcut: 고1 양식의 세부영역 순서 고정, 개수가 다르면 건너뜀
+function parseItems(R,H){
+  const T=r=>r.map(c=>c.s).join(''),out=[],isN=c=>/^-?\d+(\.\d+)?$|^-$/.test(c.s);
+  const hs=R.map((r,i)=>T(r).startsWith('영역＼문항')?i:-1).filter(i=>i>=0);
+  if(!hs.length)return out;
+  const end=R.findIndex((r,i)=>i>hs[0]&&T(r).startsWith('※'));
+  const sub={};
+  const si=R.findIndex(r=>T(r).includes('세부영역'));
+  if(si>=0)for(const [lo,hi,nx,area,names] of SUBN){
+    const rec=[];
+    for(const r of R.slice(si+1,hs[0])){const c=r.filter(c=>c.x>=lo&&c.x<hi&&c.x>=nx&&isN(c));if(c.length===3)rec.push(c.map(c=>c.s==='-'?null:+c.s))}
+    if(rec.length===names.length)sub[area]=rec.map((v,i)=>[names[i],v[0],v[1],v[2]]);
+  }
+  const G=[];let cur=null,pend=[];
+  for(const r of R.slice(hs[0],end<0?R.length:end)){
+    if(T(r).startsWith('영역＼문항')){cur=null;continue}
+    const e=r.findIndex(c=>c.s==='영역명');
+    if(e>=0){pend=r.slice(e+1).map(c=>c.s);continue}
+    if(r.some(c=>c.s==='답안')){cur={V:{},lab:'',names:pend};G.push(cur);pend=[]}
+    if(!cur)continue;
+    const k=r.findIndex(c=>['답안','정답','채점결과','정답률'].includes(c.s));
+    if(k>=0){const x0=r[k].x;cur.V[r[k].s]=r.filter(c=>c.x>x0+8).map(c=>c.s);r.filter(c=>c.x<x0-3).forEach(c=>cur.lab+=c.s)}
+    else cur.lab+=r.filter(c=>c.x<66).map(c=>c.s).join('');
+  }
+  for(const {V,lab,names} of G){
+    const ok=V['채점결과']||[],rt=V['정답률']||[],an=V['답안']||[];
+    if(!ok.length||ok.length!==rt.length)continue;
+    const nm2=/탐구/.test(lab)&&names.length?names:[lab.replace(/\s/g,'')];
+    const per=ok.length/nm2.length;
+    if(per!==Math.floor(per))continue;
+    nm2.forEach((nm,j)=>{
+      let q='';
+      for(let i=j*per;i<(j+1)*per;i++){const a=an[i],o=ok[i];
+        q+=(o==='O'?'O':a==='7'||a==='B'?'N':a==='8'||a==='D'?'D':'X')+(rt[i]||'-')}
+      const area=H.g==='고1'&&/^(사회|과학)$/.test(nm)?'통합'+nm:nm;
+      out.push({name:H.name,round:H.round,area,q,sub:sub[area]||[]});
+    });
+  }
+  return out;
+}
+function addItems(L){
+  if(!L.length)return;
+  const k=x=>[x.name,x.round,x.area].join('|'),keys=new Set(L.map(k));
+  ITM=ITM.filter(x=>!keys.has(k(x))).concat(L);
 }
 async function loadMockPdf(file){
   await needPdf();
@@ -1074,9 +1141,12 @@ async function loadMockPdf(file){
     toast(`성적일람표 ${new Set(R.out.map(o=>o.name)).size}명을 읽었습니다(${R.round}). 원점수가 없어 원점수는 비어 있고${R.skipped?`, 열이 맞지 않는 ${R.skipped}줄은 건너뛰었습니다`:''}. 등급은 파일 값 그대로입니다.`);
     return;
   }
-  for(const pg of pgs)out.push(...parseTongji(await pdfLines(pg)));
+  const its=[];
+  for(let i=0;i<pgs.length;i++){const L=await pdfLines(pgs[i]);out.push(...parseTongji(L));const H=tjHead(L);if(H)its.push(...parseItems(pages[i],H))}
   if(!out.length){toast('성적통지표 형식을 찾지 못했습니다. 학생용 성적통지표 PDF인지 확인해 주세요.');return}
+  addItems(its);
   addMock(out);
+  if(its.length)toast(`모의고사 ${out.length}건과 문항별 정오표 ${its.length}과목을 읽었습니다.`)
 }
 
 /* ───── 분석 ───── */
@@ -1265,6 +1335,45 @@ let MSEL=null,MMG=false;
 function mSel(a,on){const all=[...new Set(mock.map(m=>m.area))];if(!MSEL)MSEL=new Set(all.filter(x=>x!=='한국사'));on?MSEL.add(a):MSEL.delete(a);render()}
 function mMerge(on){MMG=on;render()}
 const rsort=(x,y)=>x.localeCompare(y,'ko',{numeric:true});
+
+/* ───── 문항별 분석(회차 탭 → 정답률 구간 · 세부영역) ───── */
+function itemHtml(name){
+  const L=ITM.filter(x=>x.name===name);
+  if(!L.length)return '<div class="mnote">문항별 자료가 없습니다. 모의고사 불러오기에서 <b>성적통지표(학생용) PDF</b>를 올리면 문항별 정오와 정답률이 함께 저장됩니다.</div>';
+  const rounds=[...new Set(L.map(x=>x.round))].sort(rsort),rl=r=>String(r).replace(/^\d{4}[-.]\d{2}\s*/,'').replace(/^\d{4}년\s*/,'');
+  if(!rounds.includes(ITR))ITR=rounds[rounds.length-1];
+  const AO=['국어','수학','영어','한국사','통합사회','통합과학'];
+  const R=L.filter(x=>x.round===ITR).sort((x,y)=>{const i=AO.indexOf(x.area),j=AO.indexOf(y.area);return (i<0?99:i)-(j<0?99:j)});
+  if(ITA!=='전체'&&!R.some(x=>x.area===ITA))ITA='전체';
+  const S=ITA==='전체'?R:R.filter(x=>x.area===ITA);
+  const B={A:[0,0,0],B:[0,0,0],C:[0,0,0],D:[0,0,0],E:[0,0,0]},hot=[];let o=0,x=0,n=0,d=0,late=true;
+  S.forEach(e=>{const len=e.q.length/2;for(let i=0;i<len;i++){const st=e.q[2*i],r=e.q[2*i+1],b=B[r];
+    if(st==='O')o++;else if(st==='X')x++;else if(st==='N')n++;else d++;
+    if(b)b[st==='O'?0:st==='X'?1:2]++;
+    if(st==='X'&&(r==='A'||r==='B'))hot.push([e.area,i+1]);
+    if((st==='N'||st==='D')&&i/len<.75)late=false}});
+  const tot=o+x+n+d,LB={A:'80%+',B:'60%+',C:'40%+',D:'20%+',E:'20%-'};
+  const bars=Object.keys(B).filter(k=>B[k][0]+B[k][1]+B[k][2]).map(k=>{const [a,b,c]=B[k],t=a+b+c;
+    return `<div class="ibr"><span>${k} <small>${LB[k]}</small></span><div class="ibar"><i class="ok" style="width:${a/t*100}%"></i><i class="ng" style="width:${b/t*100}%"></i><i class="bl" style="width:${c/t*100}%"></i></div><span class="mut">${a}/${t}문항</span></div>`}).join('');
+  const sub=S.filter(e=>e.sub&&e.sub.length).map(e=>`${ITA==='전체'?`<div class="isg">${esc(e.area)}</div>`:''}${e.sub.filter(v=>v[1]>0).map(v=>`<div class="isr"><span>${esc(v[0])}</span><div class="itr"><i style="width:${v[2]/v[1]*100}%"></i>${v[3]!=null?`<u style="left:${v[3]/v[1]*100}%"></u>`:''}</div><span class="mut">${v[2]} / ${v[1]}</span></div>`).join('')}`).join('');
+  const gap=S.flatMap(e=>(e.sub||[]).filter(v=>v[1]>0&&v[3]!=null).map(v=>({n:`${e.area} ${v[0]}`,g:(v[2]-v[3])/v[1],v}))).sort((p,q)=>p.g-q.g)[0];
+  const notes=[];
+  notes.push(hot.length?`정답률 A·B인 쉬운 문항을 <b>${hot.length}개</b> 틀렸어요 (${hot.slice(0,10).map(h=>h[0]+' '+h[1]+'번').join(', ')}${hot.length>10?' 외':''}). 이 문항부터 다시 풀면 점수 효율이 가장 좋아요.`:'정답률 A·B인 쉬운 문항은 모두 맞혔어요.');
+  if(n+d)notes.push(`무표기 ${n}개, 중복표기 ${d}개${late&&n?'가 모두 뒤쪽 25% 문항에 몰려 있어요. 실력보다 시간 배분 문제일 가능성이 높아요.':'가 있어요. 답안지 마킹 습관을 함께 확인해 주세요.'}`);
+  if(gap&&gap.g<0)notes.push(`전국 평균보다 가장 많이 낮은 세부영역은 <b>${esc(gap.n)}</b>(${gap.v[2]}/${gap.v[1]}, 전국 평균 ${gap.v[3]})이에요.`);
+  return `<div class="itabs">${rounds.map(r=>`<button type="button" class="itb${r===ITR?' on':''}" data-itr="${esc(r)}">${esc(rl(r))}</button>`).join('')}</div>
+    ${R.length>1?`<div class="itabs ia">${['전체',...R.map(e=>e.area)].map(a=>`<button type="button" class="itb sm${a===ITA?' on':''}" data-ita="${esc(a)}">${esc(a)}</button>`).join('')}</div>`:''}
+    <div class="itl"><div><span>정답</span><b>${o}</b></div><div><span>오답</span><b class="bd">${x}</b></div><div><span>무표기</span><b class="wn">${n}</b></div><div><span>중복표기</span><b class="wn">${d}</b></div><div><span>쉬운 문항 놓침</span><b class="bd">${hot.length}</b></div></div>
+    <div class="isub">정답률 구간별 정오 <span class="mut">(A 쉬움 → E 어려움 · 전체 ${tot}문항)</span></div>${bars}
+    <div class="ilg"><span><i class="ok"></i>정답</span><span><i class="ng"></i>오답</span><span><i class="bl"></i>무표기·중복</span></div>
+    ${sub?`<div class="isub" style="margin-top:12px">세부영역 득점 <span class="mut">(세로 선 = 전국 평균)</span></div>${sub}`:''}
+    <div class="mnote">${notes.join('<br>')}</div>`;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-itr],[data-ita]');if(!b||!$('#itmbox'))return;
+  if(b.dataset.itr!=null){ITR=b.dataset.itr;ITA='전체'}else ITA=b.dataset.ita;
+  const x=$('#itmbox');x.innerHTML=itemHtml(cur);motion(x,[{opacity:.35,transform:'translateY(5px)'},{opacity:1,transform:'none'}],260);
+});
 function mockReport(name,pre=''){
   const ms=mock.filter(m=>m.name===name),charts=[];
   if(!ms.length)return {html:`<div class="empty">${esc(name)} 학생의 모의고사 성적이 없습니다.</div>`,charts};
@@ -1321,6 +1430,7 @@ function mockReport(name,pre=''){
     const tr=!p?'-':m.g<p.g?'<b class="up">↑ 상승</b>':m.g>p.g?'<b class="dn">↓ 하락</b>':'<span class="mut">유지</span>';
     const tag=best!==worst?(m.g===best?' <span class="chip c0">강점</span>':m.g===worst?' <span class="chip c3">보완</span>':''):'';
     return `<tr><td class="l">${esc(m.area)}${tag}</td><td>${chip(m.g,9)}</td><td>${isFinite(m.pct)?m.pct:'-'}</td><td>${Math.min(...g)}등급 / ${Math.max(...g)}등급</td><td>${tr}</td></tr>`}).join('')}</tbody></table>`;
+  if(!pre)h+=`<h3>문항별 분석 <span class="hs">회차를 눌러 보세요</span></h3><div id="itmbox">${itemHtml(name)}</div>`;
   if(!pre)h+=csatHtml(name);
   h+=`<div class="foot">성적 돋보기 · 상담 자료 · 교내 상담 목적으로만 사용해 주세요.</div></div>`;
   return {html:h,charts};
@@ -1500,7 +1610,7 @@ function cardify(rep,order){
       const ic=(CI.find(([re])=>re.test(t.textContent))||[0,'file'])[1];t.insertAdjacentHTML('afterbegin',`<span class="ci">${svg(ic,16)}</span>`);secs.push(cur);rep.insertBefore(cur,e)}
     if(cur)cur.appendChild(e);
   }
-  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저)/.test(c.title))c.classList.add('nop');if(/^가상/.test(c.title))c.classList.add('vsec');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
+  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저|문항별 분석)/.test(c.title))c.classList.add('nop');if(/^가상/.test(c.title))c.classList.add('vsec');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
     secs.forEach(c=>{if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
@@ -1864,12 +1974,12 @@ $('#delGo').onclick=()=>{
   const n=[...document.querySelectorAll('#delList [data-n]:checked')].map(e=>+e.dataset.n),m=[...document.querySelectorAll('#delList [data-m]:checked')].map(e=>e.dataset.m);
   if(!n.length&&!m.length)return toast('지울 항목을 고르세요.');
   if(!confirm(`내신 ${n.length}개 학기, 모의고사 ${m.length}개 회차를 지울까요? 되돌릴 수 없습니다.`))return;
-  rows=rows.filter(r=>!n.includes(sk(r)));mock=mock.filter(x=>!m.includes(x.round));$('#del').close();refresh();toast('선택한 저장분을 지웠습니다.');
+  rows=rows.filter(r=>!n.includes(sk(r)));mock=mock.filter(x=>!m.includes(x.round));ITM=ITM.filter(x=>!m.includes(x.round));$('#del').close();refresh();toast('선택한 저장분을 지웠습니다.');
 };
 $('#bTheme').onclick=()=>setTheme(THEME==='light'?'cream':THEME==='cream'?'dark':'light');
 $('#bReset').onclick=()=>{
   if(!confirm('저장된 성적과 메모, 대학군 표를 모두 지울까요? 되돌릴 수 없습니다.'))return;
-  rows=[];mock=[];MEMO={};EX=new Set();UNIV=DEF_UNIV;cur='';shown=false;NFILES=[];
+  rows=[];mock=[];ITM=[];MEMO={};EX=new Set();UNIV=DEF_UNIV;cur='';shown=false;NFILES=[];
   try{localStorage.removeItem(KEY)}catch{}
   refresh();cloudPush(); // 로그인 상태면 계정의 데이터도 비운다
 };
@@ -1893,7 +2003,7 @@ $('#demo').onclick=()=>{
   const names=['김하늘','이서준','박지우','최민서','정유나','강도윤','조서연','윤재원'];
   const S1=[['공통국어1',4],['공통수학1',4],['공통영어1',4],['한국사1',3],['통합사회1',3],['통합과학1',3],['정보',2]];
   const S2=[['공통국어2',4],['공통수학2',4],['공통영어2',4],['한국사2',3],['통합사회2',3],['통합과학2',3],['로봇과 공학세계',2]];
-  rows=[];mock=[];
+  rows=[];mock=[];ITM=[];
   names.forEach((name,i)=>{
     const ab=.25+.65*(i/(names.length-1));
     [[1,S1],[2,S2]].forEach(([sem,list])=>list.forEach(([subject,credit])=>{
