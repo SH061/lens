@@ -448,6 +448,7 @@ dialog li{margin:6px 0}
 .tb select,.tb #go,.tb #tg,.tb .ib{height:38px;box-sizing:border-box}.tb .ib{width:38px}.tb #tg{width:38px;padding:0;justify-content:center}
 .tb .lg{display:none}
 @media screen and (min-width:1400px){.tb .lg{display:inline}.tb .ib{width:auto;padding:0 14px}.tabs button{padding:6px 16px}}
+#go.need{animation:nd 1.4s ease-in-out infinite}@keyframes nd{50%{box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 28%,transparent)}}
 </style>
 </head>
 <body>
@@ -1817,11 +1818,12 @@ $('#apply').onclick=()=>{
   if(map.name<0||map.subject<0||(map.g<0&&!(map.rank>=0&&map.n>=0)))return toast('성명 · 과목 · 석차등급(또는 석차+수강자수)은 꼭 지정해야 합니다.');
   buildNaesin();
 };
-$('#stu').onchange=e=>{cur=e.target.value;memoUI();if(shown)render()};
+$('#stu').onchange=()=>{$('#go').classList.toggle('need',$('#stu').value!==cur)}; // 학생을 고르기만 해서는 바뀌지 않고, 분석을 눌러야 바뀐다
 $('#go').onclick=()=>{
   if(!students.length)return toast('먼저 성적 파일을 올려 주세요.');
-  if(!cur){cur=students[0];$('#stu').value=cur;memoUI()}
-  shown=true;document.body.classList.add('sbc');render();
+  const v=$('#stu').value;if(v)cur=v;else if(!cur){cur=students[0];$('#stu').value=cur}
+  memoUI();$('#go').classList.remove('need');
+  shown=true;document.body.classList.add('sbc');render();motion($('#view'),[{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],260);
 };
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));render();motion($('#view'),[{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],240)});
 $('#pr1').onclick=()=>doPrint(false);$('#prA').onclick=()=>doPrint(true);
