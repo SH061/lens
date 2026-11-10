@@ -1820,7 +1820,7 @@ $('#go').onclick=()=>{
   if(!cur){cur=students[0];$('#stu').value=cur;memoUI()}
   shown=true;document.body.classList.add('sbc');render();
 };
-document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));render()});
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));render();motion($('#view'),[{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],240)});
 $('#pr1').onclick=()=>doPrint(false);$('#prA').onclick=()=>doPrint(true);
 $('#xlA').onclick=exportAll;
 $('#pm1').onclick=()=>{const c=$('#view .pcard');if(!c)return;c.scrollIntoView({behavior:'smooth',block:'center'});c.classList.remove('fl');void c.offsetWidth;c.classList.add('fl')};
@@ -1937,6 +1937,18 @@ function intro(){
   $('#iskip').onclick=end;
 }
 load();setTheme(THEME,false);refresh();intro();cloudInit();
+
+/* 누르는 모션: 버튼 눌림(전체) · 클릭 물결(색 꽉 찬 버튼) · 탭 전환 (동작 줄이기 설정이면 끔) */
+const RM_=matchMedia('(prefers-reduced-motion:reduce)');
+function motion(el,kf,ms){if(!el||RM_.matches||!el.animate)return;el.animate(kf,{duration:ms,easing:'cubic-bezier(.2,.7,.3,1)'})}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||b.disabled||b.closest('#help,dialog')&&0)return;
+  motion(b,[{transform:'scale(1)'},{transform:'scale(.94)',offset:.35},{transform:'scale(1)'}],240);
+  if(b.matches('.pri,.cta')&&!RM_.matches){const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*2.4,w=document.createElement('span');
+    w.style.cssText=`position:absolute;pointer-events:none;border-radius:50%;background:rgba(255,255,255,.5);width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
+    if(getComputedStyle(b).position==='static')b.style.position='relative';b.style.overflow='hidden';b.append(w);
+    w.animate([{transform:'scale(0)',opacity:1},{transform:'scale(1)',opacity:0}],{duration:600,easing:'ease-out'}).onfinish=()=>w.remove()}
+},true);
 </script>
 </body>
 </html>
