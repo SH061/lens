@@ -76,7 +76,7 @@ h2{font-size:34px;line-height:1.12;letter-spacing:-.025em;margin-bottom:36px}
 .grid{max-width:980px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;text-align:left}
 .card{display:block;padding:28px 24px 24px;border:1px solid var(--line);border-radius:18px;background:var(--canvas);color:inherit;text-decoration:none;transition:transform .15s}.card:active{transform:scale(.98)}
 .card h3{font-size:24px;line-height:1.17;letter-spacing:-.02em;margin-bottom:8px}.card p{color:var(--mute);min-height:50px}.card span{display:block;margin-top:18px;color:var(--primary)}
-.dark h2{margin-bottom:12px}.dark p{color:var(--on-tile-mute);max-width:560px;margin:0 auto}
+.dark h2{margin-bottom:12px}.dark p{color:var(--on-tile-mute);margin:0 auto}@media(min-width:834px){.dark p{white-space:nowrap}}
 @media(max-width:833px){.hero h1{font-size:40px}.hero p{font-size:19px}h2{font-size:28px}.tile{padding:56px 16px}}`;
 const page = (body, script = '') => `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학교 업무 도구</title><style>${CSS}</style></head><body>${body}${script ? '<script>' + script + '</script>' : ''}</body></html>`;
 const loginPage = () => page(`<main class="login"><form class="box" id="f"><h1 id="t">로그인</h1><p class="sub">학교 업무 도구</p>
