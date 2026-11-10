@@ -71,6 +71,17 @@ details.acc[open] .no,details.acc.first .no{background:var(--ac);color:#fff}
 .drop{border:2px dashed var(--line);border-radius:12px;padding:22px 12px;text-align:center;color:var(--ink2);cursor:pointer;margin:8px 0;background:var(--card)}
 .drop b{display:block;color:var(--ink);margin:6px 0 2px}
 .drop:hover,.drop.over{border-color:var(--ac);background:var(--ac2)}
+.sv .sh{display:flex;justify-content:space-between;font-weight:700}.sv .sh em{font-style:normal;font-weight:400;opacity:.7}
+.sv .svb{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.sv .svb button{justify-content:center;font-size:12px;padding:6px 4px;background:var(--card)}
+.sv p{margin:4px 0 0;color:var(--ink)}
+.hint{margin:-2px 0 6px}
+.kind .pill{background:var(--ac2);color:var(--ac);border-color:transparent}
+.drop.done{border:1px solid var(--gln);border-style:solid;background:var(--gbg);color:var(--gtx)}
+.drop.done .ck{font-size:22px;line-height:1;color:var(--good)}.drop.done b{color:var(--gtx);word-break:break-all;font-size:13px}
+.infobox{background:var(--ac2);border:1px solid #c9d8fb;color:var(--ac);border-radius:8px;padding:8px 10px;font-size:12px;margin:8px 0}
+.ldx{font-size:12px;font-weight:700;color:var(--good);margin:8px 0 4px}
+footer.ft{flex:none;text-align:center;font-size:11px;color:var(--ink2);padding:6px 12px;border-top:1px solid var(--line);background:var(--card)}
+@media print{footer.ft{display:none}}
 .okbox{background:var(--gbg);border:1px solid var(--gln);color:var(--gtx);border-radius:8px;padding:8px 10px;font-size:12px;margin:8px 0}
 .loaded{font-size:12px;color:var(--good);font-weight:600;margin-top:6px}
 details.map{margin-top:8px;font-size:12px}
@@ -181,11 +192,11 @@ dialog li{margin:6px 0}
 
 <div class="wrap">
 <aside class="lp no-print">
-  <div class="sv" id="sv"></div>
-  <div class="row" style="margin-top:-4px"><button id="bDel"><i data-ic="reset"></i>저장분 삭제</button></div>
+  <div class="sv" id="sv"><div id="svt"></div><div class="svb" id="svb"><button id="bReload"><i data-ic="reset"></i>다시 불러오기</button><button id="bDel"><i data-ic="reset"></i>저장분 삭제</button></div></div>
   <label class="fld">학교명 <input type="text" id="school" placeholder="○○고등학교 (출력물 머리글)"></label>
 
   <details class="acc first" open><summary><span class="no">1</span><b>내신 성적</b><em class="req">필수</em></summary><div class="ab">
+    <div class="sub hint">고등학교: 1·2학년 5등급 · 3학년 9등급 기반 분석</div>
     <div class="sub">어떤 파일인가요?</div>
     <div class="kinds">
       <div class="kind on" data-k="a"><b><i data-ic="file"></i>교과학습발달상황 <span class="pill">고등학교</span></b><small>학기말 등급이 이미 나왔을 때</small>
@@ -193,7 +204,7 @@ dialog li{margin:6px 0}
       <div class="kind" data-k="b"><b><i data-ic="table"></i>전과목 성적 일람표 <span class="pill">고등학교</span></b><small>1차 고사만 봐서 등급이 없을 때 (석차로 예측)</small>
         <div class="path">나이스 › 학급담임 › 성적조회/통계 › 학기말성적조회 › <strong>성적일람표 전과목</strong><br>산출기준 <strong>1차 정기시험</strong> · 받은점수기준</div></div>
     </div>
-    <div class="drop" id="drop1"><span data-ic="up" data-s="26"></span><b>NEIS 성적 파일을 올리세요</b><small>클릭하거나 파일을 끌어다 놓으세요 · .xlsx .xls .csv<br>교과학습발달상황과 성적일람표를 함께 여러 개 올려도 됩니다</small></div>
+    <div class="drop" id="drop1"></div>
     <input type="file" id="f1" accept=".xlsx,.xls,.csv" hidden>
     <div class="okbox" id="kn"></div>
     <div class="row"><small>파일에 학년·학기 열이 없을 때</small>
@@ -255,6 +266,7 @@ dialog li{margin:6px 0}
 </main>
 </div>
 <div id="printArea"></div>
+<footer class="ft no-print">성적 돋보기 · 교내 상담 목적으로만 사용해 주세요 · 올린 성적은 내 계정(또는 이 브라우저)에만 저장됩니다</footer>
 <div id="toast"></div>
 <dialog id="auth"><h2 style="font-size:18px">교사 로그인</h2><small>로그인하면 성적이 내 계정에 저장되어 다른 기기에서도 이어서 볼 수 있습니다. 내 계정의 데이터는 본인만 볼 수 있습니다.</small>
 <div style="display:grid;gap:8px;margin:12px 0"><input id="aEmail" type="email" placeholder="이메일" autocomplete="username"><input id="aPw" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="current-password"></div>
@@ -369,17 +381,22 @@ const NF=[['name','성명',/성명|이름/],['grade','학년',/^학년$/],['sem'
 const MF=[['name',/성명|이름/],['round',/회차|시행|시험/],['area',/^영역$|^과목(명)?$/],['raw',/원점수/],['std',/표준/],['pct',/백분위/],['g',/등급/]];
 // 정시 라인 대학군 표 — 예시 기본값(실제 입결 아님). 사용자가 화면에서 고쳐 저장한다.
 const DEF_UNIV='상위권 대학,95\n서울 중상위,88\n서울 중위·경기 상위,80\n수도권 중위·지방 거점국립,72\n수도권 하위·지방 중위,60\n지방 일반,45';
-const KN={a:'석차등급(1~9)을 그대로 읽습니다. 5등급제·9등급제는 학기별로 자동 판별합니다.',b:'등급 열이 없으면 석차÷수강자수로 예상 등급(≈)을 계산합니다. 산출 기준(1차 정기시험)을 확인하세요.'};
+const KN={a:'석차등급(1~9)을 그대로 읽습니다. 5등급제·9등급제는 학기별로 자동 판별합니다.',b:'원점수와 석차로 <b>가상 등급</b>을 만듭니다. 수강자수는 파일에서 읽고, 5등급·9등급은 학년으로 판별합니다. 등급이 이미 적힌 파일이라면 위의 「교과학습발달상황」을 고르세요.'};
 
 /* ───── 상태 ───── */
 let rows=[], mock=[], students=[], cur='', tab='n', shown=false, charts=[], ctx=null, map={}, SIM={};
-let EX=new Set(), MEMO={}, UNIV=DEF_UNIV, THEME='light';
+let EX=new Set(), MEMO={}, UNIV=DEF_UNIV, THEME='light', NFILES=[], AT='', KIND='a';
+const knUI=k=>{KIND=k;const e=$('#kn');e.className=k==='a'?'okbox':'infobox';e.innerHTML=KN[k];drop1UI()};
+const KNAME={a:'교과학습발달상황',b:'전과목 성적일람표'};
+function drop1UI(){const d=$('#drop1');if(!d)return;
+  if(rows.length){d.className='drop done';d.innerHTML=`<div class="ck">✓</div><b>${NFILES.length?NFILES.map(esc).join(' + '):'저장된 내신 자료'}</b><small>${new Set(rows.map(r=>r.name)).size}명 파싱 완료 · 눌러서 파일 추가</small>`}
+  else{d.className='drop';d.innerHTML=`<span>${svg('up',26)}</span><b>NEIS ${KNAME[KIND]} 파일을 올리세요</b><small>클릭하거나 파일을 끌어다 놓으세요 · .xlsx .xls .csv</small>`}}
 const KEY='lens-school-v1';
 const revive=o=>{for(const k in o)if(o[k]===null)o[k]=NaN;return o};
-const snap=()=>({rows,mock,school:$('#school').value,memo:MEMO,univ:UNIV,ex:[...EX],theme:THEME,dg:$('#dg').value,ds:$('#ds').value});
+const snap=()=>({rows,mock,school:$('#school').value,memo:MEMO,univ:UNIV,ex:[...EX],theme:THEME,dg:$('#dg').value,ds:$('#ds').value,nf:NFILES,at:(AT=new Date().toISOString())});
 function apply(d){
   rows=(d.rows||[]).map(revive);mock=(d.mock||[]).map(revive);MEMO=d.memo||{};UNIV=d.univ||DEF_UNIV;EX=new Set(d.ex||[]);THEME=d.theme||'light';
-  $('#school').value=d.school||'';$('#dg').value=d.dg||1;$('#ds').value=d.ds||1;
+  NFILES=d.nf||[];AT=d.at||'';$('#school').value=d.school||'';$('#dg').value=d.dg||1;$('#ds').value=d.ds||1;
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(snap()))}catch{}cloudPush()}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d)apply(d)}catch{}}
@@ -990,13 +1007,15 @@ function refresh(){
   if(!students.includes(cur))cur='';
   $('#stu').value=cur;
   const sems=[...new Set(rows.map(sk))].sort((a,b)=>a-b).map(k=>`${k/10|0}-${k%10}`).join(', ');
-  $('#ld1').textContent=rows.length?`내신 ${rows.length}행 · 학생 ${new Set(rows.map(r=>r.name)).size}명 · 학기 ${sems}`:'';
+  $('#ld1').className='ldx';$('#ld1').textContent=rows.length?`${new Set(rows.map(r=>r.name)).size}명 학생 데이터 로드 완료`:'';drop1UI();
   $('#ld2').textContent=mock.length?`모의고사 ${new Set(mock.map(m=>m.round)).size}회차 · 학생 ${new Set(mock.map(m=>m.name)).size}명`:'';
   $('#cnt').textContent=students.length+'명';
   const sj=[...new Set(rows.map(r=>r.subject))];
   $('#subjs').innerHTML=sj.length?sj.map(s=>`<label><input type="checkbox" data-s="${esc(s)}" ${EX.has(s)?'':'checked'}>${esc(s)}</label>`).join(''):'<span class="mut">내신 파일을 올리면 과목이 나타납니다.</span>';
-  $('#sv').className='sv'+(students.length?' on':'');
-  $('#sv').innerHTML=students.length?`<b>저장됨</b> · 학생 ${students.length}명의 성적이 이 브라우저에 자동 저장되어 있습니다. 다음에 열 때 그대로 나옵니다. 공용 컴퓨터에서는 쓰고 나서 초기화하세요.`:'아직 저장된 성적이 없습니다. 파일을 올리면 <b>이 브라우저에 자동으로 저장</b>되어 다음에 열 때 그대로 나옵니다. 서버로는 보내지 않습니다.';
+  $('#sv').className='sv'+(students.length?' on':'');$('#svb').hidden=!students.length;
+  const d=AT?new Date(AT):new Date(),p=n=>String(n).padStart(2,'0'),ts=`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  const nn=new Set(rows.map(r=>r.name)).size,mn=new Set(mock.map(m=>m.name)).size,mr=new Set(mock.map(m=>m.round)).size,kb=Math.max(1,Math.round(JSON.stringify({rows,mock}).length/1024));
+  $('#svt').innerHTML=students.length?`<div class="sh"><span>✓ 저장됨</span><em>${ts}</em></div><p>${nn?`내신 <b>${nn}명</b>`:''}${nn&&mn?' · ':''}${mn?`모의 <b>${mn}명</b> · ${mr}회차`:''} <small>(${kb}KB)</small></p>`:'아직 저장된 성적이 없습니다. 파일을 올리면 <b>이 브라우저에 자동으로 저장</b>되어 다음에 열 때 그대로 나옵니다.';
   memoUI();save();render();
 }
 function setTheme(t,persist=true){
@@ -1142,9 +1161,9 @@ function zone(drop,input,fn){
   drop.ondragleave=()=>drop.classList.remove('over');
   drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');run([...e.dataTransfer.files])};
 }
-zone($('#drop1'),$('#f1'),loadNaesin);
+zone($('#drop1'),$('#f1'),async f=>{await loadNaesin(f);if(rows.length&&!NFILES.includes(f.name)){NFILES.push(f.name);drop1UI();save()}});
 zone($('#drop2'),$('#f2'),loadMock);
-document.querySelectorAll('.kind').forEach(k=>k.onclick=()=>{document.querySelectorAll('.kind').forEach(x=>x.classList.toggle('on',x===k));$('#kn').textContent=KN[k.dataset.k]});
+document.querySelectorAll('.kind').forEach(k=>k.onclick=()=>{document.querySelectorAll('.kind').forEach(x=>x.classList.toggle('on',x===k));knUI(k.dataset.k)});
 $('#kn').textContent=KN.a;
 $('#apply').onclick=()=>{
   document.querySelectorAll('#mapui select').forEach(s=>map[s.dataset.k]=+s.value);
@@ -1170,6 +1189,8 @@ $('#tg').onclick=()=>document.body.classList.toggle('sbc');
 $('#bHelp').onclick=()=>$('#help').showModal();
 $('#htabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#htabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('#help .hp').forEach(p=>{p.classList.toggle('on',p.dataset.p===b.dataset.h);if(p.dataset.p===b.dataset.h)p.scrollTop=0})};
 $('#bDel').onclick=delOpen;
+$('#bReload').onclick=()=>{load();refresh();toast('저장된 자료를 다시 불러왔습니다.')};
+knUI('a');
 $('#mpasteGo').onclick=()=>{mockFromText($('#mpaste').value)};
 $('#qadd').onclick=()=>{
   const n=str($('#qn').value);if(!n)return toast('성명을 입력하세요.');
@@ -1187,7 +1208,7 @@ $('#delGo').onclick=()=>{
 $('#bTheme').onclick=()=>setTheme(THEME==='light'?'cream':THEME==='cream'?'dark':'light');
 $('#bReset').onclick=()=>{
   if(!confirm('저장된 성적과 메모, 대학군 표를 모두 지울까요? 되돌릴 수 없습니다.'))return;
-  rows=[];mock=[];MEMO={};EX=new Set();UNIV=DEF_UNIV;cur='';shown=false;
+  rows=[];mock=[];MEMO={};EX=new Set();UNIV=DEF_UNIV;cur='';shown=false;NFILES=[];
   try{localStorage.removeItem(KEY)}catch{}
   refresh();cloudPush(); // 로그인 상태면 계정의 데이터도 비운다
 };
