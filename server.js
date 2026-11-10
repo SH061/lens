@@ -67,6 +67,7 @@ h1,h2,h3,p{margin:0;font-weight:400}button,input{font-family:inherit;font-size:1
 .box h1{font-size:34px;line-height:1.12;letter-spacing:-.025em;margin-bottom:6px}.box .sub{color:var(--mute);margin-bottom:26px}
 .box input{display:block;width:100%;padding:12px 18px;margin-bottom:10px;border:1px solid var(--line);border-radius:999px;background:var(--canvas);color:var(--ink);outline:0}.box input:focus{border-color:var(--primary)}
 .box .pill{margin-top:16px}.msg{min-height:22px;margin-top:12px;font-size:15px;color:var(--mute)}
+.login.up{background:var(--tile)}.login.up .box{background:#1d1d1f;border-color:#3a3a3c;color:var(--on-tile)}.login.up .box input{background:#2c2c2e;border-color:#3a3a3c;color:var(--on-tile)}.login.up .sub{color:var(--on-tile-mute)}.login.up .sw{color:#2997ff}.login.up .msg{color:var(--on-tile-mute)}.box input[hidden]{display:none}
 .sw{display:inline-block;margin-top:14px;color:var(--primary);font-size:15px;text-decoration:none}
 .nav{position:sticky;top:0;z-index:5;height:48px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;background:#000c;backdrop-filter:saturate(180%) blur(20px);color:var(--on-tile);font-size:14px}
 .nav .adm{color:#2997ff;text-decoration:none;font-size:14px;margin-right:18px}.nav button{background:none;border:0;color:#2997ff;cursor:pointer;font-size:14px}
@@ -79,14 +80,22 @@ h2{font-size:34px;line-height:1.12;letter-spacing:-.025em;margin-bottom:36px}
 .dark h2{margin-bottom:12px}.dark p{color:var(--on-tile-mute);margin:0 auto}@media(min-width:834px){.dark p{white-space:nowrap}}
 @media(max-width:833px){.hero h1{font-size:40px}.hero p{font-size:19px}h2{font-size:28px}.tile{padding:56px 16px}}`;
 const page = (body, script = '') => `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학교 업무 도구</title><style>${CSS}</style></head><body>${body}${script ? '<script>' + script + '</script>' : ''}</body></html>`;
-const loginPage = () => page(`<main class="login"><form class="box" id="f"><h1 id="t">로그인</h1><p class="sub">학교 업무 도구</p>
-<input id="e" type="text" maxlength="30" placeholder="이름" autocomplete="username" required><input id="p" type="password" placeholder="비밀번호" autocomplete="current-password" required>
+const loginPage = () => page(`<main class="login"><form class="box" id="f"><h1 id="t">로그인</h1><p class="sub" id="sub">학교 업무 도구</p>
+<input id="e" type="text" maxlength="30" placeholder="이름" autocomplete="username" required><input id="p" type="password" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" style="ime-mode:disabled" placeholder="비밀번호" autocomplete="current-password" required><input id="p2" type="password" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" style="ime-mode:disabled" placeholder="비밀번호 확인" autocomplete="new-password" hidden>
 <button class="pill" id="go">로그인</button><div class="msg" id="msg"></div><a class="sw" id="sw" href="#">처음이세요? 가입하기</a></form></main>`,
 `var up=false,$=function(s){return document.querySelector(s)};
-$('#sw').onclick=function(e){e.preventDefault();up=!up;$('#t').textContent=up?'가입':'로그인';$('#go').textContent=up?'가입하고 시작':'로그인';$('#sw').textContent=up?'이미 계정이 있어요':'처음이세요? 가입하기';$('#msg').textContent=''};
+/* 비밀번호 칸: 한글 상태에서 눌러도 영문 자판 글자로 바꿔 넣는다(ㅂ→q). 브라우저는 입력기 전환을 강제할 수 없어 입력된 한글을 변환한다 */
+var KI=['r','R','s','e','E','f','a','q','Q','t','T','d','w','W','c','z','x','v','g'],KV=['k','o','i','O','j','p','u','P','h','hk','ho','hl','y','n','nj','np','nl','b','m','ml','l'],KF=['','r','R','rt','s','sw','sg','e','f','fr','fa','fq','ft','fx','fv','fg','a','q','qt','t','T','d','w','c','z','x','v','g'],
+JA='ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ',JK=['r','R','rt','s','sw','sg','e','E','f','fr','fa','fq','ft','fx','fv','fg','a','q','Q','qt','t','T','d','w','W','c','z','x','v','g'],VO='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
+function eng(t){return t.replace(/[가-힣ㄱ-ㅣ]/g,function(c){var n=c.charCodeAt(0);if(n>=44032){n-=44032;return KI[Math.floor(n/588)]+KV[Math.floor(n%588/28)]+KF[n%28]}var a=JA.indexOf(c);return a>=0?JK[a]:KV[VO.indexOf(c)]})}
+function fixPw(e){var el=e.target,v=el.value,c=eng(v);if(c!==v)el.value=c}
+['#p','#p2'].forEach(function(id){$(id).addEventListener('input',function(e){if(!e.isComposing)fixPw(e)});$(id).addEventListener('compositionend',fixPw)});
+function mode(u){up=u;$('.login').classList.toggle('up',u);$('#t').textContent=u?'가입 신청':'로그인';$('#sub').textContent=u?'신청하면 관리자가 승인한 뒤 사용할 수 있어요':'학교 업무 도구';$('#go').textContent=u?'가입 신청하기':'로그인';$('#sw').textContent=u?'이미 계정이 있어요':'처음이세요? 가입하기';$('#p2').hidden=!u;$('#p2').value='';$('#msg').textContent='';document.title=u?'가입 신청':'학교 업무 도구'}
+$('#sw').onclick=function(e){e.preventDefault();mode(!up)};
 $('#f').onsubmit=async function(e){e.preventDefault();$('#msg').textContent='';
+if(up&&$('#p').value!==$('#p2').value)return $('#msg').textContent='비밀번호가 서로 다릅니다.';
 var r=await fetch(up?'/api/signup':'/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('#e').value,password:$('#p').value})});
-if(r.status==202){up=false;$('#t').textContent='로그인';$('#go').textContent='로그인';$('#sw').textContent='처음이세요? 가입하기';$('#p').value='';return $('#msg').textContent='가입을 신청했습니다. 관리자가 승인하면 로그인할 수 있습니다.'}
+if(r.status==202){mode(false);$('#p').value='';return $('#msg').textContent='가입을 신청했습니다. 관리자가 승인하면 로그인할 수 있습니다.'}
 if(r.ok)return location.reload();
 $('#msg').textContent=({401:'이름 또는 비밀번호가 맞지 않습니다.',423:'관리자 승인을 기다리고 있습니다.',409:'이미 사용 중인 이름입니다.',400:'이름과 6자 이상의 비밀번호를 입력하세요.',403:'가입 인원이 가득 찼습니다.',429:'시도가 많아 잠시 막혔습니다. 나중에 다시 하세요.'})[r.status]||'서버 오류'};`);
 const home = (apps, email, admin, pend) => page(`<div class="nav"><span>${esc(email)}</span><span>${admin ? `<a class="adm" href="/admin">관리자${pend ? ' (' + pend + ')' : ''}</a>` : ''}<button id="out">로그아웃</button></span></div>
