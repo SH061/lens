@@ -81,6 +81,69 @@ details.acc[open] .no,details.acc.first .no{background:var(--ac);color:#fff}
 .infobox{background:var(--ac2);border:1px solid #c9d8fb;color:var(--ac);border-radius:8px;padding:8px 10px;font-size:12px;margin:8px 0}
 .ldx{font-size:12px;font-weight:700;color:var(--good);margin:8px 0 4px}
 footer.ft{flex:none;text-align:center;font-size:11px;color:var(--ink2);padding:6px 12px;border-top:1px solid var(--line);background:var(--card)}
+/* ── 수시·정시 통합 탭 ── */
+.jlock{display:flex;gap:9px;align-items:flex-start;margin-bottom:12px;background:var(--wbg);border:1px dashed var(--wln);color:var(--wtx);border-radius:10px;padding:10px 12px}
+.jlock b{display:block;font-size:12.5px;margin-bottom:3px}.jlock span{display:block;font-size:11.5px;line-height:1.65}.jlock svg{flex:0 0 auto;margin-top:1px}
+.jjudge{border:1px solid var(--line);border-radius:12px;padding:22px 18px;text-align:center;margin-bottom:14px}
+.jjudge .ic{display:flex;justify-content:center;margin-bottom:10px}
+.jjudge .lb{font-weight:900;font-size:30px;letter-spacing:-.045em;line-height:1.1;margin-bottom:6px}
+.jjudge .sb{font-size:12.5px;font-weight:600;color:var(--ink2)}
+.jg{position:relative;height:42px;margin:20px 8px 2px}
+.jg .bar{position:absolute;left:0;right:0;top:15px;height:6px;border-radius:3px;background:linear-gradient(90deg,#0a7550,#d5d8de 50%,#6b4bb0);opacity:.55}
+.jg .mid{position:absolute;left:50%;top:10px;width:1px;height:16px;background:var(--ink2);opacity:.5}
+.jg .pin{position:absolute;top:0;transform:translateX(-50%);transition:left .45s cubic-bezier(.4,0,.2,1)}
+.jg .cap{position:absolute;top:26px;font-size:10.5px;font-weight:700;color:var(--ink2)}.jg .cap.l{left:0}.jg .cap.r{right:0}
+.jjudge.an .pin{transition:left 1.25s cubic-bezier(.34,1.32,.5,1)}
+.jjudge.an .ic,.jjudge.an .lb,.jjudge.an .sb{opacity:0;transform:translateY(8px) scale(.97)}
+.jjudge.an.go .ic,.jjudge.an.go .lb,.jjudge.an.go .sb{opacity:1;transform:none;transition:opacity .5s ease,transform .6s cubic-bezier(.34,1.4,.5,1)}
+.jjudge.an.go .ic{transition-delay:.85s}.jjudge.an.go .lb{transition-delay:.95s}.jjudge.an.go .sb{transition-delay:1.1s}
+.jrp{margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;font-size:11px;font-weight:600;color:var(--ink2)}
+.jrp:hover{color:var(--ac);border-color:var(--ac)}
+.jreasons{list-style:none;margin:0;padding:0}
+.jreasons li{position:relative;padding:8px 0 8px 22px;font-size:12.5px;line-height:1.75;color:var(--ink2);border-bottom:1px solid var(--line)}
+.jreasons li:last-child{border-bottom:0}
+.jreasons li::before{content:"";position:absolute;left:6px;top:16px;width:5px;height:5px;border-radius:50%;background:var(--ac);opacity:.55}
+.jvs{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-bottom:14px}
+.jvs .side{border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.jvs .side.n{border-color:#a9d9c5}.jvs .side.m{border-color:#c2b2e6}
+.jvs .t{font-size:11px;font-weight:700;color:var(--ink2);display:flex;align-items:center;justify-content:center;gap:5px}
+.jvs .v{font-weight:900;font-size:34px;line-height:1.15;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.jvs .s{font-size:10.5px;font-weight:600;color:var(--ink2)}.jvs .mid{font-size:12px;font-weight:800;color:var(--ink2);letter-spacing:.04em}
+.jline{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px;border-radius:10px;border:1px solid var(--line);background:var(--soft)}
+.jline small{font-size:10px;font-weight:800;color:var(--ink2)}
+.jline .pct{font-weight:900;font-size:36px;letter-spacing:-.045em;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}
+.jline .grp{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.jline .ex{font-size:11.5px;color:var(--ink2);font-weight:600;margin-top:3px;line-height:1.6}.jline .ex.up{color:var(--ac);font-weight:800;margin-top:5px}
+.jedit{margin-top:12px}.jedit summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--ink2)}.jedit textarea{width:100%;margin:6px 0}
+.jquad{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+.jfit{border:1px solid var(--line);border-radius:9px;padding:12px}
+.jfit .nm{font-size:12.5px;font-weight:800;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.jfit .score{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px;color:#fff}
+.jfit .meter{height:5px;border-radius:3px;background:var(--soft);overflow:hidden;margin-bottom:8px}
+.jfit .meter i{display:block;height:100%;border-radius:3px;transition:width .9s cubic-bezier(.22,.7,.2,1) .15s}
+.jfit .cm{font-size:11.5px;color:var(--ink2);line-height:1.65}
+.jmap{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
+.jdr{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;font-size:12.5px}
+.jdr i{width:10px;height:10px;border-radius:50%}.jdr .n{margin-left:auto;font-weight:800}.jdr .p{color:var(--ink2);width:34px;text-align:right}
+.jdr .who{flex:0 0 100%;display:flex;flex-wrap:wrap;gap:4px}.jdr .who button{padding:1px 8px;font-size:11.5px;border-radius:99px}.jdr .who button.on{background:var(--ac2);border-color:var(--ac);color:var(--ac)}
+@media(max-width:760px){.jvs{grid-template-columns:1fr}.jvs .mid{text-align:center}.jquad,.jmap{grid-template-columns:1fr}}
+/* ── 모션: 원본보다 약하게 (이동 6px · 0.4초 안팎). 인쇄에는 적용하지 않는다 ── */
+@media screen and (prefers-reduced-motion:no-preference){
+@keyframes mIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes mPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+#view .cd2,#view .jc{animation:mIn .42s cubic-bezier(.22,.7,.2,1) both;animation-delay:calc(var(--i,0)*45ms)}
+#view .tiles>.tile{animation:mPop .38s cubic-bezier(.22,.7,.2,1) both;animation-delay:calc(var(--n,0)*35ms + 120ms)}
+#view>.empty{animation:mIn .5s cubic-bezier(.22,.7,.2,1) both}
+.cd2{transition:box-shadow .2s,border-color .2s}.cd2:hover{box-shadow:0 4px 18px #0000000d;border-color:color-mix(in srgb,var(--ac) 22%,var(--line))}
+button{transition:background .15s,border-color .15s,color .15s,transform .12s}button:active{transform:scale(.97)}
+.tabs{position:relative}.tabs button{position:relative;z-index:1}
+.tabs::before{content:"";position:absolute;top:0;bottom:0;left:0;width:var(--tw,0);transform:translateX(var(--tx,0));background:var(--ac);border-radius:8px;opacity:0;transition:transform .32s cubic-bezier(.22,.7,.2,1),width .32s cubic-bezier(.22,.7,.2,1)}
+.tabs.sl::before{opacity:1}.tabs.sl button.on{background:transparent}
+#toast{animation:mIn .3s ease both}
+dialog[open]{animation:mPop .22s ease both}
+details.acc[open]>*:not(summary){animation:mIn .3s ease both}
+}
+@media (prefers-reduced-motion:reduce){.jjudge.an .ic,.jjudge.an .lb,.jjudge.an .sb{opacity:1;transform:none}.jg .pin,.jfit .meter i{transition:none}}
 @media print{footer.ft{display:none}}
 .tabs{background:var(--soft);padding:3px;border-radius:12px;gap:2px}
 .tabs button,.tabs button:first-child,.tabs button:last-child{border:0;background:none;border-radius:9px;margin:0;color:var(--ink2);font-weight:600;padding:6px 12px}
@@ -452,7 +515,7 @@ file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><pat
 up:'<path d="M12 16V4m0 0-4 4m4-4 4 4M4 20h16"/>',print:'<path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7"/>',
 users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>',
 user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',layers:'<path d="M12 3 3 8l9 5 9-5-9-5zM3 13l9 5 9-5"/>',clip:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6"/>',book:'<path d="M4 5a2 2 0 0 1 2-2h6v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-6v17h6a2 2 0 0 1 2 2z"/>',
-reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>',half:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/>'};
+lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',scale:'<path d="M12 3v18M8 21h8M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/>',pin:'<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>',half:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/>'};
 const svg=(n,s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
 document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=svg(e.dataset.ic,+e.dataset.s||16));
 
@@ -466,7 +529,8 @@ const PAL={국어:'#e5484d',수학:'#2f6fed',영어:'#f5a524',사회:'#8e4ec6',�
 const NF=[['name','성명',/성명|이름/],['grade','학년',/^학년$/],['sem','학기',/^학기$/],['subject','과목',/^과목(명)?$/],['credit','단위수',/단위|학점/],['g','석차등급',/석차등급|^등급$/],['rank','석차',/^석차($|\()|^등수$|^석차.*(수강|인원)/],['n','수강자수',/수강자|이수자|재적|인원/],['score','원점수',/원점수|^점수$/],['avg','과목평균',/평균/],['ach','성취도',/^성취도$/],['dist','분포비율',/분포/]];
 const MF=[['name',/성명|이름/],['round',/회차|시행|시험/],['area',/^영역$|^과목(명)?$/],['raw',/원점수/],['std',/표준/],['pct',/백분위/],['g',/등급/]];
 // 정시 라인 대학군 표 — 예시 기본값(실제 입결 아님). 사용자가 화면에서 고쳐 저장한다.
-const DEF_UNIV='상위권 대학,95\n서울 중상위,88\n서울 중위·경기 상위,80\n수도권 중위·지방 거점국립,72\n수도권 하위·지방 중위,60\n지방 일반,45';
+const OLD_UNIV='상위권 대학,95\n서울 중상위,88\n서울 중위·경기 상위,80\n수도권 중위·지방 거점국립,72\n수도권 하위·지방 중위,60\n지방 일반,45';
+const DEF_UNIV='의약계열 · 최상위권,98\n최상위권,95.5\n상위권,92\n수도권 상위,88\n수도권 중상위,82\n수도권 중위 · 지방국립,74\n수도권 외곽 · 지방 상위,62\n지방 중위,45\n지방 · 전문대,0';
 const KN={a:'석차등급(1~9)을 그대로 읽습니다. 5등급제·9등급제는 학기별로 자동 판별합니다.',b:'원점수와 석차로 <b>가상 등급</b>을 만듭니다. 수강자수는 파일에서 읽고, 5등급·9등급은 학년으로 판별합니다. 등급이 이미 적힌 파일이라면 위의 「교과학습발달상황」을 고르세요.'};
 
 /* ───── 상태 ───── */
@@ -481,7 +545,7 @@ const KEY='lens-school-v1';
 const revive=o=>{for(const k in o)if(o[k]===null)o[k]=NaN;return o};
 const snap=()=>({rows,mock,school:$('#school').value,memo:MEMO,univ:UNIV,ex:[...EX],theme:THEME,dg:$('#dg').value,ds:$('#ds').value,nf:NFILES,at:(AT=new Date().toISOString())});
 function apply(d){
-  rows=(d.rows||[]).map(revive);mock=(d.mock||[]).map(revive);MEMO=d.memo||{};UNIV=d.univ||DEF_UNIV;EX=new Set(d.ex||[]);THEME=d.theme||'light';
+  rows=(d.rows||[]).map(revive);mock=(d.mock||[]).map(revive);MEMO=d.memo||{};UNIV=(d.univ&&d.univ!==OLD_UNIV)?d.univ:DEF_UNIV;EX=new Set(d.ex||[]);THEME=d.theme||'light';
   NFILES=d.nf||[];AT=d.at||'';$('#school').value=d.school||'';$('#dg').value=d.dg||1;$('#ds').value=d.ds||1;
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(snap()))}catch{}cloudPush()}
@@ -908,10 +972,11 @@ const delta=(d)=>Math.abs(d)<0.005?'<span class="mut">변화 없음</span>':d<0?
 const ink=()=>getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#1a1d23';
 
 /* 차트 설정 */
-const lineCfg=(labels,datasets,S)=>({type:'line',data:{labels,datasets},options:{responsive:false,animation:false,devicePixelRatio:2,spanGaps:true,
+let ANIM=true;const AN=()=>ANIM?{duration:650,easing:'easeOutQuart'}:false; // 인쇄용 차트는 애니메이션 없이 바로 그린다
+const lineCfg=(labels,datasets,S)=>({type:'line',data:{labels,datasets},options:{responsive:false,animation:AN(),devicePixelRatio:2,spanGaps:true,
   scales:{y:{reverse:true,min:1,max:S,ticks:{stepSize:1,callback:v=>v+'등급'}}},plugins:{legend:{position:'bottom',labels:{boxWidth:12}}}}});
 const radarCfg=(labels,vals,S,color)=>({type:'radar',data:{labels,datasets:[{data:vals.map(v=>S+1-v),backgroundColor:color+'33',borderColor:color,pointBackgroundColor:color}]},
-  options:{responsive:false,animation:false,devicePixelRatio:2,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${f2((c.chart._vals||vals)[c.dataIndex])}등급`}}},
+  options:{responsive:false,animation:AN(),devicePixelRatio:2,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${f2((c.chart._vals||vals)[c.dataIndex])}등급`}}},
   scales:{r:{min:0,max:S,pointLabels:{font:{size:12,weight:'600'}},ticks:{stepSize:1,font:{size:10},backdropColor:'transparent',callback:v=>v>=1?(S+1-v)+'등급':''}}}}});
 const ds=(label,data,color,dash)=>({label,data,borderColor:color,backgroundColor:color,tension:.25,borderDash:dash?[5,4]:[],pointRadius:3});
 
@@ -980,7 +1045,7 @@ function report(name,pre=''){
   if(groups.length>=3)charts.push([pre+'rd',radarCfg(groups.map(gs),groups.map(g=>a.gAvg[g].avg),S,'#0f9d8a')]);
   h+=`<h3>과목군별 등급</h3><div class="sub2">막대가 높을수록 좋은 등급 · 학점이 많고 여러 학기 이수한 과목일수록 비중이 큽니다</div><div class="cw"><canvas id="${pre}bar" width="440" height="320"></canvas></div>`;
   charts.push([pre+'bar',{type:'bar',plugins:[barLbl(S)],data:{labels:groups.map(gb),datasets:[{data:groups.map(g=>S+1-a.gAvg[g].avg),backgroundColor:groups.map(g=>PAL[g]+'cc'),borderRadius:6}]},
-    options:{responsive:false,animation:false,devicePixelRatio:2,layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`평균 ${f2(a.gAvg[groups[c.dataIndex]].avg)}등급`}}},scales:{y:{min:0,max:S,ticks:{stepSize:1,callback:v=>v>=1?(S+1-v)+'등급':''}}}}}]);
+    options:{responsive:false,animation:AN(),devicePixelRatio:2,layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`평균 ${f2(a.gAvg[groups[c.dataIndex]].avg)}등급`}}},scales:{y:{min:0,max:S,ticks:{stepSize:1,callback:v=>v>=1?(S+1-v)+'등급':''}}}}}]);
 
   const nm=rs.map(r=>({r,k:rkOf(r)})).filter(({r,k})=>isFinite(r.v)&&k&&Math.round(r.v)>1).map(({r,k})=>{
     const g=Math.round(r.v),cut=r.scale===9?CUT9:CUT5,max=Math.floor(cut[g-2]*r.n/100+1e-9);
@@ -1089,44 +1154,120 @@ const c59=v=>interp(M9,[1,2,3,4,5,6,7,8,9],interp([1,2,3,4,5],M5,v)); // 5등급
 const pctOf=m=>isFinite(m.pct)?m.pct:100-M9[Math.min(9,Math.max(1,Math.round(m.g)))-1]; // 백분위가 없으면 등급에서 추정
 const dom=a=>/국어/.test(a)?'국':/수학/.test(a)?'수':/영어/.test(a)?'영':/한국사/.test(a)?null:/사회|과학|물리|화학|생명|지구|윤리|지리|정치|경제|역사|법/.test(a)?'탐':null;
 const parseUniv=t=>t.split('\n').map(l=>{const i=l.lastIndexOf(',');return {name:l.slice(0,i).trim(),thr:num(l.slice(i+1))}}).filter(x=>x.name&&isFinite(x.thr)).sort((a,b)=>b.thr-a.thr);
-const band=d=>d>=5?['안정','b0']:d>-5?['적정','b1']:d>-12?['도전','b2']:['상향 도전','b3'];
+const UEX={'의약계열 · 최상위권':'의예/치의예/약학, 서울대 주요학과','최상위권':'서울대 · 연세대 · 고려대 상위학과','상위권':'서강대 · 성균관대 · 한양대 · 중앙대 상위학과','수도권 상위':'경희대 · 한국외대 · 서울시립대 · 건국대','수도권 중상위':'동국대 · 홍익대 · 숙명여대 · 국민대 · 지방거점국립대 상위','수도권 중위 · 지방국립':'광운대 · 명지대 · 상명대 · 지방거점국립대','수도권 외곽 · 지방 상위':'가천대 · 한성대 · 지방 주요 사립대','지방 중위':'지방 사립대 일반학과','지방 · 전문대':'지방 사립대 · 전문대학'};
+const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
+const rtl2=r=>String(r).replace(/^\d{4}[-.]\d{2}\s*/,'').replace(/^\d{4}년\s*/,'');
+const slope=a=>{const p=a.map((v,i)=>[i,v]).filter(q=>isFinite(q[1]));if(p.length<2)return null;const n=p.length,sx=p.reduce((s,q)=>s+q[0],0),sy=p.reduce((s,q)=>s+q[1],0),sxx=p.reduce((s,q)=>s+q[0]*q[0],0),sxy=p.reduce((s,q)=>s+q[0]*q[1],0),d=n*sxx-sx*sx;return d?(n*sxy-sx*sy)/d:null};
+const r2=x=>Math.round(x*100)/100;
+const TRK={susi:{key:'susi',label:'수시 우위형',color:'#0a7550',icon:'file'},jeongsi:{key:'jeongsi',label:'정시 우위형',color:'#6b4bb0',icon:'trend'},balance:{key:'balance',label:'균형형',color:'#9a5b08',icon:'scale'}};
+const TRK_TH=0.75;
+/* 회차별 모의 평균등급·백분위 평균 (모의고사 탭의 반영 과목·탐구 평균 설정을 그대로 따른다) */
+function mSeries(name){
+  const ms=mock.filter(m=>m.name===name);
+  return [...new Set(ms.map(m=>m.round))].sort(rsort).map(r=>{
+    const x=ms.filter(m=>m.round===r&&(MSEL?MSEL.has(m.area):m.area!=='한국사'));
+    const t=x.filter(m=>dom(m.area)==='탐'),o=x.filter(m=>dom(m.area)!=='탐');
+    const mix=(a,b,f)=>{const v=a.map(f);if(b.length)MMG?v.push(mean(b.map(f))):v.push(...b.map(f));return v};
+    const g=mix(o,t,m=>m.g),p=mix(o.filter(m=>dom(m.area)),t,pctOf);
+    return {round:r,avg:g.length?mean(g):NaN,grades:g,pct:p.length&&new Set(x.map(m=>dom(m.area)).filter(Boolean)).size>=3?mean(p):NaN};
+  });
+}
+function judge(name){
+  const a=analyze(name),cv=a.rs.map(r=>({...r,v:r.scale===5?c59(r.v):r.v}));
+  const terms=a.keys.map(k=>({k,avg:wavg(cv.filter(r=>sk(r)===k)).avg})).filter(t=>isFinite(t.avg));
+  const ng=cv.length?wavg(cv).avg:NaN,series=mSeries(name).filter(e=>isFinite(e.avg)),rec=series[series.length-1];
+  const j={name,terms,series,rec,reasons:[],ng:isFinite(ng)?r2(ng):null,mg:rec?r2(rec.avg):null};
+  if(j.ng===null||j.mg===null){j.inc=true;j.reasons.push(j.ng===null?'내신 데이터가 없어 성향 판정을 할 수 없습니다. 내신 파일을 함께 올려주세요.':'모의고사 데이터가 없어 성향 판정을 할 수 없습니다.');return j}
+  const d=j.delta=r2(j.ng-j.mg),ab=Math.abs(d).toFixed(2);
+  j.track=d>=TRK_TH?TRK.jeongsi:d<=-TRK_TH?TRK.susi:TRK.balance;
+  if(j.track===TRK.jeongsi)j.reasons.push(`모의고사 평균이 내신보다 ${ab}등급 앞섭니다 (내신 ${j.ng} vs 모의 ${j.mg}, 9등급 기준).`,'수능 경쟁력이 교과 성적보다 높아 정시 지원 비중을 키우는 편이 유리합니다.');
+  else if(j.track===TRK.susi)j.reasons.push(`내신이 모의고사보다 ${ab}등급 앞섭니다 (내신 ${j.ng} vs 모의 ${j.mg}, 9등급 기준).`,'교과·학종 등 수시 전형이 유리합니다. 다만 수능 최저학력기준 충족 여부를 반드시 확인해야 합니다.');
+  else j.reasons.push(`내신 ${j.ng.toFixed(2)}, 모의 ${j.mg.toFixed(2)}로 격차가 ${ab}등급에 그칩니다 (9등급 기준).`,'어느 한쪽으로 몰기 어렵습니다. 수시 6장에 소신·적정을 섞고 정시도 함께 준비하는 병행 전략이 맞습니다.');
+  const mt=slope(series.map(e=>e.avg)),nt=slope(terms.map(t=>t.avg));
+  if(mt!==null&&Math.abs(mt)>=.15)j.reasons.push(mt<0?`모의고사가 회차를 거듭할수록 좋아지는 추세입니다 (회차당 약 ${Math.abs(mt).toFixed(2)}등급 상승). 정시 가능성을 더 열어둘 만합니다.`:`모의고사가 회차를 거듭할수록 나빠지는 추세입니다 (회차당 약 ${mt.toFixed(2)}등급 하락). 학습 방법 점검이 필요합니다.`);
+  if(nt!==null&&Math.abs(nt)>=.15)j.reasons.push(nt<0?'내신도 학기가 갈수록 오르고 있어 학생부 상승 곡선을 근거로 쓸 수 있습니다.':'내신이 학기가 갈수록 떨어지고 있어 수시 지원 시 하락 추세에 대한 설명이 필요합니다.');
+  const g3=[...rec.grades].sort((x,y)=>x-y);
+  if(g3.length>=3){const s=+(g3[0]+g3[1]+g3[2]).toFixed(1);
+    j.reasons.push(s<=6?`상위 3개 영역 등급 합이 ${s}입니다. 주요 대학 수능 최저(합 6~7) 충족이 유력합니다.`:s<=9?`상위 3개 영역 등급 합이 ${s}입니다. 중위권 대학 수능 최저(합 8~9) 선에 있어 한 등급 개선이 관건입니다.`:`상위 3개 영역 등급 합이 ${s}입니다. 수능 최저가 없는 전형 위주로 수시를 설계하는 편이 안전합니다.`)}
+  return j;
+}
+const jAll=()=>students.filter(s=>rows.some(r=>r.name===s)&&mock.some(m=>m.name===s)).map(judge).filter(j=>!j.inc);
+function jPlay(root){
+  const b=root.querySelector('.jjudge');if(!b)return;const pin=b.querySelector('.pin');
+  b.classList.remove('go');pin.style.left='50%';root.querySelectorAll('.meter i').forEach(i=>i.style.width='0');void b.offsetWidth;
+  clearTimeout(jPlay.t);jPlay.t=setTimeout(()=>{b.classList.add('go');pin.style.left=pin.dataset.to+'%';root.querySelectorAll('.meter i').forEach(i=>i.style.width=i.dataset.w+'%')},80);
+}
+const hexA=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const zonePlugin={id:'jzone',
+  beforeDatasetsDraw(c){const {ctx,chartArea:ca,scales:{x,y}}=c;if(!ca)return;const P=(a,b)=>[x.getPixelForValue(a),y.getPixelForValue(b)],th=TRK_TH;
+    const poly=(pts,col)=>{ctx.beginPath();pts.map(p=>P(p[0],p[1])).forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=col;ctx.fill()};
+    ctx.save();ctx.beginPath();ctx.rect(ca.left,ca.top,ca.width,ca.height);ctx.clip();
+    poly([[0,-th],[10,10-th],[10,-1],[0,-1]],hexA(TRK.jeongsi.color,.07));poly([[0,th],[10,10+th],[10,11],[0,11]],hexA(TRK.susi.color,.07));poly([[0,-th],[10,10-th],[10,10+th],[0,th]],hexA(TRK.balance.color,.08));
+    const a=P(.5,.5),b=P(9.5,9.5);ctx.setLineDash([5,4]);ctx.strokeStyle=hexA('#888888',.6);ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();ctx.setLineDash([]);
+    ctx.font='800 11px '+Chart.defaults.font.family;ctx.fillStyle=hexA(TRK.jeongsi.color,.8);ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('정시 우위 영역',ca.left+8,ca.top+6);
+    ctx.fillStyle=hexA(TRK.susi.color,.8);ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText('수시 우위 영역',ca.right-8,ca.bottom-6);ctx.restore()},
+  afterDatasetsDraw(c){const ctx=c.ctx,ca=c.chartArea,items=[];
+    c.data.datasets.forEach((d,di)=>c.getDatasetMeta(di).data.forEach((el,i)=>items.push({el,p:d.data[i],color:d.borderColor})));
+    items.sort((p,q)=>(q.p.focus?1:0)-(p.p.focus?1:0));const placed=[];
+    const hit=r=>placed.some(q=>r.x<q.x+q.w&&r.x+r.w>q.x&&r.y<q.y+q.h&&r.y+r.h>q.y)||items.some(it=>it.el.x>r.x-3&&it.el.x<r.x+r.w+3&&it.el.y>r.y-3&&it.el.y<r.y+r.h+3);
+    ctx.save();ctx.textBaseline='middle';ctx.lineJoin='round';
+    items.forEach(it=>{const sz=it.p.focus?12:9.5,gap=it.p.focus?11:7;ctx.font='800 '+sz+'px '+Chart.defaults.font.family;const w=ctx.measureText(it.p.name).width,h=sz+2;let pick=null;
+      o:for(const dy of [0,-11,11,-20,20])for(const side of [1,-1]){const r={x:side>0?it.el.x+gap:it.el.x-gap-w,y:it.el.y+dy-h/2,w,h};if(r.x<ca.left||r.x+r.w>ca.right+30)continue;if(!hit(r)){pick=r;break o}}
+      if(!pick)pick={x:it.el.x+gap,y:it.el.y-h/2,w,h};placed.push(pick);ctx.textAlign='left';
+      ctx.lineWidth=3;ctx.strokeStyle=cssv('--card')||'#fff';ctx.strokeText(it.p.name,pick.x,pick.y+h/2);ctx.fillStyle=it.p.focus?it.color:cssv('--ink2');ctx.fillText(it.p.name,pick.x,pick.y+h/2)});ctx.restore()}};
 function jeongsi(name,pre=''){
-  const ms=mock.filter(m=>m.name===name),charts=[];
-  if(!ms.length)return {html:`<div class="empty">${esc(name)} 학생의 모의고사 성적이 없어 정시 분석을 할 수 없습니다.</div>`,charts};
-  const last=[...new Set(ms.map(m=>m.round))].sort(rsort).pop(),lm=ms.filter(m=>m.round===last);
-  const P={},G=[];
-  lm.forEach(m=>{const d=dom(m.area);if(d){(P[d]??=[]).push(pctOf(m));G.push(m.g)}});
-  const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
-  const have=['국','수','영','탐'].filter(d=>P[d]),miss=['국','수','영','탐'].filter(d=>!P[d]);
-  const dp=Object.fromEntries(have.map(d=>[d,mean(P[d])]));
-  const avgP=have.length?mean(have.map(d=>dp[d])):NaN, mg=G.length?mean(G):NaN;
-  const a=analyze(name),ng=a.rs.length?wavg(a.rs.map(r=>({...r,v:r.scale===5?c59(r.v):r.v}))).avg:NaN;
-  const diff=mg-ng, tend=!isFinite(ng)?['내신 없음','b1']:!isFinite(mg)?['모의 없음','b1']:diff>=.5?['수시 쪽이 상대적으로 유리','b0']:diff<=-.5?['정시 쪽이 상대적으로 유리','b0']:['수시·정시 균형','b1'];
-  const U=parseUniv(UNIV),isDef=UNIV.trim()===DEF_UNIV;
-  const school=esc($('#school').value.trim());
-  const near=U.find(u=>avgP>=u.thr),above=near?U[U.indexOf(near)-1]:U[U.length-1];
-  let h=`<div class="rep"><header class="rh"><h2>${esc(name)} 수시 · 정시 성향</h2><div class="rm">${school} · 기준 회차: ${esc(last)}<br>출력일 ${new Date().toLocaleDateString('ko-KR')}</div></header>
-    <h3>수시·정시 성향</h3><div class="tiles">
-    <div class="tile"><small>내신 평균 (9등급제 환산)</small><b>${f2(ng)}</b></div>
-    <div class="tile"><small>최근 모의 평균 등급 (국·수·영·탐)</small><b>${f2(mg)}</b></div>
-    <div class="tile"><small>모의 − 내신</small><b>${isFinite(diff)?(diff>0?'+':'')+f2(diff):'-'}</b></div></div>
-    <p><span class="band ${tend[1]}">${tend[0]}</span> <small>내신이 모의보다 0.5등급 이상 좋으면 수시, 반대면 정시 쪽으로 봅니다. 5등급제 내신은 누적 비율로 환산한 근사값입니다.</small></p>
-    <h3>정시 라인 (국·수·영·탐 백분위 평균)</h3>
-    <div class="tiles">${['국','수','영','탐'].map(d=>`<div class="tile"><small>${d}</small><b>${dp[d]!=null?f2(dp[d]):'-'}</b></div>`).join('')}<div class="tile"><small>평균 백분위</small><b>${f2(avgP)}</b></div></div>
-    ${miss.length?`<div class="note">${miss.join('·')} 영역 성적이 없어 평균에서 뺐습니다. 영어는 백분위가 없으면 등급에서 추정한 값입니다.</div>`:''}
-    ${isFinite(avgP)&&U.length?`<p>현재 위치: ${near?`<b>「${esc(near.name)}」</b> 구간 이상`:'표의 가장 낮은 대학군보다 아래'}${above&&above!==near?` · 한 단계 위는 「${esc(above.name)}」(${above.thr})`:''}</p>
-    <table><thead><tr><th class="l">대학군</th><th>기준 백분위</th><th>차이</th><th>판단</th></tr></thead><tbody>${U.map(u=>{const d=avgP-u.thr,[t,c]=band(d);return `<tr><td class="l">${esc(u.name)}</td><td>${u.thr}</td><td>${d>0?'+':''}${d.toFixed(1)}</td><td><span class="band ${c}">${t}</span></td></tr>`}).join('')}</tbody></table>`:'<div class="note">대학군 표나 백분위가 없어 계산할 수 없습니다.</div>'}
-    ${isDef?`<div class="warn"><b>대학군 표가 예시 기본값입니다</b>실제 입시 결과가 아니라 구조를 보여 주려고 넣은 숫자입니다. 학생에게 보여 주기 전에 아래에서 학교가 쓰는 값으로 바꿔 주세요.</div>`:''}
-    <div class="note">대학별 반영비율·변환표준점수·가산점은 반영하지 않은 참고 지표입니다. 상담에서 단정적으로 말씀하지 마세요. 최근 모의고사 한 회차 기준입니다.</div>`;
-  if(pre===''){
-    h+=`<div class="no-print"><h3>대학군 표 수정</h3>${isDef?`<div class="warn"><b>지금 들어 있는 대학군 표는 기본값입니다</b>어디가(adiga.kr) 등에서 확인한 값으로 아래 표를 직접 고치세요. 저장하면 이 브라우저에 보관되고 모든 학생에게 똑같이 적용됩니다.</div>`:''}
-      <small>한 줄에 하나씩 <b>대학군 이름,기준 백분위</b> 형식으로 적습니다.</small>
-      <textarea id="uni_ta" rows="7" spellcheck="false">${esc(UNIV)}</textarea>
-      <div class="row"><button class="pri" id="uni_sv">저장</button><button id="uni_df">기본값으로 되돌리기</button></div></div>`;
-  }
-  if(str(MEMO[name]))h+=`<h3>상담 메모</h3><div class="memo">${esc(MEMO[name])}</div>`;
-  h+=`<div class="foot">성적 돋보기 · 상담 자료 · 교내 상담 목적으로만 사용해 주세요.</div></div>`;
-  return {html:h,charts};
+  const charts=[],hasN=rows.some(r=>r.name===name),hasM=mock.some(m=>m.name===name);
+  const lock=`<div class="jlock jc">${svg('lock',15)}<div><b>교사용 화면입니다. 인쇄되지 않습니다.</b><span>「정시 우위」만 보고 학교생활을 내려놓는 판단으로 이어질 수 있어, 이 탭은 상담 중에 선생님이 보는 용도로만 둡니다.</span></div></div>`;
+  if(!hasN||!hasM)return {html:`<div class="rep jrep">${lock}<div class="empty">${svg('scale',64)}<h3>두 성적이 모두 필요합니다</h3><div>수시·정시 판정은 <b>내신</b>과 <b>모의고사</b>를 함께 비교합니다.<br><br>현재 ${esc(name)} 학생: 내신 ${hasN?'있음':'없음'} · 모의고사 ${hasM?'있음':'없음'}${hasN&&!hasM?'<br><br><b>모의고사 파일의 이름 표기가 내신과 다르면 다른 학생으로 인식됩니다. 이름을 확인해 주세요.</b>':''}</div></div></div>`,charts};
+  const j=judge(name),card=(ic,t,b,x='')=>`<section class="cd2 jc"><h3><span class="ci">${svg(ic,16)}</span>${t}${x}</h3>${b}</section>`;
+  let h=`<div class="rep jrep">${lock}`;
+  if(j.inc)return {html:h+card('target','판정할 수 없습니다',`<div class="empty" style="padding:20px">${j.reasons.map(esc).join('<br>')}</div>`)+'</div>',charts};
+  const t=j.track,pin=Math.min(97,Math.max(3,50+j.delta/3*50));
+  h+=card('target',`${esc(name)} · 수시 · 정시 성향 판정`,`<div class="jjudge an" style="border-color:${t.color};background:linear-gradient(135deg,${hexA(t.color,.08)},transparent)">
+    <div class="ic" style="color:${t.color}">${svg(t.icon,34)}</div><div class="lb" style="color:${t.color}">${t.label}</div>
+    <div class="sb">내신 ${j.ng.toFixed(2)}등급 · 모의 ${j.mg.toFixed(2)}등급 (9등급 기준) · 격차 ${j.delta>0?'+':''}${j.delta.toFixed(2)}</div>
+    <div class="jg"><div class="bar"></div><div class="mid"></div><div class="pin" style="left:50%;color:${t.color}" data-to="${pin.toFixed(1)}">${svg('pin',15)}</div><div class="cap l">수시 우위</div><div class="cap r">정시 우위</div></div></div>
+    <ul class="jreasons">${j.reasons.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>
+    <div class="warn">판정은 평균등급 격차에 기반한 <b style="display:inline">참고 지표</b>입니다. 실제 지원은 학생부 교과 이수 내용, 비교과, 지망 계열, 대학별 전형 요소를 함께 고려해 결정해야 합니다.</div>`,`<button class="jrp" id="jrp" title="판정 애니메이션 다시 보기">${svg('reset',12)} 다시 보기</button>`);
+  const better=j.delta>0?'m':j.delta<0?'n':'';
+  h+=card('scale','내신 vs 모의고사 대비',`<div class="jvs"><div class="side n"><div class="t">${svg('file',13)} 내신 (9등급 환산)</div><div class="v" style="color:${better==='n'?'var(--good)':'inherit'}">${j.ng.toFixed(2)}</div><div class="s">${j.terms.length}개 학기 평균</div></div><div class="mid">VS</div>
+    <div class="side m"><div class="t">${svg('trend',13)} 모의고사 (주요과목)</div><div class="v" style="color:${better==='m'?'#6b4bb0':'inherit'}">${j.mg.toFixed(2)}</div><div class="s">${j.series.length}개 회차 · 최근 ${esc(rtl2(j.rec.round))}</div></div></div>
+    <div class="cw"><canvas id="${pre}jvs" width="900" height="300"></canvas></div>
+    <div class="note">내신은 학기별 평균을 9등급으로 환산한 값이고(고1·2 5등급제는 누적 비율로 9등급 커트에 대입), 모의고사는 회차별 반영 과목 평균등급입니다. 두 선이 벌어질수록 한쪽 전형이 유리합니다.</div>`);
+  const nL=j.terms.map(x=>`${x.k/10|0}-${x.k%10}학기`),mL=j.series.map(e=>rtl2(e.round).replace(/\s/g,'')),nul=a=>a.map(()=>null);
+  charts.push([pre+'jvs',(()=>{const c=lineCfg([...nL,...mL],[{...ds('내신 (9등급 환산)',[...j.terms.map(x=>x.avg),...nul(mL)],TRK.susi.color),fill:true,backgroundColor:hexA(TRK.susi.color,.1),borderWidth:3,pointRadius:4.5,tension:.3},{...ds('모의고사 (주요과목 평균)',[...nul(nL),...j.series.map(e=>e.avg)],TRK.jeongsi.color),fill:true,backgroundColor:hexA(TRK.jeongsi.color,.1),borderWidth:3,pointRadius:4.5,tension:.3}],9);c.options.spanGaps=false;return c})()]);
+  const U=parseUniv(UNIV),isDef=UNIV.trim()===DEF_UNIV,pa=j.rec.pct;
+  if(isFinite(pa)&&U.length){const i=U.findIndex(u=>pa>=u.thr),ln=U[i<0?U.length-1:i],up=i>0?U[i-1]:null;
+    h+=card('target','정시 지원 가능 라인 (참고용)',`<div class="jline"><div><small>국수영탐 백분위 평균</small><div class="pct">${pa.toFixed(1)}</div></div><div style="flex:1;min-width:180px"><div class="grp">${esc(ln.name)}</div>${UEX[ln.name]?`<div class="ex">${esc(UEX[ln.name])}</div>`:''}${up?`<div class="ex up">백분위 ${r2(up.thr-pa).toFixed(1)}점만 더 올리면 「${esc(up.name)}」 권으로 진입합니다.</div>`:''}</div></div>
+      ${isDef?'<div class="warn"><b>이 대학군 표는 아직 실제 입결로 갱신하지 않은 기본값입니다.</b> 공식 자료가 아닌 개략 추정치입니다.<br>갱신하는 곳: 어디가(adiga.kr) → 「평가기준 및 입시결과」의 정시 최종등록자 70%컷 평균 백분위. 공개 API가 없어 자동 연동은 되지 않습니다.</div>':'<div class="note">대학별 반영비율·변환표준점수·가산점은 반영하지 않은 참고 지표입니다. 상담에서 단정적으로 말씀하지 마세요.</div>'}
+      <details class="jedit"><summary>대학군 표 수정</summary><small>한 줄에 하나씩 <b>대학군 이름,기준 백분위</b> 형식으로 적습니다. 저장하면 이 브라우저에 보관되고 모든 학생에게 똑같이 적용됩니다.</small>
+      <textarea id="uni_ta" rows="9" spellcheck="false">${esc(UNIV)}</textarea><div class="row"><button class="pri" id="uni_sv">저장</button><button id="uni_df">기본값으로 되돌리기</button></div></details>`)}
+  else h+=card('target','정시 지원 가능 라인 (참고용)','<div class="warn" style="margin:0">국·수·영·탐 중 3개 영역 이상의 백분위가 있어야 추정할 수 있습니다.</div>');
+  const n=j.ng,m=j.mg,d=j.delta,cl=v=>Math.min(100,Math.max(0,v)),gS=g=>cl((6-g)/5*100);
+  const fits=[{nm:'교과전형 (수시)',c:'#0d9488',v:cl(gS(n)*.85+(d>0?0:Math.min(15,-d*8))),cm:'내신 정량 평가가 핵심입니다. '+(n<=2.5?'내신이 강해 주력으로 삼을 만합니다.':'내신 경쟁력을 감안해 수능 최저가 있는 전형을 노려보세요.')},
+    {nm:'학생부종합 (수시)',c:'#0ea5e9',v:cl(gS(n)*.7+18),cm:'내신에 더해 세특·활동의 일관성이 중요합니다. 정량 지표만으로는 판단이 어려워 보수적으로 표시합니다.'},
+    {nm:'논술 (수시)',c:'#f59e0b',v:cl(gS(m)*.75+(d>0?Math.min(20,d*10):0)),cm:'내신 반영이 작고 수능 최저가 걸리는 경우가 많아, '+(d>0?'모의가 앞서는 이 학생에게 활로가 됩니다.':'수능 최저 충족 여부가 관건입니다.')},
+    {nm:'정시 (수능)',c:'#8b5cf6',v:cl(gS(m)*.95+(d>0?Math.min(10,d*5):0)),cm:'수능 성적만 반영합니다. '+(m<=3?'현재 경쟁력이 있어 비중을 키울 만합니다.':'남은 기간 성적 상승 폭이 관건입니다.')}];
+  h+=card('layers','전형별 적합도 (참고 지표)',`<div class="jquad">${fits.map(f=>`<div class="jfit"><div class="nm">${f.nm}<span class="score" style="background:${f.c}">${f.v>=70?'유리':f.v>=45?'보통':'불리'} ${Math.round(f.v)}</span></div><div class="meter"><i style="width:0;background:${f.c}" data-w="${f.v.toFixed(1)}"></i></div><div class="cm">${f.cm}</div></div>`).join('')}</div>
+    <div class="warn" style="margin-bottom:0">적합도는 내신·모의 평균등급만으로 계산한 <b style="display:inline">개략 지표</b>입니다. 학종은 정량화가 어려워 보수적으로 산출했습니다. 실제 전형 선택은 대학별 모집요강과 수능 최저를 확인해 정하세요.</div>`);
+  const all=jAll();
+  if(all.length>=2){const ord=[TRK.susi,TRK.balance,TRK.jeongsi],cnt=k=>all.filter(d=>d.track.key===k).length;
+    const leg=ord.map(o=>{const c=cnt(o.key),nm=all.filter(d=>d.track.key===o.key).sort((p,q)=>p.delta-q.delta).map(d=>d.name);
+      return `<div class="jdr"><i style="background:${o.color}"></i><b>${o.label}</b><span class="n">${c}명</span><span class="p">${Math.round(c/all.length*100)}%</span><div class="who">${nm.map(x=>`<button data-pj="${esc(x)}"${x===name?' class="on"':''}>${esc(x)}</button>`).join('')}</div></div>`}).join('');
+    h+=card('users','학급 수시·정시 성향 지도',`<div class="note" style="margin-top:0">가로는 내신, 세로는 모의고사 주요과목 평균입니다(9등급 기준, 오른쪽·위쪽이 좋은 등급). 대각선 위쪽은 모의가 앞서는 <b style="color:${TRK.jeongsi.color}">정시 우위</b>, 아래쪽은 내신이 앞서는 <b style="color:${TRK.susi.color}">수시 우위</b>, 가운데 띠는 <b style="color:${TRK.balance.color}">균형</b>입니다. 점이나 이름을 누르면 그 학생으로 바뀝니다.</div>
+      <div class="jmap"><div class="cw"><canvas id="${pre}jmap" width="640" height="420"></canvas></div><div class="jdn"><div class="cw" style="width:190px;margin:0 auto"><canvas id="${pre}jdn" width="190" height="190"></canvas></div>${leg}</div></div>`);
+    charts.push([pre+'jmap',{type:'scatter',plugins:[zonePlugin],data:{datasets:ord.map(o=>{const pts=all.filter(d=>d.track.key===o.key).map(d=>({x:d.ng,y:d.mg,name:d.name,delta:d.delta,focus:d.name===name}));
+      return {label:o.label,data:pts,backgroundColor:pts.map(p=>p.focus?o.color:hexA(o.color,.78)),borderColor:o.color,pointBorderColor:pts.map(p=>p.focus?'#ffffff':o.color),pointBorderWidth:pts.map(p=>p.focus?3:1),pointRadius:pts.map(p=>p.focus?9:5.5),pointHoverRadius:9}})},
+      options:{responsive:false,animation:AN(),devicePixelRatio:2,layout:{padding:{right:34}},
+        onClick:(e,els,ch)=>{if(!els.length)return;const p=ch.data.datasets[els[0].datasetIndex].data[els[0].index];if(p&&p.name)pickT(p.name)},
+        plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8}},tooltip:{callbacks:{label:c=>`${c.raw.name} · 내신 ${c.raw.x.toFixed(2)} / 모의 ${c.raw.y.toFixed(2)} (격차 ${c.raw.delta>0?'+':''}${c.raw.delta.toFixed(2)})`}}},
+        scales:{x:{min:.5,max:9.5,reverse:true,title:{display:true,text:'내신 (9등급 환산)  →  좋음',font:{weight:'800'}},afterBuildTicks:ax=>{ax.ticks=[1,2,3,4,5,6,7,8,9].map(v=>({value:v}))},ticks:{callback:v=>v+'등급'}},
+          y:{min:.5,max:9.5,reverse:true,title:{display:true,text:'모의고사 평균  ↑  좋음',font:{weight:'800'}},afterBuildTicks:ax=>{ax.ticks=[1,2,3,4,5,6,7,8,9].map(v=>({value:v}))},ticks:{callback:v=>v+'등급'}}}}}]);
+    charts.push([pre+'jdn',{type:'doughnut',plugins:[{id:'jdc',afterDraw(c){const {ctx,chartArea:ca}=c,cx=(ca.left+ca.right)/2,cy=(ca.top+ca.bottom)/2;ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=ink();ctx.font='900 24px '+Chart.defaults.font.family;ctx.fillText(all.length+'명',cx,cy-6);ctx.fillStyle=cssv('--ink2');ctx.font='700 10.5px '+Chart.defaults.font.family;ctx.fillText('판정 가능',cx,cy+15);ctx.restore()}}],
+      data:{labels:ord.map(o=>o.label),datasets:[{data:ord.map(o=>cnt(o.key)),backgroundColor:ord.map(o=>o.color),borderColor:cssv('--card')||'#fff',borderWidth:3,hoverOffset:6}]},
+      options:{responsive:false,animation:AN(),devicePixelRatio:2,cutout:'64%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label} ${c.parsed}명`}}}}}])}
+  return {html:h+'</div>',charts};
 }
 
 /* ───── 화면 ───── */
@@ -1157,14 +1298,20 @@ function mount(el,rep,list=charts,post){
     const c=new Chart(cv,cfg);cv.style.cssText='width:100%;height:auto';list.push(c)}
 }
 const EMPTY=(t,d,st=[0,0,0],x='')=>`<div class="empty">${svg('search',64)}<h3>${t}</h3><div>${d}</div><div class="steps">${['파일 올리기','학생 고르기','분석 누르기'].map((n,i)=>`<span class="${st[i]?'ok':st.indexOf(0)===i?'now':''}"><i>${st[i]?'✓':i+1}</i>${n}</span>`).join('')}</div>${x}</div>`;
+/* 화면 모션: 카드·타일이 위로 살짝 떠오르며 차례로 나타난다 (CSS는 prefers-reduced-motion을 따른다) */
+function stagger(v){v.querySelectorAll('.cd2,.jc').forEach((e,i)=>e.style.setProperty('--i',Math.min(i,8)));v.querySelectorAll('.tiles').forEach(t=>[...t.children].forEach((e,i)=>e.style.setProperty('--n',Math.min(i,7))))}
+function slideTabs(){const t=$('#tabs'),b=t.querySelector('button.on');if(t.hidden||!b)return;t.style.setProperty('--tx',b.offsetLeft+'px');t.style.setProperty('--tw',b.offsetWidth+'px');t.classList.add('sl')}
+addEventListener('resize',slideTabs);
 function render(){
   destroy();const v=$('#view');v.innerHTML='';
   const on=shown&&cur,cls=(tab==='c'||tab==='p')&&shown;
-  $('#tabs').hidden=!(shown&&students.length);$('#pm1').hidden=$('#pr1').hidden=$('#xl1').hidden=!on||cls;{const rn=new Set(mock.map(m=>m.round)).size;$('#mbd').textContent=rn?rn+'회차':''}
+  $('#tabs').hidden=!(shown&&students.length);$('#xl1').hidden=!on||cls;$('#pm1').hidden=$('#pr1').hidden=!on||cls||tab==='j';{const rn=new Set(mock.map(m=>m.round)).size;$('#mbd').textContent=rn?rn+'회차':''}slideTabs();
   if(!students.length){v.innerHTML=EMPTY('성적 파일을 올려 주세요','나이스에서 내려받은 학급 성적 파일을 올리면<br>과목별 추이와 상담 자료가 자동으로 만들어집니다.');return}
   if(!on&&!cls){const k=students.map(prio).filter(p=>p.score>0).length;v.innerHTML=EMPTY('학생을 고르고 분석을 눌러 주세요',`학생 ${students.length}명의 자료를 불러왔습니다.`,[1,cur?1:0,0],k?`<button class="cta" id="ctaP"><span><b>먼저 상담할 학생 보기</b><small>${students.length}명 중 ${k}명에게 살펴볼 신호가 있습니다</small></span><em>${k}명</em></button>`:'');const c=$('#ctaP');if(c)c.onclick=()=>{shown=true;tab='p';document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='p'));render()};return}
   if(cls){v.innerHTML=tab==='p'?prioHtml():classHtml();bindCls(v);return}
-  mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur),charts,b=>cardify(b,tab==='n'));
+  mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur),charts,tab==='j'?jPlay:b=>cardify(b,tab==='n'));
+  if(tab==='j'){v.querySelectorAll('[data-pj]').forEach(b=>b.onclick=()=>pickT(b.dataset.pj));if($('#jrp'))$('#jrp').onclick=()=>jPlay(v)}
+  stagger(v);
   if(tab==='n'){v.insertAdjacentHTML('beforeend',classHtml());const c=v.lastElementChild;c.classList.add('cd2','cls','no-print');bindCls(v)}
   if(tab==='n'&&$('#sim_t'))sim();
   if($('#uni_sv')){
@@ -1207,13 +1354,14 @@ function doPrint(all){
   const prevT=THEME;if(prevT!=='light')setTheme('light',false); // 종이에는 항상 흰 바탕
   const el=$('#printArea'),pc=[];el.innerHTML='';
   if(all){
+    ANIM=false;
     students.forEach((s,i)=>{
       if(rows.some(r=>r.name===s))mount(el,report(s,`p${i}_`),pc,b=>cardify(b,true));
-      if(mock.some(m=>m.name===s)){mount(el,mockReport(s,`q${i}_`),pc,b=>cardify(b,false));mount(el,jeongsi(s,`j${i}_`),pc,b=>cardify(b,false))}
+      if(mock.some(m=>m.name===s)){mount(el,mockReport(s,`q${i}_`),pc,b=>cardify(b,false))}
     });
     document.body.classList.add('pa');
   }
-  const done=()=>{document.body.classList.remove('pa');destroy(pc);el.innerHTML='';if(prevT!=='light')setTheme(prevT,false);removeEventListener('afterprint',done)};
+  const done=()=>{ANIM=true;document.body.classList.remove('pa');destroy(pc);el.innerHTML='';if(prevT!=='light')setTheme(prevT,false);removeEventListener('afterprint',done)};
   addEventListener('afterprint',done);
   setTimeout(()=>print(),150);
 }
@@ -1288,6 +1436,7 @@ function prioHtml(){
   <div class="note">네 가지 신호(내신 하락 · 등급 경계 · 내신·모의 격차 · 모의 하락)의 세기 1~3을 더한 값입니다. 상담 순서를 정하려는 것이지 학생 평가가 아닙니다. 반 학생 이름이 나란히 나오므로 인쇄하지 않습니다.</div>
   <table><thead><tr><th>순위</th><th class="l">학생</th><th>점수</th><th class="l">신호</th></tr></thead><tbody>${L.map((x,i)=>`<tr><td>${i+1}</td><td class="l"><button data-pick="${esc(x.name)}">${esc(x.name)}</button></td><td><b>${x.score}</b></td><td class="l">${x.sig.length?x.sig.map(s=>`<span class="chip c${s.s===3?3:s.s===2?2:1}" title="${esc(s.tx)}">${s.k} ${'●'.repeat(s.s)}</span> <small>${esc(s.tx)}</small>`).join('<br>'):'<span class="mut">특이 신호 없음</span>'}</td></tr>`).join('')}</tbody></table></div>`;
 }
+function pickT(name){cur=name;$('#stu').value=name;memoUI();render()}
 function pick(name){cur=name;tab='n';$('#stu').value=name;memoUI();document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='n'));render()}
 function classHtml(){
   const names=[...new Set(rows.map(r=>r.name))],av=names.map(n=>({n,t:termAvgs(n)})).filter(x=>x.t.length);
