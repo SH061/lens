@@ -36,6 +36,23 @@ function who(req) { // 쿠키에서 로그인한 교사 이메일을 꺼낸다(�
   const [email, exp] = b.split('|');
   return +exp > Date.now() && users()[email] ? email : null;
 }
+// 프로그램 목록: 성적 돋보기(기본) + apps/<이름>/index.html 이 있는 폴더(선택적으로 app.json {"title","desc"}). 새 프로그램은 폴더만 넣으면 첫 화면에 카드가 생긴다.
+function listApps() {
+  const A = { lens: { title: '성적 돋보기', desc: '내신·모의고사 분석과 상담 자료', file: path.join(__dirname, 'index.html') } };
+  const root = path.join(__dirname, 'apps');
+  if (fs.existsSync(root)) for (const d of fs.readdirSync(root)) {
+    const f = path.join(root, d, 'index.html');
+    if (!/^[a-z0-9-]{1,30}$/.test(d) || d === 'api' || !fs.existsSync(f)) continue;
+    let m = {}; try { m = JSON.parse(fs.readFileSync(path.join(root, d, 'app.json'), 'utf8')); } catch {}
+    A[d] = { title: m.title || d, desc: m.desc || '', file: f };
+  }
+  return A;
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const home = apps => `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학교 업무 도구</title>
+<style>body{margin:0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;background:#faf6ee;color:#2b2620}main{max-width:760px;margin:0 auto;padding:48px 16px}h1{font-size:26px;margin:0 0 6px}p{color:#7a7060;margin:0 0 28px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}a{display:block;padding:20px;border:1px solid #e6dcc8;border-radius:14px;background:#fff;color:inherit;text-decoration:none}a:hover{border-color:#b9a77c;box-shadow:0 2px 10px #0001}b{font-size:18px}small{display:block;margin-top:6px;color:#7a7060}
+@media(prefers-color-scheme:dark){body{background:#1c1a17;color:#eee}a{background:#26231f;border-color:#3a352d}}</style></head><body><main><h1>학교 업무 도구</h1><p>사용할 프로그램을 선택하세요.</p><div class="g">${Object.entries(apps).map(([k, a]) => `<a href="/${k}/"><b>${esc(a.title)}</b><small>${esc(a.desc)}</small></a>`).join('')}</div></main></body></html>`;
 const fails = {}; // shortcut: 메모리 기록이라 서버를 다시 켜면 초기화됨, 외부에 노출할 때는 충분
 const body = req => new Promise((ok, no) => { let n = 0; const c = []; req.on('data', d => { n += d.length; if (n > 20e6) { no(413); req.destroy(); } else c.push(d); }); req.on('end', () => ok(Buffer.concat(c).toString())); });
 const send = (res, code, obj, hdr = {}) => { res.writeHead(code, { 'content-type': 'application/json', ...hdr }); res.end(JSON.stringify(obj)); };
@@ -43,9 +60,14 @@ const send = (res, code, obj, hdr = {}) => { res.writeHead(code, { 'content-type
 http.createServer(async (req, res) => {
   try {
     const url = req.url.split('?')[0];
-    if (req.method === 'GET' && (url === '/' || url === '/index.html')) {
-      res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache' });
-      return res.end(fs.readFileSync(path.join(__dirname, 'index.html')));
+    if (req.method === 'GET' && !url.startsWith('/api/')) { // 화면: 첫 화면(/)과 프로그램별 주소(/lens/, /다른이름/)
+      const apps = listApps(), seg = url.split('/')[1];
+      const html = (s) => { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache' }); res.end(s); };
+      if (url === '/') return html(home(apps));
+      if (apps[seg]) {
+        if (url === '/' + seg) { res.writeHead(301, { location: '/' + seg + '/' }); return res.end(); }
+        if (url === '/' + seg + '/') return html(fs.readFileSync(apps[seg].file));
+      }
     }
     if (url === '/api/login' && req.method === 'POST') {
       const { email = '', password = '' } = JSON.parse(await body(req) || '{}'), e = email.trim().toLowerCase();
@@ -78,7 +100,9 @@ http.createServer(async (req, res) => {
     if (!email) return send(res, 401, { error: 'login required' });
     if (url === '/api/me') return send(res, 200, { email });
     if (url === '/api/state') {
-      const f = path.join(DIR, 'data', users()[email].id + '.json');
+      const app = new URL(req.url, 'http://x').searchParams.get('app') || 'lens'; // 프로그램마다 따로 저장(?app=이름), 성적 돋보기는 기존 파일 그대로
+      if (!/^[a-z0-9-]{1,30}$/.test(app)) return send(res, 400, { error: 'bad app' });
+      const f = path.join(DIR, 'data', users()[email].id + (app === 'lens' ? '' : '.' + app) + '.json');
       if (req.method === 'GET') return send(res, 200, (() => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return {}; } })());
       if (req.method === 'PUT') { const s = await body(req); JSON.parse(s); atomic(f, s); return send(res, 200, { ok: true }); }
     }
