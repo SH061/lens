@@ -179,6 +179,15 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .srst{align-self:flex-end;font-size:12px;height:32px}
  .sgoal{margin-top:10px;font-weight:700}.sgoal input{width:84px}.sgoal select{margin:0 4px}
  .tw{overflow-x:auto}
+ .rt{width:max-content;min-width:100%;border-collapse:collapse}.rt th,.rt td{min-width:60px;padding:6px 8px;text-align:center;white-space:nowrap}
+ .rt .g0{border-left:2px solid var(--line)}.rt .rn{width:46px;min-width:46px;color:var(--ink2);font-weight:700}.rt .rname{min-width:140px;text-align:left}
+ .rt .rname button{font-size:24px;font-weight:700;line-height:1.2;padding:2px 14px;border-radius:10px}
+ .rt .stk{position:sticky;left:0;z-index:1;background:var(--card)}.rt .stk2{left:46px}.rt thead .stk{background:var(--soft)}
+ .rt thead .gh{border-bottom:1px solid var(--line)}.rt .cavg td,.rt .cavg th{background:var(--soft)}
+ .cst{display:inline-block;padding:2px 9px;border-radius:6px;font-size:12px;font-weight:700;white-space:nowrap}.cst.ok{background:var(--good);color:#fff}.cst.near{background:#fff3cd;color:#8a5a00;border:1px solid #f0b429}.cst.nr{background:#fde2e4;color:#b42318}
+ html[data-theme=dark] .cst.near{background:#3a321a;color:#fcd34d}html[data-theme=dark] .cst.nr{background:#3a1f27;color:#fca5a5}
+ .cpath{display:inline-block;font-weight:700;margin-right:8px}.cpath.alt{font-weight:500;color:var(--ink2)}.cpath.alt::before{content:'또는 ';font-weight:500}
+ #csat table{table-layout:auto;width:100%}#csat th,#csat td{padding:8px 10px}#csat td:nth-child(2),#csat td:nth-child(3){white-space:nowrap;text-align:center}#csat td.how{text-align:left;font-size:12px;line-height:1.7;white-space:normal}#csat tr.cu td{background:var(--soft)}#csat select{padding:2px 4px}
  html[data-theme=dark] .up1{background:#221f3a;border-color:#3b3566}
  .u1{display:flex;align-items:baseline;gap:8px}.u1 .rk{color:var(--ink2);font-size:12px}.u1 b{font-size:14px}.u1 em{font-style:normal;color:var(--good);font-weight:700}.u1 i{font-style:normal;color:#7048e8;font-size:12px}.u1 .uh{margin-left:auto;color:#7048e8;font-size:11px;font-weight:700}
  .u2{margin-top:4px;font-size:12px}.u2 .pp{color:#7048e8;font-size:13px}.up1 small{display:inline-block;margin-right:8px}
@@ -1183,6 +1192,14 @@ function sim(){
   simAns()}
 
 /* ───── 모의고사 리포트 ───── */
+// 회차별 레이더: 이전 회차는 점선, 최근 회차는 파란 면 + 등급 숫자. 바깥쪽일수록 좋은 등급(10−등급)
+const RCOL=['#8b93a1','#8b5cf6','#f59e0b','#10b981','#e06b8b','#2dd4bf'];
+const mrdLbl={id:'mrdLbl',afterDatasetsDraw(c){const i=c.data.datasets.findIndex(d=>d._last);if(i<0||!c.isDatasetVisible(i))return;const d=c.data.datasets[i],r=c.scales.r,{ctx}=c;ctx.save();ctx.font='700 11px '+Chart.defaults.font.family;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.lineJoin='round';
+  c.getDatasetMeta(i).data.forEach((p,j)=>{if(d.data[j]==null)return;const dx=p.x-r.xCenter,dy=p.y-r.yCenter,L=Math.hypot(dx,dy)||1,x=p.x+dx/L*13,y=p.y+dy/L*13;ctx.strokeStyle='#fff';ctx.strokeText(10-d.data[j],x,y);ctx.fillStyle='#1553d6';ctx.fillText(10-d.data[j],x,y)});ctx.restore()}};
+const mrdCfg=(axes,rounds,cell,last,rtl)=>({type:'radar',plugins:[mrdLbl],data:{labels:axes,datasets:rounds.map((r,i)=>{const L=r===last,c=L?'#1553d6':RCOL[i%RCOL.length];
+  return {label:rtl(r),data:axes.map(a=>{const m=cell(r,a);return m?10-m.g:null}),_last:L,borderColor:c,backgroundColor:L?'rgba(21,83,214,.16)':'transparent',fill:L,borderWidth:L?2.5:1.5,borderDash:L?[]:[4,3],pointRadius:L?5:3,pointBackgroundColor:L?'#1553d6':'#fff',pointBorderColor:c,pointBorderWidth:2,spanGaps:true,order:L?0:1}})},
+  options:{responsive:false,animation:AN(),devicePixelRatio:2,layout:{padding:18},plugins:{legend:{position:'bottom',labels:{boxWidth:14,boxHeight:10,padding:12,sort:(x,y)=>x.datasetIndex-y.datasetIndex}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${10-c.raw}등급`}}},
+  scales:{r:{min:0,max:9,pointLabels:{font:{size:12,weight:'700'},color:ink(),padding:8},ticks:{stepSize:1,font:{size:10},backdropColor:'transparent',callback:v=>{const g=10-v;return g===1||g===9?g+'등급':''}}}}}});
 let MSEL=null,MMG=false;
 function mSel(a,on){const all=[...new Set(mock.map(m=>m.area))];if(!MSEL)MSEL=new Set(all.filter(x=>x!=='한국사'));on?MSEL.add(a):MSEL.delete(a);render()}
 function mMerge(on){MMG=on;render()}
@@ -1207,6 +1224,7 @@ function mockReport(name,pre=''){
     if(t.length)MMG?v.push(t.reduce((p,q)=>p+q,0)/t.length):v.push(...t);return v.length?v.reduce((p,q)=>p+q,0)/v.length:NaN};
   const lg=gsOf(last).sort((x,y)=>x-y),top3=lg.slice(0,3).reduce((p,q)=>p+q,0),pa=pv(last),dA=prev?avgR(last)-avgR(prev):NaN;
   const first=rounds[0];
+  const rax=areas.filter(a=>rounds.some(r=>cell(r,a)));
   let h=`<div class="rep"><header class="rh"><h2>${esc(name)} 모의고사 분석</h2><div class="rm">${school} · 최근 회차: ${esc(last)}<br>출력일 ${new Date().toLocaleDateString('ko-KR')}</div></header>
     <h3>${esc(name)} · 모의고사 요약 <span class="hs">최근 회차: ${esc(last)}</span></h3>
     <div class="tiles tmk">
@@ -1233,18 +1251,53 @@ function mockReport(name,pre=''){
       const m=cell(r,x);if(!m)return '<td class="mut">-</td>';const p=ri?cell(rounds[ri-1],x):null;
       return `<td>${lab==='원점수'?(isFinite(m.raw)?m.raw:'—'):lab==='표준점수'?(isFinite(m.std)?m.std:'—'):lab==='백분위'?(isFinite(m.pct)?m.pct.toFixed(1)+(p?' '+dp(m.pct,p.pct):''):'—'):chip(m.g,9)+(p?' '+dl(m.g,p.g):'')}</td>`}).join('')}</tr>`).join('')).join('')}</tbody></table></div>
     <h3>추이와 현재 위치</h3><div class="dual"><div class="card"><b class="t">영역별 등급 추이</b><canvas id="${pre}mtr" width="430" height="300"></canvas></div>
-    <div class="card"><b class="t">최근 회차 영역별 등급 (바깥쪽일수록 좋음)</b>${lastM.length>=3?`<canvas id="${pre}mrd" width="380" height="300"></canvas>`:'<div class="mut">영역이 3개 이상일 때 표시됩니다.</div>'}</div></div>`;
+    <div class="card"><b class="t">회차별 영역 등급 비교 (바깥쪽일수록 좋음)</b>${rax.length>=3?`<canvas id="${pre}mrd" width="380" height="320"></canvas><div class="mut" style="font-size:12px;text-align:center">점선은 이전 회차, 파란 면은 최근 회차 · 아래 범례를 누르면 회차를 켜고 끌 수 있습니다.</div>`:'<div class="mut">영역이 3개 이상일 때 표시됩니다.</div>'}</div></div>`;
   charts.push([pre+'mtr',lineCfg(rounds,areas.map((a,i)=>ds(a,rounds.map(r=>cell(r,a)?.g??null),Object.values(PAL)[i%6])),9)]);
-  if(lastM.length>=3)charts.push([pre+'mrd',radarCfg(lastM.map(m=>m.area),lastM.map(m=>m.g),9,'#1553d6')]);
+  if(rax.length>=3)charts.push([pre+'mrd',mrdCfg(rax,rounds,cell,last,rtl)]);
   const best=lastM[0].g,worst=lastM[lastM.length-1].g;
   h+=`<h3>영역별 강약 진단</h3><table><thead><tr><th class="l">영역</th><th>최근 등급</th><th>백분위</th><th>최고/최저</th><th>추이</th></tr></thead><tbody>${lastM.map(m=>{
     const gs=ms.filter(x=>x.area===m.area).sort((x,y)=>rsort(x.round,y.round)),g=gs.map(x=>x.g),p=gs[gs.length-2];
     const tr=!p?'-':m.g<p.g?'<b class="up">↑ 상승</b>':m.g>p.g?'<b class="dn">↓ 하락</b>':'<span class="mut">유지</span>';
     const tag=best!==worst?(m.g===best?' <span class="chip c0">강점</span>':m.g===worst?' <span class="chip c3">보완</span>':''):'';
-    return `<tr><td class="l">${esc(m.area)}${tag}</td><td>${chip(m.g,9)}</td><td>${isFinite(m.pct)?m.pct:'-'}</td><td>${Math.min(...g)}등급 / ${Math.max(...g)}등급</td><td>${tr}</td></tr>`}).join('')}</tbody></table>
-    <div class="foot">성적 돋보기 · 상담 자료 · 교내 상담 목적으로만 사용해 주세요.</div></div>`;
+    return `<tr><td class="l">${esc(m.area)}${tag}</td><td>${chip(m.g,9)}</td><td>${isFinite(m.pct)?m.pct:'-'}</td><td>${Math.min(...g)}등급 / ${Math.max(...g)}등급</td><td>${tr}</td></tr>`}).join('')}</tbody></table>`;
+  if(!pre)h+=csatHtml(name);
+  h+=`<div class="foot">성적 돋보기 · 상담 자료 · 교내 상담 목적으로만 사용해 주세요.</div></div>`;
   return {html:h,charts};
 }
+
+/* ───── 수능 최저 충족 시뮬레이터 ───── */
+// 국·수·영·탐 중 좋은 k개 영역의 등급 합이 target 이내인지, 아니면 가장 적게 올려 채우는 길(영역별 상승 조합)을 찾는다.
+let CK={k:3,s:7,avg:false};
+const CSAT_PRESETS=[[2,4],[2,5],[2,6],[3,6],[3,7],[3,8],[3,9],[4,10]];
+function csatPool(name){
+  const ms=mock.filter(m=>m.name===name&&isFinite(m.g)),rounds=[...new Set(ms.map(m=>m.round))].sort(rsort),last=rounds[rounds.length-1],L=ms.filter(m=>m.round===last),pool=[];
+  [['국','국어'],['수','수학'],['영','영어']].forEach(([d,n])=>{const m=L.find(m=>dom(m.area)===d);if(m)pool.push({area:n,grade:m.g})});
+  const t=L.filter(m=>dom(m.area)==='탐').map(m=>m.g);
+  if(t.length)pool.push({area:'탐구',grade:t.length>1&&CK.avg?Math.floor((t[0]+t[1])/2):Math.min(...t)});
+  return {pool,last,two:t.length>1}}
+function csatCheck(pool,k,target){
+  if(pool.length<k)return null;
+  const bestK=g=>g.slice().sort((a,b)=>a-b).slice(0,k).reduce((x,y)=>x+y,0),cur=pool.map(p=>p.grade),sum=bestK(cur);
+  if(sum<=target)return {ok:true,sum,spare:target-sum,short:0,paths:[]};
+  let best=Infinity,paths=[];const n=pool.length,gain=Array(n).fill(0);
+  (function walk(i){
+    if(i===n){const cost=gain.reduce((x,y)=>x+y,0);if(cost>best||!cost)return;if(bestK(cur.map((v,j)=>v-gain[j]))>target)return;
+      const path=pool.map((p,j)=>gain[j]?{area:p.area,from:p.grade,to:p.grade-gain[j]}:null).filter(Boolean);if(cost<best){best=cost;paths=[]}paths.push(path);return}
+    for(let d=0;d<=Math.min(3,cur[i]-1);d++){gain[i]=d;walk(i+1)}gain[i]=0})(0);
+  const mg=p=>Math.max(...p.map(x=>x.from-x.to));paths.sort((a,b)=>mg(a)-mg(b)||a.length-b.length);
+  return {ok:false,sum,short:sum-target,paths:paths.slice(0,3)}}
+function csatRow(pool,k,t,custom){
+  const r=csatCheck(pool,k,t),opt=(a,b,v)=>Array.from({length:b-a+1},(_,i)=>`<option${i+a===v?' selected':''}>${i+a}</option>`).join('');
+  const lab=custom?`<select onchange="CK.k=+this.value;csatUp()">${opt(2,4,k)}</select>개 합 <select onchange="CK.s=+this.value;csatUp()">${opt(3,16,t)}</select>`:`<b>${k}개 합 ${t}</b>`;
+  if(!r)return `<tr${custom?' class="cu"':''}><td class="l">${lab}</td><td colspan="3" class="mut">영역이 부족해 계산할 수 없습니다.</td></tr>`;
+  const st=r.ok?'<span class="cst ok">충족</span>':`<span class="cst ${r.short===1?'near':'nr'}">${r.short===1?'한 등급 차':r.short+'등급 부족'}</span>`,shown=r.short>=3?r.paths.slice(0,1):r.paths,
+    how=r.ok?(r.spare?`여유 ${r.spare}등급 — 한 영역이 ${r.spare}등급 떨어져도 버팁니다.`:'딱 맞습니다. 한 영역만 떨어져도 미충족입니다.'):shown.length?shown.map((p,i)=>`<span class="cpath${i?' alt':''}">${p.map(x=>`${esc(x.area)} ${x.from}→${x.to}`).join(' + ')}</span>`).join(''):'<span class="mut">영역마다 3등급씩 올려도 닿지 않습니다. 지금은 최저가 없는 전형이 현실적입니다.</span>';
+  return `<tr${custom?' class="cu"':''}><td class="l">${lab}</td><td><b>${r.sum}</b></td><td>${st}</td><td class="how">${how}</td></tr>`}
+function csatTable(name){const {pool}=csatPool(name);
+  return `<div class="tw"><table><thead><tr><th class="l">기준</th><th>현재 합</th><th>결과</th><th class="l">채우는 길</th></tr></thead><tbody>${CSAT_PRESETS.map(([k,t])=>csatRow(pool,k,t,false)).join('')}${csatRow(pool,CK.k,CK.s,true)}</tbody></table></div>`}
+function csatUp(){const e=$('#csat');if(e)e.innerHTML=csatTable(cur)}
+function csatHtml(name){const {pool,last,two}=csatPool(name);if(!last||pool.length<2)return '';
+  return `<h3>수능 최저 충족 시뮬레이터 <span class="hs">${esc(String(last).replace(/^\d{4}[-.]\d{2}\s*/,''))} 기준</span></h3><div class="sub2">국어·수학·영어·탐구 중 등급이 좋은 영역부터 골라 합을 냅니다. 못 채우는 기준은 <b>가장 적게 올려서 채우는 길</b>을 보여 줍니다.${two?` <label class="mck${CK.avg?' on':''}"><input type="checkbox" ${CK.avg?'checked':''} onchange="CK.avg=this.checked;csatUp();this.parentNode.classList.toggle('on',this.checked)">탐구 2과목 평균으로 계산 (기본: 좋은 1과목)</label>`:''}</div><div id="csat">${csatTable(name)}</div><div class="note">한국사 기준, 탐구 반영 방식(1과목/2과목 평균), 영어 포함 여부는 대학·전형마다 다릅니다. 지원할 대학의 모집요강 기준으로 맨 아래 줄을 맞춰 보세요.</div>`}
 
 /* ───── 수시 · 정시 ───── */
 const mids=c=>c.map((x,i)=>((i?c[i-1]:0)+x)/2), M5=mids(CUT5), M9=mids(CUT9);
@@ -1375,7 +1428,7 @@ function jeongsi(name,pre=''){
 
 /* ───── 화면 ───── */
 function destroy(list=charts){list.forEach(c=>c.destroy());list.length=0}
-const CI=[[/반영 조합/,'layers'],[/강점/,'radar'],[/과목군별/,'grid'],[/원점수/,'pulse'],[/목표 시뮬/,'sliders'],[/요약/,'user'],[/가상|한 등급|목표/,'target'],[/과목별 성적|회차별/,'table'],[/변화|추이|원점수/,'trend'],[/강점|성향|정시|조합/,'layers']];
+const CI=[[/수능 최저/,'target'],[/반영 조합/,'layers'],[/강점/,'radar'],[/과목군별/,'grid'],[/원점수/,'pulse'],[/목표 시뮬/,'sliders'],[/요약/,'user'],[/가상|한 등급|목표/,'target'],[/과목별 성적|회차별/,'table'],[/변화|추이|원점수/,'trend'],[/강점|성향|정시|조합/,'layers']];
 const CORD=[/^학생 요약/,/^가상/,/^과목별 성적/,/^등급 변화/,/^반영 조합별 평균 추이/,/^강점/,/^과목군별/,/^한 등급/,/^원점수/,/^목표/];
 function cardify(rep,order){
   const secs=[];let cur=null;
@@ -1386,14 +1439,14 @@ function cardify(rep,order){
       const ic=(CI.find(([re])=>re.test(t.textContent))||[0,'file'])[1];t.insertAdjacentHTML('afterbegin',`<span class="ci">${svg(ic,16)}</span>`);secs.push(cur);rep.insertBefore(cur,e)}
     if(cur)cur.appendChild(e);
   }
-  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영)/.test(c.title))c.classList.add('nop');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
+  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저)/.test(c.title))c.classList.add('nop');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
     secs.forEach(c=>{if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
     const A=secs.find(c=>/^강점/.test(c.title)),B=secs.find(c=>/^과목군별/.test(c.title));
     if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}}
 }
-function bindCls(v){v.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>pick(b.dataset.pick));if($('#mvth'))$('#mvth').onchange=e=>{MVTH=+e.target.value;render()};if($('#hmr'))$('#hmr').onchange=e=>{HMR=e.target.value;render()};if($('#rmc'))$('#rmc').onchange=e=>{RC=e.target.value;render()};if($('#prx'))$('#prx').onclick=prioXlsx}
+function bindCls(v){v.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>pick(b.dataset.pick));if($('#mvth'))$('#mvth').onchange=e=>{MVTH=+e.target.value;render()};if($('#hmr'))$('#hmr').onchange=e=>{HMR=e.target.value;render()};if($('#prx'))$('#prx').onclick=prioXlsx}
 function mount(el,rep,list=charts,post){
   el.insertAdjacentHTML('beforeend',rep.html);
   const box=el.lastElementChild;if(post)post(box); // 카드로 옮긴 뒤에 차트를 그려야 실제 칸 너비에 맞는다
@@ -1633,17 +1686,20 @@ function classHtml(){
   h+=`<h3>직전 학기 대비 급등락 <select id="mvth">${[.3,.5,.7,1].map(v=>`<option ${v===MVTH?'selected':''}>${v}</option>`).join('')}</select> 등급 이상</h3>`+(mv.length?`<table><tbody>${mv.map(x=>`<tr><td class="l"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td><td>${delta(x.d)}</td></tr>`).join('')}</tbody></table>`:'<div class="note">기준을 넘는 학생이 없거나 학기가 하나뿐입니다.</div>');
   return h+'</div>';
 }
-let HMR='',RM='sem',RC='전과목';
+let HMR='',RM='sem',RS='g';
 function ourHtml(){
-  const names=[...new Set(rows.map(r=>r.name))],S=rows.some(r=>r.scale===9)?9:5,set=(COMBOS.find(c=>c[0]===RC)||COMBOS[0])[1],avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN;
+  const names=[...new Set(rows.map(r=>r.name))],CN=COMBOS.map(c=>c[0]),avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN;
   let h=`<div class="rep"><header class="rh"><h2>우리반 성적</h2><div class="rm">교사용 · 인쇄되지 않습니다</div></header><div class="clk">${svg('lock',18)}<div><b>교사용 화면입니다</b>다른 학생의 이름과 성적이 나오므로 인쇄하지 않습니다.</div></div><div class="gchips">${[['sem','학기별 성적'],['cum','누적 성적'],['mock','월별 모의고사 성적']].map(([k,l])=>`<button class="${RM===k?'on':''}" onclick="RM='${k}';render()">${l}</button>`).join('')}</div>`;
   if(RM==='mock')return h+(mock.length?mockHeat():'<div class="note">모의고사 성적이 없습니다.</div>')+'</div>';
   if(!rows.length)return h+'<div class="note">내신 성적이 있어야 볼 수 있습니다.</div></div>';
-  const ks=[...new Set(rows.map(sk))].sort((a,b)=>a-b),pv=k=>rows.filter(r=>sk(r)===k).every(r=>r.vir),sc=k=>rows.some(r=>sk(r)<=k&&r.scale===9)?9:5;
-  const L=names.map(n=>{const rs=rows.filter(r=>r.name===n&&!EX.has(r.subject)&&inC(r,set));return {n,v:ks.map(k=>{const w=wavg(rs.filter(r=>RM==='cum'?sk(r)<=k:sk(r)===k));return w.cr?w.avg:NaN}),t:wavg(rs).avg}}).filter(x=>isFinite(x.t)).sort((a,b)=>a.t-b.t);
-  const cl=(v,k)=>isFinite(v)?`<td class="hm c${toneOf(v,sc(k))}">${f2(v)}</td>`:'<td class="mut">-</td>';
-  h+=`<div class="sub2">${RM==='cum'?'그 학기까지 들은 모든 과목의 학점 가중 평균입니다. 대학이 보는 값에 가깝습니다.':'그 학기 과목만의 학점 가중 평균입니다. 오르내림을 보기에 좋습니다.'} 위쪽일수록 좋은 등급이고, 이름을 누르면 그 학생의 내신 분석으로 이동합니다. <select id="rmc">${COMBOS.map(([n])=>`<option${n===RC?' selected':''}>${n}</option>`).join('')}</select> 기준</div>`;
-  h+=`<div class="tw"><table><thead><tr><th class="l">학생</th>${ks.map(k=>`<th>${kl(k)}${pv(k)?'<span class="tpb">예상</span>':''}</th>`).join('')}<th>${RM==='cum'?'현재 누적':'전체 평균'}</th></tr></thead><tbody><tr><td class="l"><b>학급 평균</b></td>${ks.map((k,i)=>`<td><b>${f2(avg(L.map(x=>x.v[i]).filter(isFinite)))}</b></td>`).join('')}<td><b>${f2(avg(L.map(x=>x.t)))}</b></td></tr>${L.map(x=>`<tr><td class="l"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td>${x.v.map((v,i)=>cl(v,ks[i])).join('')}<td><b>${f2(x.t)}</b></td></tr>`).join('')}</tbody></table></div></div>`;
+  const ks=[...new Set(rows.map(sk))].sort((a,b)=>a-b),pv=k=>rows.filter(r=>sk(r)===k).every(r=>r.vir),sc=k=>rows.some(r=>sk(r)<=k&&r.scale===9)?9:5,S=sc(99);
+  const L=names.map(n=>{const mine=rows.filter(r=>r.name===n&&!EX.has(r.subject));
+    return {n,no:students.indexOf(n)+1,v:COMBOS.map(([,set])=>ks.map(k=>{const w=wavg(mine.filter(r=>inC(r,set)&&(RM==='cum'?sk(r)<=k:sk(r)===k)));return w.cr?w.avg:NaN})),t:COMBOS.map(([,set])=>wavg(mine.filter(r=>inC(r,set))).avg)}}).filter(x=>isFinite(x.t[0])).sort((a,b)=>RS==='n'?a.no-b.no:a.t[0]-b.t[0]);
+  const cl=(v,sc,first)=>isFinite(v)?`<td class="hm c${toneOf(v,sc)}${first?' g0':''}">${f2(v)}</td>`:`<td class="mut${first?' g0':''}">-</td>`;
+  h+=`<div class="sub2">${RM==='cum'?'그 학기까지 들은 모든 과목의 학점 가중 평균입니다. 대학이 보는 값에 가깝습니다.':'그 학기 과목만의 학점 가중 평균입니다. 오르내림을 보기에 좋습니다.'} 위쪽일수록 좋은 등급이고, 이름을 누르면 그 학생의 내신 분석으로 이동합니다.</div><div class="gchips sm"><span class="mut" style="align-self:center;font-size:12px">정렬</span>${[['g','성적순'],['n','번호순']].map(([k,l])=>`<button class="${RS===k?'on':''}" onclick="RS='${k}';render()">${l}</button>`).join('')}</div>`;
+  h+=`<div class="tw"><table class="rt"><thead><tr><th class="stk" rowspan="2">번호</th><th class="stk stk2 l" rowspan="2">이름</th>${ks.map(k=>`<th class="gh g0" colspan="4">${kl(k)}${pv(k)?'<span class="tpb">예상</span>':''}</th>`).join('')}<th class="gh g0" colspan="4">${RM==='cum'?'현재 누적':'전체 평균'}</th></tr><tr>${[...ks,0].map(()=>CN.map((n,j)=>`<th class="${j?'':'g0'}">${n}</th>`).join('')).join('')}</tr></thead><tbody>
+    <tr class="cavg"><th class="stk" colspan="2" style="left:0">학급 평균</th>${ks.map((k,i)=>CN.map((n,j)=>`<td class="${j?'':'g0'}"><b>${f2(avg(L.map(x=>x.v[j][i]).filter(isFinite)))}</b></td>`).join('')).join('')}${CN.map((n,j)=>`<td class="${j?'':'g0'}"><b>${f2(avg(L.map(x=>x.t[j]).filter(isFinite)))}</b></td>`).join('')}</tr>
+    ${L.map(x=>`<tr><td class="rn stk">${x.no}</td><td class="rname stk stk2"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td>${ks.map((k,i)=>CN.map((n,j)=>cl(x.v[j][i],sc(k),!j)).join('')).join('')}${CN.map((n,j)=>cl(x.t[j],S,!j)).join('')}</tr>`).join('')}</tbody></table></div></div>`;
   return h}
 function mockHeat(){
   if(!mock.length)return '';
@@ -1652,10 +1708,10 @@ function mockHeat(){
   if(!rounds.includes(HMR))HMR=rounds[rounds.length-1];
   const cl=g=>isFinite(g)?`<td class="hm c${toneOf(g,9)}">${f2(g)}</td>`:'<td class="mut">-</td>';
   const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN;
-  let h=`<h3>모의고사 히트맵 — 영역 × 회차 (학급 평균 등급)</h3><table><thead><tr><th class="l">영역</th>${rounds.map(r=>`<th>${esc(r)}</th>`).join('')}</tr></thead><tbody>${areas.map(a=>`<tr><td class="l">${esc(a)}</td>${rounds.map(r=>cl(avg(mock.filter(m=>m.round===r&&m.area===a).map(m=>m.g))) ).join('')}</tr>`).join('')}</tbody></table>
+  let h=`<h3>모의고사 히트맵 — 영역 × 회차 (학급 평균 등급)</h3><div class="tw"><table class="rt"><thead><tr><th class="l">영역</th>${rounds.map(r=>`<th>${esc(r)}</th>`).join('')}</tr></thead><tbody>${areas.map(a=>`<tr><td class="l">${esc(a)}</td>${rounds.map(r=>cl(avg(mock.filter(m=>m.round===r&&m.area===a).map(m=>m.g))) ).join('')}</tr>`).join('')}</tbody></table></div>
     <h3>학생 × 영역 <select id="hmr">${rounds.map(r=>`<option ${r===HMR?'selected':''}>${esc(r)}</option>`).join('')}</select></h3>`;
   const names=[...new Set(mock.filter(m=>m.round===HMR).map(m=>m.name))].map(n=>({n,v:avg(mock.filter(m=>m.round===HMR&&m.name===n).map(m=>m.g))})).sort((a,b)=>a.v-b.v);
-  h+=`<table><thead><tr><th class="l">학생</th>${areas.map(a=>`<th>${esc(a)}</th>`).join('')}<th>평균</th></tr></thead><tbody>${names.map(x=>`<tr><td class="l"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td>${areas.map(a=>{const m=mock.find(m=>m.round===HMR&&m.name===x.n&&m.area===a);return m?`<td class="hm c${toneOf(m.g,9)}">${m.g}</td>`:'<td class="mut">-</td>'}).join('')}<td><b>${f2(x.v)}</b></td></tr>`).join('')}</tbody></table>`;
+  h+=`<div class="tw"><table class="rt"><thead><tr><th class="stk">번호</th><th class="stk stk2 l">이름</th>${areas.map(a=>`<th>${esc(a)}</th>`).join('')}<th>평균</th></tr></thead><tbody>${names.map(x=>`<tr><td class="rn stk">${students.indexOf(x.n)+1}</td><td class="rname stk stk2"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td>${areas.map(a=>{const m=mock.find(m=>m.round===HMR&&m.name===x.n&&m.area===a);return m?`<td class="hm c${toneOf(m.g,9)}">${m.g}</td>`:'<td class="mut">-</td>'}).join('')}<td><b>${f2(x.v)}</b></td></tr>`).join('')}</tbody></table></div>`;
   return h;
 }
 function prioXlsx(){
