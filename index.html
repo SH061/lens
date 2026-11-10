@@ -441,6 +441,10 @@ dialog li{margin:6px 0}
  body.pa .rep.bn{zoom:.56}body.pa .rep.bn .dualrow .cw{width:56%}body.pa .rep.bn .cbx .cw{width:100%}
  body.pa .rep.bn .foot{display:none}body.pa .rep.bm{zoom:.57}body.pa .rep.bm .cw{width:62%;margin:0 auto}
 }
+.rep .cd2>h3:first-child{margin-top:0}
+.tb .ib[hidden]{display:inline-flex;visibility:hidden}
+.jlock{margin:0 0 14px;padding:12px 14px;align-items:center}.jlock b{margin:0}.jlock svg{margin:0}
+.rt .rn{font-size:16px}.rt .rname{text-align:center}.rt .rname button{font-size:16px;font-weight:700;line-height:1.2;padding:2px 12px}.rt thead .stk{text-align:center;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -1418,7 +1422,7 @@ const zonePlugin={id:'jzone',
       ctx.lineWidth=3;ctx.strokeStyle=cssv('--card')||'#fff';ctx.strokeText(it.p.name,pick.x,pick.y+h/2);ctx.fillStyle=it.p.focus?it.color:cssv('--ink2');ctx.fillText(it.p.name,pick.x,pick.y+h/2)});ctx.restore()}};
 function jeongsi(name,pre=''){
   const charts=[],hasN=rows.some(r=>r.name===name),hasM=mock.some(m=>m.name===name);
-  const lock=`<div class="jlock jc">${svg('lock',15)}<div><b>교사용 화면입니다. 인쇄되지 않습니다.</b><span>「정시 우위」만 보고 학교생활을 내려놓는 판단으로 이어질 수 있어, 이 탭은 상담 중에 선생님이 보는 용도로만 둡니다.</span></div></div>`;
+  const lock=lockBox();
   if(!hasN||!hasM)return {html:`<div class="rep jrep">${lock}<div class="empty">${svg('scale',64)}<h3>두 성적이 모두 필요합니다</h3><div>수시·정시 판정은 <b>내신</b>과 <b>모의고사</b>를 함께 비교합니다.<br><br>현재 ${esc(name)} 학생: 내신 ${hasN?'있음':'없음'} · 모의고사 ${hasM?'있음':'없음'}${hasN&&!hasM?'<br><br><b>모의고사 파일의 이름 표기가 내신과 다르면 다른 학생으로 인식됩니다. 이름을 확인해 주세요.</b>':''}</div></div></div>`,charts};
   const j=judge(name),card=(ic,t,b,x='')=>`<section class="cd2 jc"><h3><span class="ci">${svg(ic,16)}</span>${t}${x}</h3>${b}</section>`;
   let h=`<div class="rep jrep">${lock}`;
@@ -1510,8 +1514,8 @@ function render(){
   $('#tabs').hidden=!(shown&&students.length);$('#xl1').hidden=!on||cls;$('#pm1').hidden=$('#pr1').hidden=!on||cls||tab==='j';{const rn=new Set(mock.map(m=>m.round)).size;$('#mbd').textContent=rn?rn+'회차':''}slideTabs();
   if(!students.length){v.innerHTML=EMPTY('성적 파일을 올려 주세요','나이스에서 내려받은 학급 성적 파일을 올리면<br>과목별 추이와 상담 자료가 자동으로 만들어집니다.');return}
   if(!on&&!cls){const k=students.map(prio).filter(p=>p.score>0).length;v.innerHTML=EMPTY('학생을 고르고 분석을 눌러 주세요',`학생 ${students.length}명의 자료를 불러왔습니다.`,[1,cur?1:0,0],k?`<button class="cta" id="ctaP"><span><b>먼저 상담할 학생 보기</b><small>${students.length}명 중 ${k}명에게 살펴볼 신호가 있습니다</small></span><em>${k}명</em></button>`:'');const c=$('#ctaP');if(c)c.onclick=()=>{shown=true;tab='p';document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='p'));render()};return}
-  if(cls){v.innerHTML=tab==='p'?prioHtml():tab==='r'?ourHtml():classHtml();v.firstElementChild.classList.add('cls');bindCls(v);return}
-  mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur),charts,tab==='j'?jPlay:b=>cardify(b,tab==='n'));
+  if(cls){v.innerHTML=tab==='p'?prioHtml():tab==='r'?ourHtml():classHtml();v.firstElementChild.classList.add('cls','no-print');bindCls(v);return}
+  mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur),charts,tab==='j'?jPlay:b=>cardify(b,tab==='n'));if(tab==='j')v.firstElementChild?.classList.add('no-print');
   if(tab==='j'){v.querySelectorAll('[data-pj]').forEach(b=>b.onclick=()=>pickT(b.dataset.pj));if($('#jrp'))$('#jrp').onclick=()=>jPlay(v)}
   stagger(v);
   if(tab==='n'){v.insertAdjacentHTML('beforeend',classHtml());const c=v.lastElementChild;c.classList.add('cd2','cls','no-print');bindCls(v)}
@@ -1699,6 +1703,7 @@ function mockAvgs(name){const ms=mock.filter(m=>m.name===name),rs=[...new Set(ms
 const CL={drop:[.5,.8,1.2],near:[2,3,4],gap:[1,1.5,2],mockDrop:[.5,1,1.5]},CKIND=[['drop','내신 하락','trend','bad'],['near','등급 경계','target','wtx'],['gap','내신·모의 격차','scale','ac'],['mockDrop','모의 하락','trend','bad']];
 const CTIER=[{key:'first',label:'먼저 상담',min:4,c:'bad',hint:'신호가 겹쳤거나 센 신호가 있는 학생'},{key:'next',label:'이어서 상담',min:2,c:'wtx',hint:'중간 세기 신호가 있는 학생'},{key:'watch',label:'지켜보기',min:1,c:'ink2',hint:'약한 신호 하나 — 다음 성적에서 다시 확인'}];
 const clv=(k,v)=>isFinite(v)?CL[k].reduce((l,t,i)=>v>=t-1e-9?i+1:l,0):0;
+const lockBox=()=>`<div class="jlock">${svg('lock',16)}<div><b>교사용 화면입니다. 다른 학생의 이름과 성적이 나오므로 인쇄하지 않습니다.</b></div></div>`;
 function prio(name){
   const fl=[],t=termAvgs(name),m=mockAvgs(name),no=students.indexOf(name)+1;
   if(t.length>=2){const p=t[t.length-2],q=t[t.length-1],d=q.v-p.v,l=clv('drop',d);if(l)fl.push({k:'drop',l,tx:`${kl(p.k)} ${f2(p.v)} → ${kl(q.k)}${rows.filter(r=>sk(r)===q.k).every(r=>r.vir)?'(예상)':''} ${f2(q.v)} (${f2(d)}등급 하락)`})}
@@ -1717,7 +1722,7 @@ function prioHtml(){
   const sh=PF==='all'?R:R.filter(x=>x.fl.some(f=>f.k===PF)),arr=svg('right',13);
   const nb=(n,c)=>`<button class="crn${c?' sm':''}" data-pick="${esc(n)}" title="${esc(n)} 학생 분석 열기"><span>${esc(n)}</span>${arr}</button>`;
   const chip=(k,l,n)=>`<button class="${PF===k?'on':''}" ${n?'':'disabled'} onclick="PF='${k}';render()">${l} <b>${n}</b></button>`;
-  let h=`<div class="rep"><div class="clk">${svg('lock',18)}<div><b>교사용 화면입니다. 인쇄되지 않습니다.</b>반 학생 이름과 상담 순서가 함께 나오므로 화면으로만 보시고, 필요하면 엑셀로 받아 두세요.</div></div>
+  let h=`<div class="rep">${lockBox()}
   <header class="rh"><h2>${svg('users',17)} 상담 우선순위</h2><div class="rm"><button id="prx"><i>⬇</i>엑셀로 저장</button></div></header>
   <div class="sub2">반 전체에서 <b>먼저 살펴볼 학생</b>을 줄 세웠습니다. 신호마다 세기를 1~3으로 매겨 더한 값이 점수입니다. 점수에 따라 <b>먼저 상담 · 이어서 상담 · 지켜보기</b> 세 묶음으로 나눴고, 묶음 안에서는 점수가 높은 학생부터, 같으면 번호 순입니다. 점수는 상담 순서를 정하려는 것이지 학생 평가가 아닙니다.</div>
   <div class="crh">${svg('right',13)} 학생 이름을 누르면 그 학생의 내신·모의고사 분석 화면으로 바로 넘어갑니다.</div>
@@ -1737,7 +1742,7 @@ function classHtml(){
   let h=`<div class="rep"><header class="rh"><h2>학급 한눈에 보기</h2><div class="rm">내신 학생 ${names.length}명 · 인쇄되지 않습니다</div></header>`;
   if(!av.length)return h+'<div class="note">내신 성적이 있어야 학급 현황을 볼 수 있습니다.</div></div>';
   const sorted=[...av].sort((x,y)=>x.a.all.avg-y.a.all.avg),me=sorted.findIndex(x=>x.n===cur),k3=av.map(x=>x.a.combo['국영수'].avg).filter(isFinite);
-  h+=`<div class="clk">${svg('lock',18)}<div><b>교사용 화면입니다</b>다른 학생의 이름과 성적이 나오므로 인쇄하지 않습니다.</div></div>
+  h+=`${lockBox()}
     <div class="mkt"><div><small>학생 수</small><b>${av.length}명</b><em>올린 파일 기준</em></div><div><small>학급 전과목 평균</small><b>${f2(m(av.map(x=>x.a.all.avg)))}</b><em>학생별 평균의 평균</em></div><div><small>학급 국영수 평균</small><b>${k3.length?f2(m(k3)):'-'}</b><em>학생별 국영수 평균의 평균</em></div>
     <div class="me"><small>${me>=0?esc(cur)+' ':'선택 학생 '}위치</small><b>${me>=0?`${me+1}/${av.length}`:'-'}</b><em>${me>=0?`전과목 ${f2(sorted[me].a.all.avg)} · 전 과목 기준`:'학생을 고르면 표시됩니다'}</em></div></div>`;
   const nb=(S-1)*2,B=Array(nb).fill(0);av.forEach(x=>B[Math.min(nb-1,Math.floor((x.a.all.avg-1)/.5+1e-9))]++);const mx=Math.max(1,...B),mb=me>=0?Math.min(nb-1,Math.floor((sorted[me].a.all.avg-1)/.5+1e-9)):-1;
@@ -1753,7 +1758,7 @@ function classHtml(){
 let HMR='',RM='sem',RS='g';
 function ourHtml(){
   const names=[...new Set(rows.map(r=>r.name))],CN=COMBOS.map(c=>c[0]),avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN;
-  let h=`<div class="rep"><header class="rh"><h2>우리반 성적</h2><div class="rm">교사용 · 인쇄되지 않습니다</div></header><div class="clk">${svg('lock',18)}<div><b>교사용 화면입니다</b>다른 학생의 이름과 성적이 나오므로 인쇄하지 않습니다.</div></div><div class="gchips">${[['sem','학기별 성적'],['cum','누적 성적'],['mock','월별 모의고사 성적']].map(([k,l])=>`<button class="${RM===k?'on':''}" onclick="RM='${k}';render()">${l}</button>`).join('')}</div>`;
+  let h=`<div class="rep"><header class="rh"><h2>우리반 성적</h2><div class="rm">교사용 · 인쇄되지 않습니다</div></header>${lockBox()}<div class="gchips">${[['sem','학기별 성적'],['cum','누적 성적'],['mock','월별 모의고사 성적']].map(([k,l])=>`<button class="${RM===k?'on':''}" onclick="RM='${k}';render()">${l}</button>`).join('')}</div>`;
   if(RM==='mock')return h+(mock.length?mockHeat():'<div class="note">모의고사 성적이 없습니다.</div>')+'</div>';
   if(!rows.length)return h+'<div class="note">내신 성적이 있어야 볼 수 있습니다.</div></div>';
   const ks=[...new Set(rows.map(sk))].sort((a,b)=>a-b),pv=k=>rows.filter(r=>sk(r)===k).every(r=>r.vir),sc=k=>rows.some(r=>sk(r)<=k&&r.scale===9)?9:5,S=sc(99);
