@@ -187,6 +187,8 @@ table{width:100%;border-collapse:collapse;font-size:12.5px}
 th,td{padding:5px 6px;text-align:center;border-bottom:1px solid var(--line)}
 th{background:var(--soft);font-weight:600}
 td.l,th.l{text-align:left}
+.pp{color:#7048e8}
+.chip.prov{border:1px dashed currentColor}
 .chip{display:inline-block;padding:1px 8px;border-radius:99px;font-weight:700;font-size:12px}
 .c0{background:#d9f2e3;color:#14532d}.c1{background:#eaf3cf;color:#3f5a0e}.c2{background:#fdf0c8;color:#7a5200}.c3{background:#fbdcdc;color:#8c1d1d}
 .dual{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -446,7 +448,7 @@ const GRP=[['국어',/국어|문학|독서|화법|작문|언어|매체/],['수�
 const grp=s=>(GRP.find(([,re])=>re.test(s))||['기타'])[0];
 const COMBOS=[['전과목',null],['국영수',['국어','수학','영어']],['국영수사',['국어','수학','영어','사회']],['국영수과',['국어','수학','영어','과학']]];
 const PAL={국어:'#e5484d',수학:'#2f6fed',영어:'#f5a524',사회:'#8e4ec6',과학:'#12a594',기타:'#8b93a1',전체:'#8b93a1'};
-const NF=[['name','성명',/성명|이름/],['grade','학년',/^학년$/],['sem','학기',/^학기$/],['subject','과목',/^과목(명)?$/],['credit','단위수',/단위|학점/],['g','석차등급',/석차등급|^등급$/],['rank','석차',/^석차($|\()|^등수$|^석차.*(수강|인원)/],['n','수강자수',/수강자|이수자|재적|인원/],['score','원점수',/원점수|^점수$/],['avg','과목평균',/평균/]];
+const NF=[['name','성명',/성명|이름/],['grade','학년',/^학년$/],['sem','학기',/^학기$/],['subject','과목',/^과목(명)?$/],['credit','단위수',/단위|학점/],['g','석차등급',/석차등급|^등급$/],['rank','석차',/^석차($|\()|^등수$|^석차.*(수강|인원)/],['n','수강자수',/수강자|이수자|재적|인원/],['score','원점수',/원점수|^점수$/],['avg','과목평균',/평균/],['ach','성취도',/^성취도$/],['dist','분포비율',/분포/]];
 const MF=[['name',/성명|이름/],['round',/회차|시행|시험/],['area',/^영역$|^과목(명)?$/],['raw',/원점수/],['std',/표준/],['pct',/백분위/],['g',/등급/]];
 // 정시 라인 대학군 표 — 예시 기본값(실제 입결 아님). 사용자가 화면에서 고쳐 저장한다.
 const DEF_UNIV='상위권 대학,95\n서울 중상위,88\n서울 중위·경기 상위,80\n수도권 중위·지방 거점국립,72\n수도권 하위·지방 중위,60\n지방 일반,45';
@@ -550,15 +552,27 @@ function detect(hdr,F){
 }
 function finish(r){
   r.scale=(r.g>5||r.grade>=3)?9:5;
-  r.v=NaN;r.vir=false;
+  r.v=NaN;r.vir=false;r.pe=NaN;r.er=NaN;
   if(r.g>=1)r.v=r.g;
   else if(r.rank>0&&r.n>0){
     const cut=r.grade>=3?CUT9:CUT5,p=r.rank/r.n*100;
     let i=cut.findIndex(c=>p<=c+1e-9);if(i<0)i=cut.length-1;
     r.v=i+1;r.vir=true;
   }
+  // 석차가 없는 5등급제 과목: 성취도 분포·원점수·과목평균으로 석차 구간 안의 위치를 추정(원본과 같은 식)
+  if(r.g>=1&&r.g<=5&&r.scale===5&&!(r.rank>0)&&r.n>1){
+    const cuts=[.1,.34,.66,.9],b=[0,...cuts,1],gLo=b[r.g-1],gHi=b[r.g];
+    const nd=isFinite(r.score)&&isFinite(r.avg)?Math.min(.9,Math.max(.1,.5-(r.score-r.avg)/100)):.5;
+    const ai='ABCDE'.indexOf(r.ach),bi=ai>=0?ai:isFinite(r.score)?(r.score>=90?0:r.score>=80?1:r.score>=70?2:r.score>=60?3:4):-1;
+    let lo=gLo,hi=gHi;
+    if(r.dist&&bi>=0&&bi<r.dist.length){const sh=r.dist.map(v=>v/100),aLo=sh.slice(0,bi).reduce((x,y)=>x+y,0),l=Math.max(aLo,gLo),h=Math.min(aLo+sh[bi],gHi);if(l<h){lo=l;hi=h}}
+    r.pe=Math.min(gHi,Math.max(gLo,lo+nd*(hi-lo)));r.pp=!!r.dist;
+    const cut=r.g>1?Math.floor(cuts[r.g-2]*r.n+1e-9):0;r.er=Math.min(r.n,Math.max(cut+1,Math.round(r.pe*r.n)));
+  }
   return r;
 }
+// 실제 석차가 있으면 그것을, 없으면 추정 석차(est:true)를 돌려준다
+const rkOf=r=>r.rank>0&&r.n>0?{rank:r.rank,est:false}:r.er>0&&r.n>0?{rank:r.er,est:true}:null;
 
 /* 내신 */
 // 성적일람표: 과목이 가로로 펼쳐져 있고 표가 세로로 여러 덩어리로 나뉜다. 덩어리마다 '평가방법' 줄(과목명(학점)) → '성명' 줄(원점수·석차·수강자수) → 학생 줄
@@ -625,8 +639,10 @@ function buildNaesin(){
     const rk=str(r[map.rank]);
     if(rk.includes('/')){const p=rk.split('/');rank=num(p[0]);n=num(p[1])}
     if(map.n>=0){const s=str(r[map.n]),m=s.match(/\((\d+)\)/);n=m?+m[1]:num(s)}
+    const dm=map.dist>=0?[...str(r[map.dist]).matchAll(/[A-E]\(([\d.]+)\)/g)].map(m=>+m[1]):[];
     const row=finish({name,grade:lg||dg,sem:ls||ds,subject,
-      credit:num(r[map.credit])||1,score,avg,rank,n,g:num(r[map.g])});
+      credit:num(r[map.credit])||1,score,avg,rank,n,g:num(r[map.g]),
+      ach:map.ach>=0?str(r[map.ach]).charAt(0).toUpperCase():'',dist:dm.length>=2?dm:null});
     out.set([name,row.grade,row.sem,subject].join('|'),row);
   }
   if(!out.size){toast('읽은 행이 없습니다. 열 지정을 확인해 주세요.');return}
@@ -641,11 +657,12 @@ const mArea=(s,gy1)=>{s=String(s||'').replace(/\s/g,'');return MAREA[s]?MAREA[s]
 const roundName=(y,m,org)=>`${y}-${String(m).padStart(2,'0')} ${m}월 ${org||'학력평가'}`;
 // 소수점 등급: 정수는 기록된 등급, 소수는 그 등급 구간 안에서 석차가 놓인 위치(0=위쪽 끝, 0.99=아래쪽 끝)
 function dvOf(r){
-  if(!(r.rank>0&&r.n>0&&r.v>=1))return NaN;
+  const real=r.rank>0&&r.n>0;
+  if(!(real||r.pe>0)||!(r.v>=1))return NaN;
   const cut=r.scale===9?CUT9:CUT5,g=Math.round(r.v);
   if(g<1||g>cut.length)return NaN;
   const lo=g>1?cut[g-2]:0,hi=cut[g-1];
-  return g+Math.min(.99,Math.max(0,(r.rank/r.n*100-lo)/(hi-lo)));
+  return g+Math.min(.99,Math.max(0,((real?r.rank/r.n:r.pe)*100-lo)/(hi-lo)));
 }
 // 학교 집계 엑셀: 위 줄=영역 이름, 아래 줄=원점수/표준점수/백분위/등급(탐구는 과목명 열이 따로 있음)
 function schoolAgg(sheets,fname,round){
@@ -920,10 +937,11 @@ function report(name,pre=''){
   if(vl.length){const lk=Math.max(...vl.map(sk));
     h+=`<h3>가상 등급 · 등급 상승 분석</h3><div class="sub2">원점수·석차 기반 · ${kl(lk)} 예상 등급(${S}등급제) · 한 등급 올리기 위한 인원 표시</div><table><thead><tr><th class="l">과목</th><th>원점수</th><th>석차</th><th>수강자수</th><th>예상 등급</th><th>→ 목표등급</th><th class="l">앞에 있는 학생</th></tr></thead><tbody>${vl.filter(r=>sk(r)===lk).map(r=>{const g=Math.round(r.v),cut=r.grade>=3?CUT9:CUT5,max=g>1?Math.floor(cut[g-2]*r.n/100+1e-9):0,need=r.rank-max;
       return `<tr><td class="l"><b>${esc(r.subject)}</b></td><td>${isFinite(r.score)?r.score+'점':'-'}</td><td>${r.rank}위</td><td>${r.n}명</td><td>${chip(r.v,r.scale,true)}</td><td>${g>1?`<b style="color:#7048e8">${g-1}등급 목표</b>`:'-'}</td><td class="l">${g>1&&need>0?`<b>앞으로 ${need}명</b><br><small>${r.rank}위→${max}위 이내</small>`:'-'}</td></tr>`}).join('')}</tbody></table>`;}
-  h+=`<h3>과목별 성적 현황</h3><table><thead><tr><th class="l">과목</th>${keys.map(k=>`<th>${kl(k)}</th>`).join('')}</tr></thead><tbody>`;
+  h+=`<h3>과목별 성적 현황</h3><table><thead><tr><th class="l">과목</th>${keys.map(k=>`<th>${kl(k)}${rs.filter(r=>sk(r)===k).every(r=>r.vir)?'<br><span class="tp">1차 고사 · 예상</span>':''}</th>`).join('')}</tr></thead><tbody>`;
   for(const r of [...rs].sort((x,y)=>sk(x)-sk(y))){
     h+=`<tr><td class="l">${esc(r.subject)} <small>${r.credit}학점</small></td>${keys.map(k=>k!==sk(r)?'<td class="mut">-</td>':
-      `<td>${chip(r.v,r.scale,r.vir)} <small>${isFinite(dvOf(r))?`위치 ${f2(dvOf(r))} · `:''}${isFinite(r.score)?r.score+'점':''}${r.rank>0&&r.n>0?` · ${r.rank}/${r.n}위`:''}</small></td>`).join('')}</tr>`;
+      `<td>${(()=>{const dv=dvOf(r),k=rkOf(r),ah=k&&k.est&&r.g>1?k.rank-Math.floor([.1,.34,.66,.9][r.g-2]*r.n+1e-9):0,cl=r.vir?' prov':'';
+        return `<span class="chip c${toneOf(r.v,r.scale)}${cl}">${isFinite(dv)?dv.toFixed(2):r.v}등급</span>${r.pe>0&&!r.pp?'<small class="mut">(추정)</small>':''}<br><small>${k?(k.est?`<b class="pp">앞에 약${ah>0?ah:0}명/${r.n}명</b>`:`${k.rank}위/${r.n}명`):''}${isFinite(r.score)?` ${r.score}점`:''}</small>`})()}</td>`).join('')}</tr>`;
   }
   h+=`</tbody></table><div class="note">「위치」는 소수점 등급입니다. 정수 부분이 실제(또는 예상) 등급이고, 소수점은 그 등급 구간 안에서 석차가 어디쯤인지입니다. 4.05는 4등급 위쪽(조금만 더 하면 3등급), 4.82는 아래쪽(5등급으로 내려갈 수도)입니다. 석차·수강자수가 있는 과목만 계산하며 평균에는 쓰이지 않습니다.</div>`;
 
@@ -949,11 +967,11 @@ function report(name,pre=''){
   charts.push([pre+'bar',{type:'bar',plugins:[barLbl(S)],data:{labels:groups.map(gb),datasets:[{data:groups.map(g=>S+1-a.gAvg[g].avg),backgroundColor:groups.map(g=>PAL[g]+'cc'),borderRadius:6}]},
     options:{responsive:false,animation:false,devicePixelRatio:2,layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`평균 ${f2(a.gAvg[groups[c.dataIndex]].avg)}등급`}}},scales:{y:{min:0,max:S,ticks:{stepSize:1,callback:v=>v>=1?(S+1-v)+'등급':''}}}}}]);
 
-  const nm=rs.filter(r=>isFinite(r.v)&&r.rank>0&&r.n>0&&Math.round(r.v)>1).map(r=>{
-    const g=Math.round(r.v),cut=r.grade>=3?CUT9:CUT5,max=Math.floor(cut[g-2]*r.n/100+1e-9);
-    return {r,g,max,need:r.rank-max};
+  const nm=rs.map(r=>({r,k:rkOf(r)})).filter(({r,k})=>isFinite(r.v)&&k&&Math.round(r.v)>1).map(({r,k})=>{
+    const g=Math.round(r.v),cut=r.scale===9?CUT9:CUT5,max=Math.floor(cut[g-2]*r.n/100+1e-9);
+    return {r,g,max,rank:k.rank,est:k.est,need:k.rank-max};
   }).filter(x=>x.need>0).sort((x,y)=>x.need-y.need).slice(0,10);
-  h+=`<h3>한 등급만 올리면 되는 과목</h3>`+(nm.length?`<div class="ups">${nm.map((x,i)=>`<div class="up1"><div class="u1"><span class="rk">${i+1}위</span><b>${esc(x.r.subject)}</b><em>${x.g}등급</em><i>→ ${x.g-1}등급</i><span class="uh">${x.need<=5?'조금만 더':x.need<=12?'노력 필요':'꾸준히 노력 필요'}</span></div><div class="u2">현재 <b>${x.r.rank}위</b> / ${x.r.n}명 &nbsp; 목표 <b>${x.max}위</b> 이내 &nbsp; <b class="pp">앞에 ${x.need}명 추월 필요</b></div><small class="mut">${kl(sk(x.r))}${isFinite(x.r.score)?` · 원점수 ${x.r.score}점`:''}</small></div>`).join('')}</div><div class="note">앞에 있는 학생이 적은 과목부터 보여 줍니다. 동점자·반올림에 따라 실제와 1~2명 차이가 날 수 있습니다.</div>`:'<div class="note">석차·수강자수가 있는 과목이 없어 계산할 수 없습니다.</div>');
+  h+=`<h3>한 등급만 올리면 되는 과목</h3>`+(nm.length?`<div class="ups">${nm.map((x,i)=>`<div class="up1"><div class="u1"><span class="rk">${i+1}위</span><b>${esc(x.r.subject)}</b><em>${x.g}등급</em><i>→ ${x.g-1}등급</i><span class="uh">${x.need<=5?'조금만 더':x.need<=12?'노력 필요':'꾸준히 노력 필요'}</span></div><div class="u2">${x.est?'추정':'현재'} <b>${x.rank}위</b> / ${x.r.n}명 &nbsp; 목표 <b>${x.max}위</b> 이내 &nbsp; <b class="pp">앞에 ${x.est?'약 ':''}${x.need}명 추월 필요</b></div><small class="mut">${kl(sk(x.r))}${isFinite(x.r.score)?` · 원점수 ${x.r.score}점`:''}</small></div>`).join('')}</div><div class="note">앞에 있는 학생이 적은 과목부터 보여 줍니다. 동점자·반올림에 따라 실제와 1~2명 차이가 날 수 있습니다.</div>`:'<div class="note">석차·수강자수가 있는 과목이 없어 계산할 수 없습니다.</div>');
 
   const pk=[...keys].reverse().find(k=>rs.some(r=>sk(r)===k&&isFinite(r.score)&&isFinite(r.avg)));
   if(pk){
