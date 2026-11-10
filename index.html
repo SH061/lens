@@ -154,6 +154,15 @@ details.acc[open]>*:not(summary){animation:mIn .3s ease both}
 body.sbc .wrap{grid-template-columns:46px 1fr}
 body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;border-right:1px solid var(--line);background:var(--card)}
 #rail button{justify-content:center;border:0;background:none;color:var(--ink2);padding:9px}#rail button:hover{background:var(--soft)}
+.ups{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px}
+.up1{background:#f1efff;border:1px solid #ddd8ff;border-radius:12px;padding:8px 12px}
+.ub{display:flex;align-items:center;gap:8px;margin:5px 0 3px}.ub .upt{flex:1;height:7px;border-radius:99px;background:rgba(112,72,232,.16);overflow:hidden}.ub .upt i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#16a34a,#4ade80)}.ub b{font-size:11px;color:#15803d;white-space:nowrap}
+.eff{margin-top:12px}.eff .eh{font-size:13px;font-weight:800;color:#6d28d9;margin-bottom:6px}.eff .en{font-size:12px;color:#7c3aed;background:#ede9fe;border-radius:8px;padding:6px 10px;margin-bottom:8px}
+.ef1{border:1px solid;border-radius:10px;padding:8px 12px;margin-bottom:6px}.ef1.e1{background:#fff0f3;border-color:#fecdd3}.ef1.e2{background:#fffbeb;border-color:#fde68a}.ef1.e3{background:#f5f3ff;border-color:#ddd6fe}
+.ef1 .eh1{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}.ef1 .eh1 span{display:flex;align-items:baseline;gap:8px}.ef1 .eh1 b{font-size:14px}.ef1 .eh1 em{font-style:normal;color:var(--good);font-weight:700}.ef1 .eh1 i{font-style:normal;color:#7048e8;font-size:12px}.ef1 .eh1 u{text-decoration:none;font-size:11px;font-weight:700;color:#6d28d9}
+.ef1 .ed{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px}.ef1 .ed .pp{color:#6d28d9}.ef1 .ed .pp b{font-size:14px}.ef1 small{display:block;margin-top:3px;color:var(--ink2)}
+.u1{display:flex;align-items:baseline;gap:8px}.u1 .rk{color:var(--ink2);font-size:12px}.u1 b{font-size:14px}.u1 em{font-style:normal;color:var(--good);font-weight:700}.u1 i{font-style:normal;color:#7048e8;font-size:12px}.u1 .uh{margin-left:auto;color:#7048e8;font-size:11px;font-weight:700}
+.u2{margin-top:4px;font-size:12px}.u2 .pp{color:#7048e8;font-size:13px}.up1 small{display:inline-block;margin-right:8px}
 @media screen{
  #view:not(:has(>.empty)){max-width:none;padding:16px 24px}
  #view>.rep:not(.cd2){background:none;border:0;padding:0;margin:0}
@@ -166,15 +175,8 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .tsum .tile:nth-child(1) b{color:var(--good)}.tsum .tile:nth-child(2) b{color:var(--wtx)}
  .tcol .tile{text-align:center;padding:14px}.tcol .tile b{font-size:26px;display:block;margin-top:2px}.tcol .tile em{margin:0}
  .tcol .tile:nth-child(1) b{color:var(--ink)}.tcol .tile:nth-child(2) b{color:var(--ac)}.tcol .tile:nth-child(3) b{color:var(--good)}.tcol .tile:nth-child(4) b{color:var(--wtx)}
- .ups{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px}
  .up1[hidden]{display:none}
- .up1{background:#f1efff;border:1px solid #ddd8ff;border-radius:12px;padding:8px 12px}
- .ub{display:flex;align-items:center;gap:8px;margin:5px 0 3px}.ub .upt{flex:1;height:7px;border-radius:99px;background:rgba(112,72,232,.16);overflow:hidden}.ub .upt i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#16a34a,#4ade80)}.ub b{font-size:11px;color:#15803d;white-space:nowrap}
- .eff{margin-top:12px}.eff .eh{font-size:13px;font-weight:800;color:#6d28d9;margin-bottom:6px}.eff .en{font-size:12px;color:#7c3aed;background:#ede9fe;border-radius:8px;padding:6px 10px;margin-bottom:8px}
- .ef1{border:1px solid;border-radius:10px;padding:8px 12px;margin-bottom:6px}.ef1.e1{background:#fff0f3;border-color:#fecdd3}.ef1.e2{background:#fffbeb;border-color:#fde68a}.ef1.e3{background:#f5f3ff;border-color:#ddd6fe}
  html[data-theme=dark] .ef1.e1{background:#3a1f27;border-color:#6b2a3a}html[data-theme=dark] .ef1.e2{background:#3a321a;border-color:#6b5a22}html[data-theme=dark] .ef1.e3{background:#221f3a;border-color:#3b3566}html[data-theme=dark] .eff .en{background:#2a2450;color:#c4b5fd}
- .ef1 .eh1{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}.ef1 .eh1 span{display:flex;align-items:baseline;gap:8px}.ef1 .eh1 b{font-size:14px}.ef1 .eh1 em{font-style:normal;color:var(--good);font-weight:700}.ef1 .eh1 i{font-style:normal;color:#7048e8;font-size:12px}.ef1 .eh1 u{text-decoration:none;font-size:11px;font-weight:700;color:#6d28d9}
- .ef1 .ed{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px}.ef1 .ed .pp{color:#6d28d9}.ef1 .ed .pp b{font-size:14px}.ef1 small{display:block;margin-top:3px;color:var(--ink2)}
  .sgrid{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.sin{display:flex;flex-direction:column;gap:3px;border:1px solid var(--line);border-radius:10px;padding:6px 8px;min-width:112px}.sin.ch{border-color:var(--ac)}.sin span{font-size:12px;font-weight:700}.sin small{font-size:11px;color:var(--ink2)}.sin select{width:100%}
  .srst{align-self:flex-end;font-size:12px;height:32px}
  .sgoal{margin-top:10px;font-weight:700}.sgoal input{width:84px}.sgoal select{margin:0 4px}
@@ -189,8 +191,6 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .cpath{display:inline-block;font-weight:700;margin-right:8px}.cpath.alt{font-weight:500;color:var(--ink2)}.cpath.alt::before{content:'또는 ';font-weight:500}
  #csat table{table-layout:auto;width:100%}#csat th,#csat td{padding:8px 10px}#csat td:nth-child(2),#csat td:nth-child(3){white-space:nowrap;text-align:center}#csat td.how{text-align:left;font-size:12px;line-height:1.7;white-space:normal}#csat tr.cu td{background:var(--soft)}#csat select{padding:2px 4px}
  html[data-theme=dark] .up1{background:#221f3a;border-color:#3b3566}
- .u1{display:flex;align-items:baseline;gap:8px}.u1 .rk{color:var(--ink2);font-size:12px}.u1 b{font-size:14px}.u1 em{font-style:normal;color:var(--good);font-weight:700}.u1 i{font-style:normal;color:#7048e8;font-size:12px}.u1 .uh{margin-left:auto;color:#7048e8;font-size:11px;font-weight:700}
- .u2{margin-top:4px;font-size:12px}.u2 .pp{color:#7048e8;font-size:13px}.up1 small{display:inline-block;margin-right:8px}
  .rep.cls .rh{display:flex}
 }
 .hs{font-size:12px;font-weight:400;color:var(--ink2);margin-left:6px}
@@ -296,7 +296,7 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .dualrow{display:grid;grid-template-columns:1fr 1fr;gap:14px}.dualrow>.cd2{margin-bottom:8px}
  .ups .up1:nth-child(n+7){display:none} .stb td br,.pbx .pr br{display:none}.stb td small{margin-left:5px}.stb td{padding:2px 4px}.pbx .pr{font-size:10px}.pbx .pr b:first-child{font-size:11px}.nsw{font-size:10px;margin-top:2px}.gbd{font-size:10px;padding:0 5px;min-width:0}.pbx .pos{padding:1px 0!important;border:0!important;gap:8px!important}.rdw{width:62%!important}
  .ups{display:block}
- .up1{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;border:0;border-bottom:1px solid #ddd;border-radius:0;padding:2px 0;margin:0;break-inside:avoid}
+ .up1{background:none;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;border:0;border-bottom:1px solid #ddd;border-radius:0;padding:2px 0;margin:0;break-inside:avoid}
  .u1{display:flex;gap:8px;align-items:baseline}.u1 .uh,.ub{display:none}.u1 i,.u1 em{font-style:normal}
  .u2,.up1 small{font-size:9.5px;display:inline}
  .cw canvas{max-width:100%}
@@ -414,6 +414,32 @@ dialog li{margin:6px 0}
   .rep:last-child{break-after:auto}
   .card,.tile,tr{break-inside:avoid}
   body.pa #main{display:none}body.pa #printArea{display:block}
+}
+
+/* 내신 한 명 인쇄 — 화면의 카드 모양 그대로 줄여서 2쪽에 담는다 (원본과 같은 방식) */
+@media print{
+ body.pn #view>.rep{zoom:.56}
+ body.pn .cd2{border:1px solid #d9dde3;border-radius:12px;padding:12px 14px;margin:0 0 10px;break-inside:auto;background:#fff}
+ body.pn .cd2.vsec{display:block!important}body.pn .so.eff{display:block!important}
+ body.pn .sub2{display:block;font-size:10px;color:#555}
+ body.pn .cd2 h3,body.pn .rep h3{font-size:14px;margin:0 0 8px}body.pn .cd2 h3 .ci{display:inline-block}
+ body.pn .ups .up1:nth-child(n+7){display:flex}
+ body.pn .dualrow{gap:12px;break-inside:avoid}body.pn .dualrow .cw{width:64%;margin:0 auto}body.pn .cbx .cw{width:100%}body.pn .cd2{break-inside:avoid}
+ body.pn table{font-size:11px}body.pn th,body.pn td{padding:5px 8px}
+ body.pn .tile b{font-size:18px}body.pn .cd2.cls{display:none!important}
+}
+@media print{
+ .simw{display:none}body.pn .simw{display:block}body.pn .simw .gchips,body.pn .simw button,body.pn .simw .sin+*{display:none}
+ body.pn .ups{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+ body.pn .up1{display:block;background:#f1efff;border:1px solid #ddd8ff;border-radius:12px;padding:8px 12px;margin:0}
+ body.pn .u1{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}body.pn .u1 .uh{display:inline}body.pn .ub{display:flex}
+ body.pn .u2,body.pn .up1 small{display:block;font-size:11px;margin-top:2px}
+ body.pn .dualrow.dd .pos{grid-template-columns:90px 1fr 120px!important}
+}
+.ptn{display:none}@media print{body.pn .ptn{display:inline}}
+@media print{
+ body.pa .rep.bn{zoom:.56}body.pa .rep.bn .dualrow .cw{width:56%}body.pa .rep.bn .cbx .cw{width:100%}
+ body.pa .rep.bn .foot{display:none}body.pa .rep.bm{zoom:.57}body.pa .rep.bm .cw{width:62%;margin:0 auto}
 }
 </style>
 </head>
@@ -1117,7 +1143,7 @@ function report(name,pre=''){
   if(!rs.length)return {html:`<div class="empty">${esc(name)} 학생의 내신 성적이 없습니다.</div>`,charts};
   const school=esc($('#school').value.trim());
   const gv=rs.filter(r=>isFinite(r.v)).map(r=>r.v);
-  let h=`<div class="rep"><header class="rh"><h2>${esc(name)} 성적 분석 상담 자료</h2><div class="rm">${school} · 과목 ${rs.length}개 · 평균 ${f2(a.all.avg)}등급<br>출력일 ${new Date().toLocaleDateString('ko-KR')}</div></header>`;
+  let h=`<div class="rep"><header class="rh"><h2>${esc(name)}<span class="ptn"> 내신</span> 성적 분석 상담 자료</h2><div class="rm">${school} · 과목 ${rs.length}개 · 평균 ${f2(a.all.avg)}등급<br>출력일 ${new Date().toLocaleDateString('ko-KR')}</div></header>`;
 
   h+=`<h3>학생 요약</h3><div class="tiles tsum">
     <div class="tile"><small>선택 과목 수</small><b>${rs.length}개</b></div>
@@ -1174,7 +1200,7 @@ function report(name,pre=''){
 
   if(pre===''){
     SIM={rs:a.rs,keys,S};
-    h+=`<div class="no-print"><h3>목표 시뮬레이션</h3><div class="sub2">남은 학기에 이 정도 받으면 최종 평균이 어떻게 되는지, 목표 평균에 필요한 등급은 몇인지 계산합니다.</div><div id="sim_o"></div></div>`;
+    h+=`<div class="simw"><h3>목표 시뮬레이션</h3><div class="sub2">남은 학기에 이 정도 받으면 최종 평균이 어떻게 되는지, 목표 평균에 필요한 등급은 몇인지 계산합니다.</div><div id="sim_o"></div></div>`;
   }
   if(str(MEMO[name]))h+=`<h3>상담 메모</h3><div class="memo">${esc(MEMO[name])}</div>`;
   h+=`<div class="foot">성적 돋보기 · 상담 자료 · 교내 상담 목적으로만 사용해 주세요.</div></div>`;
@@ -1457,12 +1483,14 @@ function cardify(rep,order){
       const ic=(CI.find(([re])=>re.test(t.textContent))||[0,'file'])[1];t.insertAdjacentHTML('afterbegin',`<span class="ci">${svg(ic,16)}</span>`);secs.push(cur);rep.insertBefore(cur,e)}
     if(cur)cur.appendChild(e);
   }
-  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저)/.test(c.title))c.classList.add('nop');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
+  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저)/.test(c.title))c.classList.add('nop');if(/^가상/.test(c.title))c.classList.add('vsec');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
     secs.forEach(c=>{if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
     const A=secs.find(c=>/^강점/.test(c.title)),B=secs.find(c=>/^과목군별/.test(c.title));
-    if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}}
+    if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}
+    const P=secs.find(c=>/^원점수 위치/.test(c.title)),G=secs.find(c=>/^목표 시뮬/.test(c.title));
+    if(P&&G){const d=document.createElement('div');d.className='dualrow dd';rep.insertBefore(d,P);d.append(P,G)}}
 }
 function bindCls(v){v.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>pick(b.dataset.pick));if($('#mvth'))$('#mvth').onchange=e=>{MVTH=+e.target.value;render()};if($('#hmr'))$('#hmr').onchange=e=>{HMR=e.target.value;render()};if($('#prx'))$('#prx').onclick=prioXlsx}
 function mount(el,rep,list=charts,post){
@@ -1530,15 +1558,17 @@ function doPrint(all){
   if(!all&&!cur)return toast('학생을 먼저 선택하세요.');
   const prevT=THEME;if(prevT!=='light')setTheme('light',false); // 종이에는 항상 흰 바탕
   const el=$('#printArea'),pc=[];el.innerHTML='';
+  const pn=!all&&tab==='n';document.body.classList.toggle('pn',pn);
   if(all){
     ANIM=false;
     students.forEach((s,i)=>{
-      if(rows.some(r=>r.name===s))mount(el,report(s,`p${i}_`),pc,b=>cardify(b,true));
-      if(mock.some(m=>m.name===s)){mount(el,mockReport(s,`q${i}_`),pc,b=>cardify(b,false))}
+      let pos=null;const hm=mock.some(m=>m.name===s);
+      if(rows.some(r=>r.name===s))mount(el,report(s,`p${i}_`),pc,b=>{cardify(b,true);b.classList.add('bn');{const R=b.querySelectorAll('.stb tbody tr').length;b.style.zoom=(.56*Math.min(1,24/(R+10))).toFixed(3)}if(hm){pos=[...b.querySelectorAll('.cd2')].find(c=>/^원점수 위치/.test(c.title));if(pos)pos.remove()}});
+      if(hm)mount(el,mockReport(s,`q${i}_`),pc,b=>{cardify(b,false);b.classList.add('bm');{const N=new Set(mock.filter(m=>m.name===s).map(m=>m.round)).size;b.style.zoom=(.57*Math.min(1,1490/(1100+130*N))).toFixed(3)}const h=b.querySelector('.rh');if(pos)(h||b.firstChild).after(pos)});
     });
     document.body.classList.add('pa');
   }
-  const done=()=>{ANIM=true;document.body.classList.remove('pa');destroy(pc);el.innerHTML='';if(prevT!=='light')setTheme(prevT,false);removeEventListener('afterprint',done)};
+  const done=()=>{ANIM=true;document.body.classList.remove('pa','pn');destroy(pc);el.innerHTML='';if(prevT!=='light')setTheme(prevT,false);removeEventListener('afterprint',done)};
   addEventListener('afterprint',done);
   setTimeout(()=>print(),150);
 }
