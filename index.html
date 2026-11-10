@@ -194,8 +194,49 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
 .dualrow{display:grid;grid-template-columns:1fr 1fr;gap:16px}.dualrow>.cd2{margin-bottom:16px}
 .sw{margin-top:8px;font-size:12.5px;display:grid;gap:2px}
 @media(max-width:900px){.dualrow{grid-template-columns:1fr}}
+
+/* ── 원본 맞춤: 선택 칩·등급 배지·강점약점·원점수 위치·학급 ── */
+.gchips button{height:34px;padding:0 14px;font-size:13px;display:inline-flex;align-items:center;gap:6px;position:relative}
+.gchips.sm button{height:28px;padding:0 11px;font-size:12px}
+.gchips:not(.sm) button.on::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-4px;border:4px solid transparent;border-top-color:var(--gc,var(--ac));border-bottom:0}
+.gchips.sm button.on::after{display:none}
+.gbd{display:inline-block;min-width:38px;padding:2px 9px;border-radius:99px;font-weight:700;font-size:12px;text-align:center;font-variant-numeric:tabular-nums}
+.g1{background:#cdeed9;color:#0b5d34}.g2{background:#dcf2d0;color:#2f5d0b}.g3{background:#eaf3cf;color:#3f5a0e}.g4{background:#f6f1c4;color:#6b5a00}.g5{background:#fdf0c8;color:#7a5200}.g6{background:#fde1c4;color:#8a4300}.g7{background:#fbd5d0;color:#9b2a1d}.g8{background:#f9c9c9;color:#8c1d1d}.g9{background:#f4b8b8;color:#7a1414}
+.cbsw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.tpb{display:inline-block;margin-left:4px;padding:0 5px;border:1px dashed var(--ink2);border-radius:99px;font-size:10px;font-weight:600;color:var(--ink2)}
+.rdw{max-width:400px;margin:0 auto}
+.nsw{margin-top:8px;font-size:12.5px;display:grid;gap:3px}.nsw .g{color:var(--good)}.nsw .r{color:var(--bad)}
+.nsw i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.nsw .g i{background:var(--good)}.nsw .r i{background:var(--bad)}
+.pbx .pos{grid-template-columns:140px 1fr 180px;gap:12px;padding:7px 0;margin:0;border-bottom:1px solid var(--line)}
+.pbr .pos:last-child{border-bottom:0}
+.pbx .pn{display:flex;gap:6px;align-items:center;font-weight:600}
+.pbx .trk{height:8px;background:var(--soft) linear-gradient(90deg,transparent calc(25% - 1px),#d7dbe2 calc(25% - 1px),#d7dbe2 25%,transparent 25%,transparent calc(50% - 1px),#d7dbe2 calc(50% - 1px),#d7dbe2 50%,transparent 50%,transparent calc(75% - 1px),#d7dbe2 calc(75% - 1px),#d7dbe2 75%,transparent 75%)}
+.pbx .trk .dot{box-shadow:none;border-color:#fff;background:var(--gc)}
+.pbx .hi{--gc:var(--good)}.pbx .mid{--gc:#7b8494}.pbx .lo{--gc:var(--bad)}
+.pbx .pr{font-size:12px;color:var(--ink2);line-height:1.35}.pbx .pr b:first-child{font-size:16px;color:var(--ink)}
+.pbx .hi .pr b.df{color:var(--good)}.pbx .lo .pr b.df{color:var(--bad)}
+.psc{position:relative;height:14px;font-size:10px;color:var(--ink2)}.psc span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.plg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:8px}.plg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.mkt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.mkt>div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card)}
+.mkt small{display:block;color:var(--ink2);font-size:11.5px}.mkt b{display:block;font-size:24px;margin:2px 0;font-variant-numeric:tabular-nums}.mkt em{font-style:normal;font-size:11.5px;color:var(--ink2)}
+.mkt .me b{color:var(--ac)}
+.clk{display:flex;gap:10px;align-items:flex-start;background:var(--wbg);border:1px solid var(--wln);color:var(--wtx);border-radius:10px;padding:10px 14px;font-size:12.5px;margin:6px 0}
+.clk b{display:block}
+.hist{display:flex;align-items:flex-end;gap:6px;height:150px;margin-top:10px;border-bottom:1px solid var(--line)}
+.hist>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:11px;color:var(--ink2)}
+.hist i{display:block;width:100%;max-width:56px;border-radius:5px 5px 0 0;background:color-mix(in srgb,var(--ac) 28%,#fff)}
+.hist .me i{background:var(--ac)}
+.hlab{display:flex;gap:6px}.hlab span{flex:1;text-align:center;font-size:10.5px;color:var(--ink2);padding-top:4px}
+.hx{text-align:center;font-size:11.5px;color:var(--ink2);margin-top:4px}
+.mbar{display:flex;align-items:center;gap:8px}.mbar i{display:block;height:8px;border-radius:4px;background:var(--ac);opacity:.75}
+.pcard textarea{width:100%;height:320px;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--soft);color:var(--ink);resize:vertical}
+.pcard .ph{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pcard .pl{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--ink2)}.pcard .pl a{color:var(--ac);font-weight:600}
 @media print{
  #toast{display:none!important}
+ .so,.pcard{display:none!important}
  .cd2{border:0;border-radius:0;padding:0;margin:0 0 8px;break-inside:avoid;background:none}
  .cd2.nop,.gchips{display:none!important}
  .cd2 h3,.rep h3{display:block;font-size:11px;margin:8px 0 4px}.cd2 h3 .ci{display:none}
@@ -210,16 +251,16 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  th{background:none;border-bottom:1px solid #999}
  .note{background:none;padding:0;font-size:9.5px;color:#555;margin:4px 0}
  .dualrow{display:grid;grid-template-columns:1fr 1fr;gap:14px}.dualrow>.cd2{margin-bottom:8px}
- .sw{font-size:10px}
+ .ups .up1:nth-child(n+7){display:none} .stb td br,.pbx .pr br{display:none}.stb td small{margin-left:5px}.stb td{padding:2px 4px}.pbx .pr{font-size:10px}.pbx .pr b:first-child{font-size:11px}.nsw{font-size:10px;margin-top:2px}.gbd{font-size:10px;padding:0 5px;min-width:0}.pbx .pos{padding:1px 0!important;border:0!important;gap:8px!important}.rdw{width:62%!important}
  .ups{display:block}
  .up1{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;border:0;border-bottom:1px solid #ddd;border-radius:0;padding:2px 0;margin:0;break-inside:avoid}
  .u1{display:flex;gap:8px;align-items:baseline}.u1 .uh{display:none}.u1 i,.u1 em{font-style:normal}
  .u2,.up1 small{font-size:9.5px;display:inline}
  .cw canvas{max-width:100%}
  .mt th.rk{background:none!important;color:#111!important;border:1px solid #999}.mt th.rl{background:none}.chc,.mnote{break-inside:avoid}
- .pos{grid-template-columns:90px 1fr 150px!important;font-size:10px;margin:2px 0}.pos .pd{grid-column:auto!important}
+ .dual{grid-template-columns:1fr 1fr!important;gap:8px!important}.dual .card{padding:4px 6px} .pn{white-space:nowrap}.pos{grid-template-columns:135px 1fr 165px!important;font-size:10px;margin:2px 0}.pos .pd{grid-column:auto!important}
  .note{background:none!important}
- .cbx{display:grid;grid-template-columns:1.25fr 1fr;gap:0 12px;align-items:center}.cbx h3{grid-column:1/3}.cbx .cw{grid-column:1;grid-row:2}.cbx table{grid-column:2;grid-row:2;margin:0!important}
+ .cbx{display:grid;grid-template-columns:1.25fr 1fr;gap:0 12px;align-items:center}.cbx h3{grid-column:1/3}.cbx .cw{grid-column:1;grid-row:2}.cbx .cbt{grid-column:2;grid-row:2}.cbx .cbt table{margin:0!important}
  th,td{padding:1px 4px}.chip{font-size:10px;padding:0 5px}
  .tsum .tile{padding:3px}.tsum .tile b{font-size:17px}.tcol .tile{padding:3px 8px}.cd2 h3,.rep h3{margin:5px 0 3px}.cd2{margin-bottom:5px}
  .up1{padding:1px 0}.rh{margin-bottom:3px}
@@ -514,7 +555,7 @@ const IC={search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M7.5 12l
 file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',table:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/>',
 up:'<path d="M12 16V4m0 0-4 4m4-4 4 4M4 20h16"/>',print:'<path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7"/>',
 users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>',
-user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',layers:'<path d="M12 3 3 8l9 5 9-5-9-5zM3 13l9 5 9-5"/>',clip:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6"/>',book:'<path d="M4 5a2 2 0 0 1 2-2h6v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-6v17h6a2 2 0 0 1 2 2z"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',layers:'<path d="M12 3 3 8l9 5 9-5-9-5zM3 13l9 5 9-5"/>',sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',radar:'<path d="M12 3l8.5 6.2-3.2 10H6.7l-3.2-10z"/><path d="M12 8l4.2 3-1.6 5h-5.2l-1.6-5z"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/>',pulse:'<path d="M3 12h4l2-6 4 12 2-6h6"/>',clip:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6"/>',book:'<path d="M4 5a2 2 0 0 1 2-2h6v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-6v17h6a2 2 0 0 1 2 2z"/>',
 lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',scale:'<path d="M12 3v18M8 21h8M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/>',pin:'<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>',half:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/>'};
 const svg=(n,s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
 document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=svg(e.dataset.ic,+e.dataset.s||16));
@@ -525,7 +566,8 @@ const GORDER=['국어','수학','영어','사회','과학','기타'];
 const GRP=[['국어',/국어|문학|독서|화법|작문|언어|매체/],['수학',/수학|대수|미적분|확률|기하/],['영어',/영어/],['사회',/사회|한국사|역사|지리|윤리|정치|경제|법/],['과학',/과학|물리|화학|생명|지구/]];
 const grp=s=>(GRP.find(([,re])=>re.test(s))||['기타'])[0];
 const COMBOS=[['전과목',null],['국영수',['국어','수학','영어']],['국영수사',['국어','수학','영어','사회']],['국영수과',['국어','수학','영어','과학']]];
-const PAL={국어:'#e5484d',수학:'#2f6fed',영어:'#f5a524',사회:'#8e4ec6',과학:'#12a594',기타:'#8b93a1',전체:'#8b93a1'};
+const PAL={국어:'#2dd4bf',수학:'#e06b8b',영어:'#f59e0b',사회:'#8b5cf6',과학:'#10b981',기타:'#94a3b8',전체:'#374151'};
+const CBC=['#8b93a1','#1554d1','#15803d','#f59e0b'];
 const NF=[['name','성명',/성명|이름/],['grade','학년',/^학년$/],['sem','학기',/^학기$/],['subject','과목',/^과목(명)?$/],['credit','단위수',/단위|학점/],['g','석차등급',/석차등급|^등급$/],['rank','석차',/^석차($|\()|^등수$|^석차.*(수강|인원)/],['n','수강자수',/수강자|이수자|재적|인원/],['score','원점수',/원점수|^점수$/],['avg','과목평균',/평균/],['ach','성취도',/^성취도$/],['dist','분포비율',/분포/]];
 const MF=[['name',/성명|이름/],['round',/회차|시행|시험/],['area',/^영역$|^과목(명)?$/],['raw',/원점수/],['std',/표준/],['pct',/백분위/],['g',/등급/]];
 // 정시 라인 대학군 표 — 예시 기본값(실제 입결 아님). 사용자가 화면에서 고쳐 저장한다.
@@ -974,30 +1016,50 @@ const ink=()=>getComputedStyle(document.documentElement).getPropertyValue('--ink
 /* 차트 설정 */
 let ANIM=true;const AN=()=>ANIM?{duration:650,easing:'easeOutQuart'}:false; // 인쇄용 차트는 애니메이션 없이 바로 그린다
 const lineCfg=(labels,datasets,S)=>({type:'line',data:{labels,datasets},options:{responsive:false,animation:AN(),devicePixelRatio:2,spanGaps:true,
-  scales:{y:{reverse:true,min:1,max:S,ticks:{stepSize:1,callback:v=>v+'등급'}}},plugins:{legend:{position:'bottom',labels:{boxWidth:12}}}}});
-const radarCfg=(labels,vals,S,color)=>({type:'radar',data:{labels,datasets:[{data:vals.map(v=>S+1-v),backgroundColor:color+'33',borderColor:color,pointBackgroundColor:color}]},
-  options:{responsive:false,animation:AN(),devicePixelRatio:2,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${f2((c.chart._vals||vals)[c.dataIndex])}등급`}}},
-  scales:{r:{min:0,max:S,pointLabels:{font:{size:12,weight:'600'}},ticks:{stepSize:1,font:{size:10},backdropColor:'transparent',callback:v=>v>=1?(S+1-v)+'등급':''}}}}});
+  scales:{y:{reverse:true,min:1,max:S,ticks:{stepSize:1,callback:v=>v+'등급'}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:8,padding:14}}}}});
+const f1=v=>parseFloat(v.toFixed(2)),tl=k=>`${k/10|0}-${k%10}`;
+const gbd=v=>isFinite(v)?`<span class="gbd g${Math.min(9,Math.max(1,Math.round(v)))}">${f2(v)}</span>`:'<span class="mut">-</span>';
+function rdStyle(vals,base){const t=vals.map(v=>v<=base-.3?1:v>=base+.3?-1:0);
+  return {pointRadius:t.map(x=>x?7:4.5),pointHoverRadius:t.map(x=>x?8:6),pointBorderWidth:2,pointBackgroundColor:t.map(x=>x>0?'#16a34a':x<0?'#dc2626':'#fff'),pointBorderColor:t.map(x=>x?'#fff':'#0d9488')}}
+const rdLabel={id:'rdLabel',afterDatasetsDraw(c){const d=c.data.datasets[0],r=c.scales.r,{ctx}=c;ctx.save();ctx.font='700 11px '+Chart.defaults.font.family;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.lineJoin='round';
+  c.getDatasetMeta(0).data.forEach((p,i)=>{const v=d._g[i];if(!isFinite(v))return;const dx=p.x-r.xCenter,dy=p.y-r.yCenter,L=Math.hypot(dx,dy)||1,o=(d.pointRadius[i]||5)+11,x=p.x+dx/L*o,y=p.y+dy/L*o-(L<2?o:0);
+    ctx.strokeStyle='#fff';ctx.strokeText(f1(v),x,y);ctx.fillStyle=v<=d._b-.3?'#15803d':v>=d._b+.3?'#c62828':'#33564a';ctx.fillText(f1(v),x,y)});ctx.restore()}};
+const radarCfg=(labels,vals,S,base)=>({type:'radar',plugins:[rdLabel],data:{labels,datasets:[
+  {data:vals.map(v=>S+1-v),backgroundColor:'rgba(45,212,191,.22)',borderColor:'#0d9488',borderWidth:2.5,...rdStyle(vals,base),_g:vals,_b:base},
+  {data:labels.map(()=>S+1-base),borderColor:'rgba(80,90,100,.75)',borderDash:[5,4],borderWidth:1.5,pointRadius:0,pointHitRadius:0,fill:false,backgroundColor:'transparent'}]},
+  options:{responsive:false,animation:AN(),devicePixelRatio:2,layout:{padding:16},plugins:{legend:{display:false},tooltip:{filter:i=>i.datasetIndex===0,callbacks:{label:c=>`${f2(c.dataset._g[c.dataIndex])}등급`}}},
+  scales:{r:{min:0,max:S,pointLabels:{font:{size:11,weight:'700'},color:ink(),padding:10},ticks:{stepSize:1,font:{size:10},backdropColor:'transparent',callback:v=>{const g=S+1-v;return g===1||g===S?g+'등급':''}}}}}});
 const ds=(label,data,color,dash)=>({label,data,borderColor:color,backgroundColor:color,tension:.25,borderDash:dash?[5,4]:[],pointRadius:3});
 
 const gs=g=>g==='기타'?'예체능·기타':g, gb=g=>g==='기타'?'예체능·기타':g+'계열';
 const SUBPAL=['#0f9d8a','#e5484d','#2f6fed','#f5a524','#8e4ec6','#12a594','#d6409f','#6b7280','#3b82f6','#ca8a04'];
 const TR={},CB={};
-const barLbl=S=>({id:'barLbl',afterDatasetsDraw(c){const {ctx}=c;ctx.save();ctx.font='700 11px '+Chart.defaults.font.family;ctx.textAlign='center';ctx.fillStyle=ink();
-  c.getDatasetMeta(0).data.forEach((b,i)=>{const v=S+1-c.data.datasets[0].data[i];ctx.fillText(f2(v)+'등급',b.x,b.y-5)});ctx.restore()}});
+const barLbl=S=>({id:'barLbl',afterDatasetsDraw(c){const {ctx}=c,d=c.data.datasets[0];ctx.save();ctx.font='700 11px '+Chart.defaults.font.family;ctx.textAlign='center';ctx.lineWidth=3;ctx.lineJoin='round';
+  c.getDatasetMeta(0).data.forEach((b,i)=>{const t=f1(S+1-d.data[i])+'등급';ctx.strokeStyle='#fff';ctx.strokeText(t,b.x,b.y-6);ctx.fillStyle=d.borderColor[i];ctx.fillText(t,b.x,b.y-6)});ctx.restore()}});
 function trSets(pre,g){const {keys,groups,rs}=TR[pre];
   if(g==='*'){const sets=groups.map(x=>ds(gb(x),keys.map(k=>wavg(rs.filter(r=>sk(r)===k&&grp(r.subject)===x)).avg||null),PAL[x],true));
     sets.push(ds('전체과목',keys.map(k=>wavg(rs.filter(r=>sk(r)===k)).avg||null),ink(),false));return sets}
   return [...new Set(rs.filter(r=>grp(r.subject)===g).map(r=>r.subject))].map((sj,i)=>ds(sj,keys.map(k=>{const r=rs.find(r=>r.subject===sj&&sk(r)===k);return r&&isFinite(r.v)?r.v:null}),SUBPAL[i%SUBPAL.length]))}
 function chipOn(b){b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))}
 function trSel(pre,g,b){const c=Chart.getChart(pre+'tr');if(!c)return;c.data.datasets=trSets(pre,g);c.update();chipOn(b)}
-function cbSets(pre,mode){const {keys,rs}=CB[pre];return COMBOS.map(([n,set],i)=>ds(n,keys.map(k=>{const L=rs.filter(r=>(mode==='cum'?sk(r)<=k:sk(r)===k)&&inC(r,set));return L.length?wavg(L).avg:null}),['#1a1d23','#1553d6','#15803d','#b45309'][i],i>0))}
-function cbRange(sets,S,y){const v=sets.flatMap(d=>d.data).filter(x=>x!=null&&isFinite(x));if(!v.length)return;y.min=Math.max(1,Math.floor((Math.min(...v)-.2)*2)/2);y.max=Math.min(S,Math.ceil((Math.max(...v)+.2)*2)/2);y.ticks.stepSize=.5}
-function cbSel(pre,mode,b){const c=Chart.getChart(pre+'cb');if(!c)return;c.data.datasets=cbSets(pre,mode);cbRange(c.data.datasets,CB[pre].S,c.options.scales.y);c.update();chipOn(b)}
-function rdSel(pre,mode,b){const c=Chart.getChart(pre+'rd');if(!c)return;const {rs,groups,S}=TR[pre];
-  const lab=mode==='g'?groups.map(gs):[...new Set(rs.map(r=>r.subject))];
-  const vals=mode==='g'?groups.map(g=>wavg(rs.filter(r=>grp(r.subject)===g)).avg):lab.map(sj=>wavg(rs.filter(r=>r.subject===sj)).avg);
-  c._vals=vals;c.data.labels=lab;c.data.datasets[0].data=vals.map(v=>S+1-v);c.update();chipOn(b)}
+function cbVals(pre,mode){const {keys,rs}=CB[pre];return COMBOS.map(([n,set])=>keys.map(k=>{const L=rs.filter(r=>(mode==='cum'?sk(r)<=k:sk(r)===k)&&inC(r,set));return L.length?wavg(L).avg:null}))}
+function cbSets(pre,mode){const {prov}=CB[pre],V=cbVals(pre,mode);return COMBOS.map(([n],i)=>{const c=CBC[i];return {label:n,data:V[i],borderColor:c,backgroundColor:c,tension:.25,borderWidth:2.5,pointRadius:4.5,pointBorderWidth:2,pointBorderColor:c,pointBackgroundColor:x=>prov[x.dataIndex]?'#fff':c,segment:{borderDash:x=>prov[x.p1DataIndex]?[5,4]:undefined}}})}
+function cbRange(sets,S,y){const v=sets.flatMap(d=>d.data).filter(x=>x!=null&&isFinite(x));if(!v.length)return;y.min=Math.max(1,Math.floor(Math.min(...v)*2)/2-.5);y.max=Math.min(S,Math.ceil(Math.max(...v)*2)/2+.5);y.ticks.stepSize=.5;y.ticks.callback=x=>f1(x)+'등급'}
+function cbTable(pre,mode){const {keys,prov}=CB[pre],V=cbVals(pre,mode);
+  return `<table><thead><tr><th class="l">조합</th>${keys.map((k,i)=>`<th>${tl(k)}${prov[i]?'<span class="tpb">예상</span>':''}</th>`).join('')}<th>첫 학기 대비</th></tr></thead><tbody>${COMBOS.map(([n],i)=>{const ok=V[i].filter(x=>x!=null&&isFinite(x));
+    return `<tr><td class="l"><i class="cbsw" style="background:${CBC[i]}"></i>${n}</td>${V[i].map(x=>`<td>${x==null?'<span class="mut">-</span>':gbd(x)}</td>`).join('')}<td>${ok.length>=2?delta(ok[ok.length-1]-ok[0]):'-'}</td></tr>`}).join('')}</tbody></table>`}
+const CBN={sem:'학기별은 그 학기 과목만의 평균입니다. 오르내림을 보기에 좋습니다.',cum:'누적은 그 학기까지 들은 모든 과목의 학점 가중 평균입니다. 실제 대학이 보는 값에 가깝습니다.'};
+function cbSel(pre,mode,b){const c=Chart.getChart(pre+'cb');if(!c)return;c.data.datasets=cbSets(pre,mode);cbRange(c.data.datasets,CB[pre].S,c.options.scales.y);c.update();chipOn(b);
+  const t=document.getElementById(pre+'cbt'),n=document.getElementById(pre+'cbn');if(t)t.innerHTML=cbTable(pre,mode);if(n)n.textContent=CBN[mode]}
+function rdList(pre,mode){const {rs,groups}=TR[pre];return mode==='g'?groups.map(g=>[gs(g),wavg(rs.filter(r=>grp(r.subject)===g)).avg]):[...new Set(rs.map(r=>r.subject))].map(sj=>[sj,wavg(rs.filter(r=>r.subject===sj)).avg])}
+function rdNote(pre,mode){const {base}=TR[pre],L=rdList(pre,mode),j=a=>a.length?a.map(x=>`${esc(x[0])} ${f2(x[1])}`).join(' · '):'없음';
+  return `<div class="nsw ns-radar-sw"><div class="g"><i></i><b>강점</b> ${j(L.filter(x=>x[1]<=base-.3))}</div><div class="r"><i></i><b>약점</b> ${j(L.filter(x=>x[1]>=base+.3))}</div><small class="mut">점선은 이 학생 전체 평균 ${f2(base)}입니다. 평균보다 0.3등급 이상 좋으면 강점, 나쁘면 약점입니다.</small></div>`}
+function rdSel(pre,mode,b){const c=Chart.getChart(pre+'rd');chipOn(b);const n=document.getElementById(pre+'rdn');if(n)n.innerHTML=rdNote(pre,mode);if(!c)return;const {S,base}=TR[pre],L=rdList(pre,mode),vals=L.map(x=>x[1]),d=c.data.datasets[0];
+  c.data.labels=L.map(x=>x[0]);d.data=vals.map(v=>S+1-v);Object.assign(d,rdStyle(vals,base));d._g=vals;d._b=base;c.data.datasets[1].data=L.map(()=>S+1-base);c.update()}
+const POS={};
+function posRows(pre,k){return POS[pre].rs.filter(r=>sk(r)===k&&isFinite(r.score)&&isFinite(r.avg)).map(r=>{const d=r.score-r.avg,c=d>=10?'hi':d<=-10?'lo':'mid';
+  return `<div class="pos ${c}"><span class="pn">${esc(r.subject)} ${gbd(r.v)}</span><div class="trk"><i class="avg" style="left:${r.avg}%"></i><b class="dot" style="left:${Math.min(100,Math.max(0,r.score))}%"></b></div><span class="pr"><b>${r.score}</b> / ${r.avg}<br>${Math.abs(d)<.05?'평균과 같음':`평균보다 <b class="df">${Math.abs(d).toFixed(1)}점</b> ${d>0?'높음':'낮음'}`}</span></div>`}).join('')}
+function posSel(pre,k,b){chipOn(b);document.getElementById(pre+'posb').innerHTML=posRows(pre,k);const t=document.getElementById(pre+'post');if(t)t.textContent=`(${kl(k)})`}
 /* ───── 내신 리포트 ───── */
 function report(name,pre=''){
   const a=analyze(name),{rs,keys,groups,S}=a,charts=[];
@@ -1026,36 +1088,34 @@ function report(name,pre=''){
   h+=`</tbody></table><div class="note">「위치」는 소수점 등급입니다. 정수 부분이 실제(또는 예상) 등급이고, 소수점은 그 등급 구간 안에서 석차가 어디쯤인지입니다. 4.05는 4등급 위쪽(조금만 더 하면 3등급), 4.82는 아래쪽(5등급으로 내려갈 수도)입니다. 석차·수강자수가 있는 과목만 계산하며 평균에는 쓰이지 않습니다.</div>`;
 
   const base=a.all.avg,st=groups.filter(g=>a.gAvg[g].avg<=base-.3),wk=groups.filter(g=>a.gAvg[g].avg>=base+.3);
-  TR[pre]={keys,groups,rs,S};CB[pre]={keys,rs,S};
+  TR[pre]={keys,groups,rs,S,base};CB[pre]={keys,rs,S,prov:keys.map(k=>rs.filter(r=>sk(r)===k).every(r=>r.vir))};
   h+=`<h3>등급 변화 추이</h3><div class="sub2">위로 갈수록 좋은 등급입니다. 「전체과목」은 교과마다 그 학기 과목들의 평균을 선 하나로 이어 한 그림에 겹쳐 보여 주고, 점을 올리면 그 학기 평균 등급이 나옵니다. 탭으로 교과 하나만 볼 수도 있습니다. 인쇄에는 들어가지 않습니다 — 인쇄물에서는 아래 「반영 조합별 평균 추이」와 과목별 성적표가 이 내용을 대신합니다.</div>`;
   if(keys.length>=2){
     h+=`<div class="gchips"><button class="on" style="--gc:#2b3140" onclick="trSel('${pre}','*',this)">전체과목 (${new Set(rs.map(r=>r.subject)).size})</button>${groups.map(g=>`<button style="--gc:${PAL[g]}" onclick="trSel('${pre}','${g}',this)">${gb(g)} (${new Set(rs.filter(r=>grp(r.subject)===g).map(r=>r.subject)).size})</button>`).join('')}</div><div class="cw"><canvas id="${pre}tr" width="900" height="280"></canvas></div>`;
     charts.push([pre+'tr',lineCfg(keys.map(kl),trSets(pre,'*'),S)]);
   }else h+=`<div class="note">학기가 하나뿐이라 추이는 다음 학기부터 볼 수 있습니다.</div>`;
-  h+=`<h3>반영 조합별 평균 추이</h3><div class="sub2">대학이 많이 보는 조합으로 묶은 핵심 과목 평균입니다. 위로 갈수록 좋은 등급이고, 세로축은 차이가 보이도록 이 학생 범위로 확대했습니다.</div>`;
+  h+=`<h3>반영 조합별 평균 추이</h3><div class="sub2">대학이 많이 보는 조합으로 묶은 학점 가중 평균입니다. 위로 갈수록 좋은 등급이고, 세로축은 차이가 보이도록 이 학생 범위로 확대했습니다. 점선·빈 점은 아직 확정되지 않은 예상 학기입니다.</div>`;
   if(keys.length>=2){
     h+=`<div class="gchips"><button class="on" onclick="cbSel('${pre}','sem',this)">학기별 평균</button><button onclick="cbSel('${pre}','cum',this)">그 학기까지 누적</button></div><div class="cw"><canvas id="${pre}cb" width="900" height="260"></canvas></div>`;
-    const cs=cbSets(pre,'sem'),cfg=lineCfg(keys.map(kl),cs,S);cbRange(cs,S,cfg.options.scales.y);charts.push([pre+'cb',cfg]);
+    const cs=cbSets(pre,'sem'),cfg=lineCfg(keys.map((k,i)=>CB[pre].prov[i]?[tl(k),'(예상)']:tl(k)),cs,S);cbRange(cs,S,cfg.options.scales.y);charts.push([pre+'cb',cfg]);
   }
-  h+=`<table style="margin-top:8px"><thead><tr><th class="l">조합</th>${keys.map(k=>`<th>${kl(k)}</th>`).join('')}<th>첫 학기 대비</th></tr></thead><tbody>${COMBOS.map(([n])=>{
-    const v=a.comboSem[n],ok=v.filter(isFinite);
-    return `<tr><td class="l">${n}</td>${v.map(x=>`<td>${chip(x,S)}</td>`).join('')}<td>${ok.length>=2?delta(ok[ok.length-1]-ok[0]):'-'}</td></tr>`}).join('')}</tbody></table>`;
-  h+=`<h3>강점 · 약점 방사형</h3><div class="sub2">바깥쪽일수록 좋은 등급 · 학점 가중 평균 · 초록 점은 강점, 빨간 점은 약점</div><div class="gchips"><button class="on" onclick="rdSel('${pre}','g',this)">과목군별</button><button onclick="rdSel('${pre}','s',this)">과목별</button></div>${groups.length>=3?`<div class="cw"><canvas id="${pre}rd" width="440" height="320"></canvas></div>`:'<div class="mut">교과군이 3개 이상일 때 표시됩니다.</div>'}
-    <div class="sw"><div><b class="up">강점</b> ${st.length?st.map(g=>`${gs(g)} ${f2(a.gAvg[g].avg)}`).join(' · '):'없음'}</div><div><b class="dn">약점</b> ${wk.length?wk.map(g=>`${gs(g)} ${f2(a.gAvg[g].avg)}`).join(' · '):'없음'}</div><small>전체 평균 ${f2(base)}등급보다 0.3등급 이상 좋으면 강점, 나쁘면 약점입니다.</small></div>`;
-  if(groups.length>=3)charts.push([pre+'rd',radarCfg(groups.map(gs),groups.map(g=>a.gAvg[g].avg),S,'#0f9d8a')]);
+  h+=`<div class="cbt" id="${pre}cbt" style="margin-top:8px">${cbTable(pre,'sem')}</div><div class="note so" id="${pre}cbn">${CBN.sem}</div>`;
+  h+=`<h3>강점 · 약점 방사형</h3><div class="sub2">바깥쪽일수록 좋은 등급 · 학점 가중 평균 · 점선은 이 학생의 전체 평균 · 초록 점은 강점, 빨간 점은 약점</div><div class="gchips sm"><button class="on" onclick="rdSel('${pre}','g',this)">과목군별</button><button onclick="rdSel('${pre}','s',this)">과목별</button></div>${groups.length>=3?`<div class="cw rdw"><canvas id="${pre}rd" width="380" height="380"></canvas></div>`:'<div class="mut">교과군이 3개 이상일 때 표시됩니다.</div>'}<div id="${pre}rdn">${rdNote(pre,'g')}</div>`;
+  if(groups.length>=3)charts.push([pre+'rd',radarCfg(groups.map(gs),groups.map(g=>a.gAvg[g].avg),S,base)]);
   h+=`<h3>과목군별 등급</h3><div class="sub2">막대가 높을수록 좋은 등급 · 학점이 많고 여러 학기 이수한 과목일수록 비중이 큽니다</div><div class="cw"><canvas id="${pre}bar" width="440" height="320"></canvas></div>`;
-  charts.push([pre+'bar',{type:'bar',plugins:[barLbl(S)],data:{labels:groups.map(gb),datasets:[{data:groups.map(g=>S+1-a.gAvg[g].avg),backgroundColor:groups.map(g=>PAL[g]+'cc'),borderRadius:6}]},
-    options:{responsive:false,animation:AN(),devicePixelRatio:2,layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`평균 ${f2(a.gAvg[groups[c.dataIndex]].avg)}등급`}}},scales:{y:{min:0,max:S,ticks:{stepSize:1,callback:v=>v>=1?(S+1-v)+'등급':''}}}}}]);
+  charts.push([pre+'bar',{type:'bar',plugins:[barLbl(S)],data:{labels:groups.map(gb),datasets:[{data:groups.map(g=>S+1-a.gAvg[g].avg),backgroundColor:groups.map(g=>PAL[g]+'cc'),borderColor:groups.map(g=>PAL[g]),borderWidth:1.5,borderRadius:6,maxBarThickness:62}]},
+    options:{responsive:false,animation:AN(),devicePixelRatio:2,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`평균 ${f2(a.gAvg[groups[c.dataIndex]].avg)}등급`}}},scales:{y:{min:0,max:S,ticks:{stepSize:1,callback:v=>v>=1?(S+1-v)+'등급':''}}}}}]);
 
   const nm=nearOf(rs).slice(0,10);
   h+=`<h3>한 등급만 올리면 되는 과목</h3>`+(nm.length?`<div class="ups">${nm.map((x,i)=>`<div class="up1"><div class="u1"><span class="rk">${i+1}위</span><b>${esc(x.r.subject)}</b><em>${x.g}등급</em><i>→ ${x.g-1}등급</i><span class="uh">${x.need<=5?'조금만 더':x.need<=12?'노력 필요':'꾸준히 노력 필요'}</span></div><div class="u2">${x.est?'추정':'현재'} <b>${x.rank}위</b> / ${x.r.n}명 &nbsp; 목표 <b>${x.max}위</b> 이내 &nbsp; <b class="pp">앞에 ${x.est?'약 ':''}${x.need}명 추월 필요</b></div><small class="mut">${kl(sk(x.r))}${isFinite(x.r.score)?` · 원점수 ${x.r.score}점`:''}</small></div>`).join('')}</div><div class="note">앞에 있는 학생이 적은 과목부터 보여 줍니다. 동점자·반올림에 따라 실제와 1~2명 차이가 날 수 있습니다.</div>`:'<div class="note">석차·수강자수가 있는 과목이 없어 계산할 수 없습니다.</div>');
 
-  const pk=[...keys].reverse().find(k=>rs.some(r=>sk(r)===k&&isFinite(r.score)&&isFinite(r.avg)));
-  if(pk){
-    h+=`<h3>원점수 위치 (${kl(pk)})</h3>`+rs.filter(r=>sk(r)===pk&&isFinite(r.score)&&isFinite(r.avg)).map(r=>{
-      const d=r.score-r.avg,c=d>=10?0:d<=-10?2:1;
-      return `<div class="pos"><span>${esc(r.subject)}</span><div class="trk"><i class="avg" style="left:${r.avg}%"></i><b class="dot d${c}" style="left:${Math.min(100,Math.max(0,r.score))}%"></b></div><span class="pd">${r.score}점 / 평균 ${r.avg} (${d>0?'+':''}${d.toFixed(1)})</span></div>`}).join('')+
-      `<div class="note">세로 막대는 과목 평균, 점이 오른쪽에 멀수록 평균보다 높은 점수입니다. 초록: 평균보다 10점 이상 높음 · 빨강: 10점 이상 낮음.</div>`;
+  const pks=keys.filter(k=>rs.some(r=>sk(r)===k&&isFinite(r.score)&&isFinite(r.avg))),pk=pks[pks.length-1];
+  if(pk){POS[pre]={rs};
+    h+=`<h3>원점수 위치 <span id="${pre}post">(${kl(pk)})</span></h3><div class="sub2">같은 등급이어도 과목 안에서의 자리는 다릅니다. 점은 이 학생의 원점수, 세로선은 과목 평균이며 평균과의 점수 차이로 같은 등급 안의 위치를 가늠합니다.</div>`+
+      `<div class="gchips sm">${pks.map(k=>`<button class="${k===pk?'on':''}" onclick="posSel('${pre}',${k},this)">${kl(k)}</button>`).join('')}</div>`+
+      `<div class="pbx"><div class="pos so" style="border:0;padding:0"><span></span><div class="psc">${[0,25,50,75,100].map(v=>`<span style="left:${v}%">${v}점</span>`).join('')}</div><span></span></div><div class="pbr" id="${pre}posb">${posRows(pre,pk)}</div>`+
+      `<div class="plg so"><span><i style="background:var(--ink)"></i>내 원점수</span><span><i style="background:var(--good)"></i>평균보다 10점 이상 높음</span><span><i style="background:#7b8494"></i>평균 근처</span><span><i style="background:var(--bad)"></i>평균보다 10점 이상 낮음</span><span><i style="width:2px;height:12px;border-radius:0;background:#7b8494;vertical-align:-2px"></i>과목평균</span></div></div>`+
+      `<div class="note">2022 개정 양식은 표준편차가 기록되지 않아 평균과의 점수 차이만 보여 줍니다.</div>`;
   }
 
   if(pre===''){
@@ -1269,7 +1329,7 @@ function jeongsi(name,pre=''){
 
 /* ───── 화면 ───── */
 function destroy(list=charts){list.forEach(c=>c.destroy());list.length=0}
-const CI=[[/요약/,'user'],[/가상|한 등급|목표/,'target'],[/과목별 성적|회차별/,'table'],[/변화|추이|원점수/,'trend'],[/강점|성향|정시|조합/,'layers']];
+const CI=[[/반영 조합/,'layers'],[/강점/,'radar'],[/과목군별/,'grid'],[/원점수/,'pulse'],[/목표 시뮬/,'sliders'],[/요약/,'user'],[/가상|한 등급|목표/,'target'],[/과목별 성적|회차별/,'table'],[/변화|추이|원점수/,'trend'],[/강점|성향|정시|조합/,'layers']];
 const CORD=[/^학생 요약/,/^가상/,/^과목별 성적/,/^등급 변화/,/^반영 조합별 평균 추이/,/^강점/,/^과목군별/,/^한 등급/,/^원점수/,/^목표/];
 function cardify(rep,order){
   const secs=[];let cur=null;
@@ -1280,7 +1340,7 @@ function cardify(rep,order){
       const ic=(CI.find(([re])=>re.test(t.textContent))||[0,'file'])[1];t.insertAdjacentHTML('afterbegin',`<span class="ci">${svg(ic,16)}</span>`);secs.push(cur);rep.insertBefore(cur,e)}
     if(cur)cur.appendChild(e);
   }
-  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영)/.test(c.title))c.classList.add('nop')});
+  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영)/.test(c.title))c.classList.add('nop');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
     secs.forEach(c=>{if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
@@ -1291,7 +1351,7 @@ function bindCls(v){v.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>p
 function mount(el,rep,list=charts,post){
   el.insertAdjacentHTML('beforeend',rep.html);
   const box=el.lastElementChild;if(post)post(box); // 카드로 옮긴 뒤에 차트를 그려야 실제 칸 너비에 맞는다
-  for(const [id,cfg] of rep.charts){const cv=box.querySelector('#'+id);if(!cv)continue;const w=cv.parentNode.clientWidth;if(w>60){const r=cv.height/cv.width;cv.height=Math.min(340,Math.round(w*r));cv.width=w}
+  for(const [id,cfg] of rep.charts){const cv=box.querySelector('#'+id);if(!cv)continue;const w=cv.parentNode.clientWidth;if(w>60){const r=cv.height/cv.width;cv.height=Math.min(id.endsWith('rd')?420:340,Math.round(w*r));cv.width=w}
     const c=new Chart(cv,cfg);cv.style.cssText='width:100%;height:auto';list.push(c)}
 }
 const EMPTY=(t,d,st=[0,0,0],x='')=>`<div class="empty">${svg('search',64)}<h3>${t}</h3><div>${d}</div><div class="steps">${['파일 올리기','학생 고르기','분석 누르기'].map((n,i)=>`<span class="${st[i]?'ok':st.indexOf(0)===i?'now':''}"><i>${st[i]?'✓':i+1}</i>${n}</span>`).join('')}</div>${x}</div>`;
@@ -1310,12 +1370,15 @@ function render(){
   if(tab==='j'){v.querySelectorAll('[data-pj]').forEach(b=>b.onclick=()=>pickT(b.dataset.pj));if($('#jrp'))$('#jrp').onclick=()=>jPlay(v)}
   stagger(v);
   if(tab==='n'){v.insertAdjacentHTML('beforeend',classHtml());const c=v.lastElementChild;c.classList.add('cd2','cls','no-print');bindCls(v)}
+  if((tab==='n'||tab==='m')&&cur){v.insertAdjacentHTML('beforeend',promptCard());$('#pcp').onclick=()=>copy($('#ptx').value)}
   if(tab==='n'&&$('#sim_t'))sim();
   if($('#uni_sv')){
     $('#uni_sv').onclick=()=>{const t=$('#uni_ta').value.trim();if(!parseUniv(t).length)return toast('「이름,백분위」 형식으로 한 줄 이상 적어 주세요.');UNIV=t;save();render();toast('대학군 표를 저장했습니다.')};
     $('#uni_df').onclick=()=>{UNIV=DEF_UNIV;save();render()};
   }
 }
+function promptCard(){const L=[['Claude','https://claude.ai/new'],['ChatGPT','https://chatgpt.com/'],['Gemini','https://gemini.google.com/app']];
+  return `<section class="cd2 pcard no-print"><div class="ph"><h3><span class="ci">${svg('clip',16)}</span>상담용 분석 프롬프트</h3><button class="pri" id="pcp">복사</button></div><textarea readonly id="ptx">${esc(promptFor(cur))}</textarea><div class="pl"><span>복사해서 아래 AI에 붙여넣으세요</span>${L.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${n}</a>`).join('')}</div></section>`}
 function memoUI(){
   $('#memo').disabled=!cur;$('#memo').value=cur?(MEMO[cur]||''):'';
   $('#mlab').textContent=cur?`${cur} 학생 상담 메모`:'학생을 먼저 선택하세요.';
@@ -1505,16 +1568,20 @@ function prioHtml(){
 function pickT(name){cur=name;$('#stu').value=name;memoUI();render()}
 function pick(name){cur=name;tab='n';$('#stu').value=name;memoUI();document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='n'));render()}
 function classHtml(){
-  const names=[...new Set(rows.map(r=>r.name))],av=names.map(n=>({n,t:termAvgs(n)})).filter(x=>x.t.length);
+  const names=[...new Set(rows.map(r=>r.name))],S=rows.some(r=>r.scale===9)?9:5,m=a=>a.reduce((x,y)=>x+y,0)/a.length;
+  const av=names.map(n=>({n,t:termAvgs(n),a:analyze(n)})).filter(x=>x.t.length&&isFinite(x.a.all.avg));
   let h=`<div class="rep"><header class="rh"><h2>학급 한눈에 보기</h2><div class="rm">내신 학생 ${names.length}명 · 인쇄되지 않습니다</div></header>`;
   if(!av.length)return h+'<div class="note">내신 성적이 있어야 학급 현황을 볼 수 있습니다.</div></div>';
-  const cur_=av.map(x=>({n:x.n,v:x.t[x.t.length-1].v})),S=rows.some(r=>r.scale===9)?9:5;
-  const B=Array.from({length:S},(_,i)=>cur_.filter(x=>Math.min(S,Math.floor(x.v-1e-9)+1)===i+1&&true).length);
-  const mx=Math.max(1,...B);
-  h+=`<h3>학급 평균 분포 (최근 학기 전과목 평균)</h3><div class="card">${B.map((c,i)=>`<div class="pos" style="grid-template-columns:70px 1fr 50px"><span>${i+1}등급대</span><div class="trk" style="height:14px"><i style="position:absolute;left:0;top:0;height:14px;width:${c/mx*100}%;background:var(--ac);border-radius:5px"></i></div><span>${c}명</span></div>`).join('')}</div>`;
+  const sorted=[...av].sort((x,y)=>x.a.all.avg-y.a.all.avg),me=sorted.findIndex(x=>x.n===cur),k3=av.map(x=>x.a.combo['국영수'].avg).filter(isFinite);
+  h+=`<div class="clk">${svg('lock',18)}<div><b>교사용 화면입니다</b>다른 학생의 이름과 성적이 나오므로 인쇄하지 않습니다.</div></div>
+    <div class="mkt"><div><small>학생 수</small><b>${av.length}명</b><em>올린 파일 기준</em></div><div><small>학급 전과목 평균</small><b>${f2(m(av.map(x=>x.a.all.avg)))}</b><em>학생별 평균의 평균</em></div><div><small>학급 국영수 평균</small><b>${k3.length?f2(m(k3)):'-'}</b><em>학생별 국영수 평균의 평균</em></div>
+    <div class="me"><small>${me>=0?esc(cur)+' ':'선택 학생 '}위치</small><b>${me>=0?`${me+1}/${av.length}`:'-'}</b><em>${me>=0?`전과목 ${f2(sorted[me].a.all.avg)} · 전 과목 기준`:'학생을 고르면 표시됩니다'}</em></div></div>`;
+  const nb=(S-1)*2,B=Array(nb).fill(0);av.forEach(x=>B[Math.min(nb-1,Math.floor((x.a.all.avg-1)/.5+1e-9))]++);const mx=Math.max(1,...B),mb=me>=0?Math.min(nb-1,Math.floor((sorted[me].a.all.avg-1)/.5+1e-9)):-1;
+  h+=`<h3>학급 전과목 평균 분포</h3><div class="hist">${B.map((c,i)=>`<div class="${i===mb?'me':''}">${c||''}<i style="height:${Math.round(c/mx*110)}px"></i></div>`).join('')}</div><div class="hlab">${B.map((c,i)=>`<span>${(1+i*.5).toFixed(1)}~${(1.5+i*.5).toFixed(1)}</span>`).join('')}</div><div class="hx">전과목 평균 등급 (왼쪽이 좋은 등급)</div>`;
   const lastK=Math.max(...rows.map(sk)),by={};
   rows.filter(r=>sk(r)===lastK&&isFinite(r.v)&&!EX.has(r.subject)).forEach(r=>(by[r.subject]??=[]).push(r.v));
-  h+=`<h3>과목별 학급 평균 (${kl(lastK)})</h3><table><thead><tr><th class="l">과목</th><th>응시 인원</th><th>평균 등급</th></tr></thead><tbody>${Object.entries(by).map(([s,v])=>`<tr><td class="l">${esc(s)}</td><td>${v.length}</td><td>${f2(v.reduce((a,b)=>a+b,0)/v.length)}</td></tr>`).join('')}</tbody></table>`;
+  h+=`<h3>${kl(lastK)} 과목별 학급 평균</h3><table><thead><tr><th class="l">과목</th><th class="l">학급 평균</th><th>인원</th><th>${me>=0?esc(cur):'선택 학생'}</th><th>학급 대비</th></tr></thead><tbody>${Object.entries(by).map(([sj,v])=>{const mu=m(v),r=me>=0?rows.find(r=>r.name===cur&&r.subject===sj&&sk(r)===lastK):null;
+    return `<tr><td class="l">${esc(sj)}</td><td class="l"><div class="mbar"><i style="width:${Math.round(mu/S*120)}px"></i><b>${f2(mu)}</b></div></td><td>${v.length}</td><td>${r&&isFinite(r.v)?gbd(r.v):'<span class="mut">-</span>'}</td><td>${r&&isFinite(r.v)?delta(r.v-mu):'-'}</td></tr>`}).join('')}</tbody></table>`;
   const mv=av.filter(x=>x.t.length>=2).map(x=>({n:x.n,d:x.t[x.t.length-1].v-x.t[x.t.length-2].v})).filter(x=>Math.abs(x.d)>=MVTH).sort((a,b)=>a.d-b.d);
   h+=`<h3>직전 학기 대비 급등락 <select id="mvth">${[.3,.5,.7,1].map(v=>`<option ${v===MVTH?'selected':''}>${v}</option>`).join('')}</select> 등급 이상</h3>`+(mv.length?`<table><tbody>${mv.map(x=>`<tr><td class="l"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td><td>${delta(x.d)}</td></tr>`).join('')}</tbody></table>`:'<div class="note">기준을 넘는 학생이 없거나 학기가 하나뿐입니다.</div>');
   return h+mockHeat()+'</div>';
