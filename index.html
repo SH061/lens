@@ -123,7 +123,7 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
 .mcks{display:flex;gap:6px;flex-wrap:wrap}.mck{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:12.5px;cursor:pointer}.mck.on{background:var(--gbg);border-color:var(--gln);color:var(--gtx);font-weight:600}
 .mcks+.sub2{margin-top:8px}
 .org{font-size:12px;font-weight:700;margin:6px 0 4px}
-.mt th.rk{background:var(--ac);color:#fff;writing-mode:vertical-rl;letter-spacing:1px;width:34px;border-radius:6px;font-size:12px}.mt th.rk small{display:block}.mt th.rl{background:var(--soft);text-align:left;width:70px;font-size:12px}.mt td{font-size:12.5px}
+.mt th.rk{background:var(--ac);color:#fff;writing-mode:vertical-rl;white-space:nowrap;width:34px;border-radius:6px;font-size:12px}.mt th.rk small{display:block}.mt th.rl{background:var(--soft);text-align:left;width:70px;font-size:12px}.mt td{font-size:12.5px}
 .cw{position:relative}
 .gchips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
 .gchips button{border-radius:99px;font-size:12px;padding:3px 11px;font-weight:600;color:var(--gc,var(--ink2));border-color:var(--gc,var(--line));background:var(--card)}
@@ -1061,9 +1061,9 @@ function mockReport(name,pre=''){
   const dl=(c,p)=>p==null?'':c<p?`<span class="up">↑${p-c}</span>`:c>p?`<span class="dn">↓${c-p}</span>`:'<span class="mut">–</span>';
   const dp=(c,p)=>!isFinite(c)||!isFinite(p)?'':Math.abs(c-p)<.05?'<span class="mut">–</span>':c>p?`<span class="up">↑ ${(c-p).toFixed(1)}</span>`:`<span class="dn">↓ ${(p-c).toFixed(1)}</span>`;
   h+=`<h3>회차별 성적표</h3><div class="sub2">화살표는 직전 회차 대비 변화입니다. 위로 향한 화살표가 좋아진 것입니다.</div>${orgs.length===1&&orgs[0]?`<div class="org">${orgs[0]}</div>`:''}
-    <table class="mt"><thead><tr><th colspan="2"></th>${areas.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${rounds.map((r,ri)=>['원점수','표준점수','백분위','등급'].map((lab,li)=>`<tr>${li?'':`<th class="rk" rowspan="4">${esc(rtl(r))}${orgs.length>1&&orgOf(r)?`<small>${orgOf(r).split(' ')[0]}</small>`:''}</th>`}<th class="rl">${lab}</th>${areas.map(x=>{
+    <div style="overflow-x:auto"><table class="mt" style="min-width:560px"><thead><tr><th colspan="2"></th>${areas.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${rounds.map((r,ri)=>['원점수','표준점수','백분위','등급'].map((lab,li)=>`<tr>${li?'':`<th class="rk" rowspan="4">${esc(rtl(r))}${orgs.length>1&&orgOf(r)?`<small>${orgOf(r).split(' ')[0]}</small>`:''}</th>`}<th class="rl">${lab}</th>${areas.map(x=>{
       const m=cell(r,x);if(!m)return '<td class="mut">-</td>';const p=ri?cell(rounds[ri-1],x):null;
-      return `<td>${lab==='원점수'?(isFinite(m.raw)?m.raw:'—'):lab==='표준점수'?(isFinite(m.std)?m.std:'—'):lab==='백분위'?(isFinite(m.pct)?m.pct+(p?' '+dp(m.pct,p.pct):''):'—'):chip(m.g,9)+(p?' '+dl(m.g,p.g):'')}</td>`}).join('')}</tr>`).join('')).join('')}</tbody></table>
+      return `<td>${lab==='원점수'?(isFinite(m.raw)?m.raw:'—'):lab==='표준점수'?(isFinite(m.std)?m.std:'—'):lab==='백분위'?(isFinite(m.pct)?m.pct.toFixed(1)+(p?' '+dp(m.pct,p.pct):''):'—'):chip(m.g,9)+(p?' '+dl(m.g,p.g):'')}</td>`}).join('')}</tr>`).join('')).join('')}</tbody></table></div>
     <h3>추이와 현재 위치</h3><div class="dual"><div class="card"><b class="t">영역별 등급 추이</b><canvas id="${pre}mtr" width="430" height="300"></canvas></div>
     <div class="card"><b class="t">최근 회차 영역별 등급 (바깥쪽일수록 좋음)</b>${lastM.length>=3?`<canvas id="${pre}mrd" width="380" height="300"></canvas>`:'<div class="mut">영역이 3개 이상일 때 표시됩니다.</div>'}</div></div>`;
   charts.push([pre+'mtr',lineCfg(rounds,areas.map((a,i)=>ds(a,rounds.map(r=>cell(r,a)?.g??null),Object.values(PAL)[i%6])),9)]);
