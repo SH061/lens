@@ -1047,10 +1047,7 @@ function report(name,pre=''){
   charts.push([pre+'bar',{type:'bar',plugins:[barLbl(S)],data:{labels:groups.map(gb),datasets:[{data:groups.map(g=>S+1-a.gAvg[g].avg),backgroundColor:groups.map(g=>PAL[g]+'cc'),borderRadius:6}]},
     options:{responsive:false,animation:AN(),devicePixelRatio:2,layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`평균 ${f2(a.gAvg[groups[c.dataIndex]].avg)}등급`}}},scales:{y:{min:0,max:S,ticks:{stepSize:1,callback:v=>v>=1?(S+1-v)+'등급':''}}}}}]);
 
-  const nm=rs.map(r=>({r,k:rkOf(r)})).filter(({r,k})=>isFinite(r.v)&&k&&Math.round(r.v)>1).map(({r,k})=>{
-    const g=Math.round(r.v),cut=r.scale===9?CUT9:CUT5,max=Math.floor(cut[g-2]*r.n/100+1e-9);
-    return {r,g,max,rank:k.rank,est:k.est,need:k.rank-max};
-  }).filter(x=>x.need>0).sort((x,y)=>x.need-y.need).slice(0,10);
+  const nm=nearOf(rs).slice(0,10);
   h+=`<h3>한 등급만 올리면 되는 과목</h3>`+(nm.length?`<div class="ups">${nm.map((x,i)=>`<div class="up1"><div class="u1"><span class="rk">${i+1}위</span><b>${esc(x.r.subject)}</b><em>${x.g}등급</em><i>→ ${x.g-1}등급</i><span class="uh">${x.need<=5?'조금만 더':x.need<=12?'노력 필요':'꾸준히 노력 필요'}</span></div><div class="u2">${x.est?'추정':'현재'} <b>${x.rank}위</b> / ${x.r.n}명 &nbsp; 목표 <b>${x.max}위</b> 이내 &nbsp; <b class="pp">앞에 ${x.est?'약 ':''}${x.need}명 추월 필요</b></div><small class="mut">${kl(sk(x.r))}${isFinite(x.r.score)?` · 원점수 ${x.r.score}점`:''}</small></div>`).join('')}</div><div class="note">앞에 있는 학생이 적은 과목부터 보여 줍니다. 동점자·반올림에 따라 실제와 1~2명 차이가 날 수 있습니다.</div>`:'<div class="note">석차·수강자수가 있는 과목이 없어 계산할 수 없습니다.</div>');
 
   const pk=[...keys].reverse().find(k=>rs.some(r=>sk(r)===k&&isFinite(r.score)&&isFinite(r.avg)));
@@ -1169,7 +1166,7 @@ function mSeries(name){
     const t=x.filter(m=>dom(m.area)==='탐'),o=x.filter(m=>dom(m.area)!=='탐');
     const mix=(a,b,f)=>{const v=a.map(f);if(b.length)MMG?v.push(mean(b.map(f))):v.push(...b.map(f));return v};
     const g=mix(o,t,m=>m.g),p=mix(o.filter(m=>dom(m.area)),t,pctOf);
-    return {round:r,avg:g.length?mean(g):NaN,grades:g,pct:p.length&&new Set(x.map(m=>dom(m.area)).filter(Boolean)).size>=3?mean(p):NaN};
+    return {round:r,rows:x,avg:g.length?mean(g):NaN,grades:g,pct:p.length&&new Set(x.map(m=>dom(m.area)).filter(Boolean)).size>=3?mean(p):NaN};
   });
 }
 function judge(name){
@@ -1393,23 +1390,92 @@ function exportAll(){
   }
   XLSX.writeFile(wb,'성적돋보기_전체.xlsx');
 }
+const HR='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+const PREQ=`위 학생의 성적 데이터를 바탕으로 아래 항목을 종합적으로 분석하고, 담임교사가 학생 상담 시 실제로 활용할 수 있는 내용을 구체적으로 작성해주세요.
+
+1. 성적 분석 및 강점·약점
+   - 성적이 우수하거나 향상된 과목과 그 의미
+   - 성적이 낮거나 하락한 과목의 원인 추정
+   - 전반적인 학업 패턴 분석
+
+2. 적합한 진로 계열 추천
+   - 성적 패턴을 고려한 적합 계열 (인문/사회/자연/공학/예체능 등)
+   - 강점 과목 기반 추천 직업군 또는 전공 2~3가지
+
+3. 등급 경계 집중 관리 전략
+   - "등급 경계 아쉬운 과목" 순위 1~3위 과목의 한 등급 상승을 위한 구체적 전략
+   - 각 과목별로 어떤 부분을 보완하면 점수를 확보할 수 있는지 실천 가능한 방법
+   - 투입 노력 대비 등급 상승 효과가 클 과목 우선순위와 그 이유
+
+4. 앞으로의 학습 방향
+   - 강점 과목을 더 살리기 위한 전략
+   - 약점 과목을 보완하기 위한 구체적 방법
+   - 수능/내신 전략적 과목 선택 조언
+
+5. 담임 상담 시 핵심 포인트 요약
+   - 학생에게 전달할 긍정적 피드백
+   - 개선이 필요한 부분을 부드럽게 전달하는 방법
+   - 학부모 상담 시 활용할 수 있는 내용
+
+
+6. 수시 · 정시 전략 판단
+   - 내신과 모의고사 격차를 근거로 이 학생이 수시·정시 중 어디에 무게를 둬야 하는지 판단
+   - 수시 지원 시 적합한 전형(교과/학종/논술)과 그 이유
+   - 수능 최저학력기준 충족 가능성과 충족을 위해 끌어올려야 할 영역
+   - 남은 기간 영역별 학습 시간 배분 제안 (투입 대비 등급 상승 효과가 큰 순서로)
+   - 통합사회·통합과학 중 보완이 더 급한 쪽과 그 이유 (고1·2는 국어·수학 선택과목이 없고 탐구 두 과목을 모두 응시함)
+
+※ 분석은 구체적이고 실용적으로 작성해주세요. 추상적인 조언보다 실제 학생의 성적 수치를 근거로 한 분석을 부탁드립니다.`;
 function promptFor(name){
-  const a=analyze(name),L=[`■ 학생: ${name}`];
+  const a=analyze(name),L=[HR,'■ [학생 성적 데이터]',HR,`이름: ${name}`,'학교급: 고등학교'];
+  const tl=k=>`${k/10|0}-${k%10}`,sg=x=>+x>0?'+'+x:''+x;
   if(a.rs.length){
-    L.push(`[내신] 학점가중 평균 ${f2(a.all.avg)}등급 · `+COMBOS.slice(1).map(([n])=>`${n} ${f2(a.combo[n].avg)}`).join(', '));
-    L.push('학기별 전과목 평균: '+a.keys.map((k,i)=>`${kl(k)} ${f2(a.comboSem['전과목'][i])}`).join(' → '));
-    L.push('교과군별 평균: '+a.groups.map(g=>`${g} ${f2(a.gAvg[g].avg)}`).join(', '));
-    L.push('과목별: '+a.rs.map(r=>`${r.subject}(${kl(sk(r))}) ${isFinite(r.v)?(r.vir?'≈':'')+r.v+'등급':'-'}`).join(', '));
-  }
+    L.push(`평균 등급 (선택 과목): ${f2(a.all.avg)}등급`,`평균 산출 방식: 학점 가중 (이수 학점 합 ${a.all.cr}학점)`,
+      '반영 조합별 평균: '+COMBOS.map(([n])=>`${n} ${f2(a.combo[n].avg)}`).join(' / '));
+    if(a.keys.length>1){L.push('학기별 평균 추이:');
+      COMBOS.forEach(([n])=>{const p=a.keys.map((k,i)=>[k,a.comboSem[n][i]]).filter(x=>isFinite(x[1]));if(p.length>1)L.push(`- ${n}: `+p.map(([k,v])=>`${tl(k)} ${f2(v)}`).join(' → '))})}
+    const vt=a.keys.filter(k=>a.rs.filter(r=>sk(r)===k).every(r=>r.vir));
+    vt.forEach(k=>L.push(`※ ${kl(k)} 성적은 학기가 끝나기 전 1차 고사(전과목 성적 일람표) 석차로 낸 예상 등급입니다. 확정 성적이 아닙니다.`));
+    L.push('','■ 과목별 성적 변화:');
+    [...a.rs].sort((x,y)=>sk(x)-sk(y)).forEach(r=>{const g=isFinite(r.g)?r.g:Math.round(r.v);L.push(`- ${r.subject}: ${kl(sk(r))}: ${isFinite(g)?g+'등급':'-'}${isFinite(r.score)?`(${r.score}점)`:''}`)});
+    const nr=nearOf(a.rs).slice(0,3);
+    if(nr.length){L.push('','','■ 등급 경계 아쉬운 과목 순위:');
+      nr.forEach((x,i)=>{const cut=x.r.scale===9?CUT9:CUT5,same=Math.round(cut[x.g-1]*x.r.n/100)-x.max,e=x.est?'추정 ':'현재 ',ap=x.est?'약 ':'';
+        L.push(`  ${i+1}위. ${x.r.subject} (${kl(sk(x.r))}): 현재 ${x.g}등급 → ${x.g-1}등급 목표 / 같은 등급 ${same}명 중 앞 ${ap}${x.need}명 / ${e}${x.rank}위 / ${x.r.n}명 · 목표 ${x.max}위 이내 / 앞에 ${ap}${x.need}명 추월 필요(${x.rank}위/${x.r.n}명 → ${x.max}위 이내)`)})}
+  }else L.push('※ 내신 성적 자료가 없습니다.');
   const ms=mock.filter(m=>m.name===name);
   if(ms.length){
-    const rounds=[...new Set(ms.map(m=>m.round))].sort(rsort);
-    L.push('[모의고사] '+rounds.map(r=>`${r}: `+ms.filter(m=>m.round===r).map(m=>`${m.area} ${m.g}등급${isFinite(m.pct)?`(백분위 ${m.pct}${isFinite(m.std)?`, 표준점수 ${m.std}`:''})`:''}`).join(', ')).join(' / '));
+    const ser=mSeries(name),rl=r=>String(r).replace(/^(\d{4})-\d{2}\s*/,'$1년 ').replace(/^(\d{4})\s/,'$1년 ')+(/학력평가/.test(r)?' [교육청]':/모의평가|수능/.test(r)?' [평가원]':'');
+    L.push('','■ 모의고사 성적 (전국 기준 9등급):');
+    ser.forEach((e,i)=>{const ar=ms.filter(m=>m.round===e.round).sort((x,y)=>mAO(x.area)-mAO(y.area));
+      L.push(`- ${rl(e.round)}: `+ar.map(m=>`${m.area} ${m.g}등급`+(isFinite(m.pct)?`/백분위 ${m.pct}`:'')+(isFinite(m.raw)?`/원점수 ${m.raw}`:'')).join(', ')
+        +(isFinite(e.avg)?` → 반영과목 평균 ${f2(e.avg)}등급`+(i&&isFinite(ser[i-1].avg)?` (직전 대비 ${sg((e.avg-ser[i-1].avg).toFixed(2))})`:''):''))});
+    const rec=ser[ser.length-1];
+    if(rec&&isFinite(rec.avg)){
+      const wk=rec.rows.filter(m=>m.g>=rec.avg+1).sort((x,y)=>y.g-x.g),st=rec.rows.filter(m=>m.g<=rec.avg-1).sort((x,y)=>x.g-y.g);
+      L.push('','■ 모의고사 영역 진단:');
+      if(st.length)L.push('- 강점 영역: '+st.map(m=>`${m.area}(${m.g}등급)`).join(', '));
+      L.push(wk.length?'- 약점 영역: '+wk.map(m=>`${m.area}(${m.g}등급)`).join(', '):'- 약점 영역: 뚜렷하게 처지는 영역 없음');
+      const sa=rec.rows.find(m=>/통합사회/.test(m.area)),sc=rec.rows.find(m=>/통합과학/.test(m.area));
+      if(sa&&sc&&Math.abs(sa.g-sc.g)>=2)L.push(`- 통합사회·통합과학 격차가 ${Math.abs(sa.g-sc.g)}등급입니다. 두 과목 모두 응시하므로 ${sa.g>sc.g?'통합사회':'통합과학'} 보완을 우선하세요.`)}
   }
-  if(str(MEMO[name]))L.push('[상담 메모] '+MEMO[name].replace(/\n/g,' '));
+  if(a.rs.length&&ms.length){
+    const j=judge(name);L.push('','■ 내신 vs 모의고사 대비 (9등급 축 통일):');
+    if(j.inc)L.push('- '+j.reasons[0]);
+    else{L.push(`- 내신 평균(9등급 환산): ${j.ng.toFixed(2)}등급`,`- 모의고사 주요과목 평균: ${j.mg.toFixed(2)}등급`,`- 격차: ${sg(j.delta.toFixed(2))} → 판정: ${j.track.label}`,'- 판정 근거:',...j.reasons.map(r=>'  · '+r));
+      const U=parseUniv(UNIV),pa=j.rec.pct;
+      if(isFinite(pa)&&U.length){const i=U.findIndex(u=>pa>=u.thr),ln=U[i<0?U.length-1:i];
+        L.push(`- 정시 추정 라인(참고용): 국수영탐 백분위 평균 ${pa.toFixed(1)} → ${ln.name}${UEX[ln.name]?` (${UEX[ln.name]})`:''}`,'  ※ 대학별 반영비율·변환표준점수 미반영 추정치이므로 단정적으로 표현하지 말 것')}}
+  }
+  if(str(MEMO[name]))L.push('','■ 상담 메모:',MEMO[name]);
+  L.push('',HR,'■ [상담 분석 요청]',HR,PREQ);
   return L.join('\n');
 }
-const PHEAD='아래 학생의 성적 자료를 보고 진학 상담 방향을 정리해 주세요. ①강점과 보완할 점 ②학기·회차별 추이 해석 ③남은 기간의 학습 전략 ④수시·정시 중 어느 쪽에 무게를 둘지 의견. 합격 가능성을 단정하지 말고, 근거가 부족하면 부족하다고 말해 주세요.\n\n';
+const nearOf=rs=>rs.map(r=>({r,k:rkOf(r)})).filter(({r,k})=>isFinite(r.v)&&k&&Math.round(r.v)>1).map(({r,k})=>{
+  const g=Math.round(r.v),cut=r.scale===9?CUT9:CUT5,max=Math.floor(cut[g-2]*r.n/100+1e-9);
+  return {r,g,max,rank:k.rank,est:k.est,need:k.rank-max};
+}).filter(x=>x.need>0).sort((x,y)=>x.need-y.need);
+const mAO=a=>{const i=['국어','수학','영어','한국사','통합사회','통합과학'].indexOf(a);return i<0?99:i};
 function copy(t){(navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast('프롬프트를 복사했습니다.'),()=>toast('복사하지 못했습니다. 브라우저 권한을 확인해 주세요.'))}
 
 
@@ -1508,10 +1574,10 @@ $('#go').onclick=()=>{
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));render()});
 $('#pr1').onclick=()=>doPrint(false);$('#prA').onclick=()=>doPrint(true);
 $('#xlA').onclick=exportAll;
-$('#pm1').onclick=()=>copy(PHEAD+promptFor(cur));
+$('#pm1').onclick=()=>copy(promptFor(cur));
 $('#pmA').onclick=()=>{
   if(!students.length)return toast('만들 학생이 없습니다.');
-  const t=PHEAD+students.map(promptFor).join('\n\n---\n\n');
+  const t=students.map(promptFor).join('\n\n\n'+'='.repeat(60)+'\n\n\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.download='성적돋보기_프롬프트.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e4);
 };
 $('#tg').onclick=()=>{document.body.classList.toggle('sbc');if(shown)render()};
