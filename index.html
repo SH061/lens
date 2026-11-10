@@ -305,19 +305,20 @@ function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d)a
 
 /* ───── 클라우드(Supabase) 동기화: 로그인하면 계정에 저장, 안 하면 이 브라우저에만 저장 ───── */
 const SB_URL='https://luxjsyoygzdkeinnfabb.supabase.co', SB_KEY='sb_publishable_My4jQoaOKiRJRbcf1me5cA_-fT1PdGi'; // 공개용 키: 접근은 RLS가 막는다
-let sb=null, uid=null, pushT=0, pulled=false;
+let sb=null, uid=null, pushT=0, pulled=false, srv=false; // srv: 맥 스튜디오 서버에서 열렸을 때(/api가 있음)
+const api=async(m,p,b)=>{const r=await fetch(p,{method:m,headers:{'content-type':'application/json'},body:b&&JSON.stringify(b)});if(!r.ok)throw r.status;return r.json()};
 const hasData=()=>rows.length||mock.length||Object.keys(MEMO).length;
 function acctUi(msg){const b=$('#bAcct');if(b)b.textContent=uid?(msg||'동기화됨'):'로그인';}
 function cloudPush(){
-  if(!sb||!uid||!pulled)return; // 내려받기 전에 올리면 클라우드 데이터를 덮어쓴다
+  if(!(sb||srv)||!uid||!pulled)return; // 내려받기 전에 올리면 저장된 데이터를 덮어쓴다
   clearTimeout(pushT);acctUi('저장 중…');
   pushT=setTimeout(async()=>{
-    const {error}=await sb.from('lens_state').upsert({user_id:uid,data:snap(),updated_at:new Date().toISOString()});
+    const {error}=srv?await api('PUT','/api/state',snap()).then(()=>({}),e=>({error:{message:'서버 오류 '+e}})):await sb.from('lens_state').upsert({user_id:uid,data:snap(),updated_at:new Date().toISOString()});
     acctUi(error?'저장 실패':'동기화됨');if(error)toast('클라우드 저장 실패: '+error.message);
   },1200);
 }
 async function cloudPull(){
-  const {data,error}=await sb.from('lens_state').select('data').maybeSingle();
+  const {data,error}=srv?await api('GET','/api/state').then(d=>({data:{data:d}}),e=>({error:{message:'서버 오류 '+e}})):await sb.from('lens_state').select('data').maybeSingle();
   if(error){toast('불러오기 실패: '+error.message);return}
   if(data&&data.data&&Object.keys(data.data).length){ // 계정에 데이터가 있으면 그것을 따른다
     if(hasData()&&!confirm('이 브라우저에 저장된 성적이 있습니다.\n확인 = 계정에 저장된 성적으로 바꾸기\n취소 = 이 브라우저의 성적을 계정에 덮어쓰기')){pulled=true;cloudPush()}
@@ -325,7 +326,9 @@ async function cloudPull(){
   }else if(hasData()){pulled=true;cloudPush()}
   pulled=true;acctUi();
 }
-function cloudInit(){
+async function cloudInit(){
+  try{const u=await api('GET','/api/me');srv=true;uid=u.email;$('#aUp').style.display='none';acctUi();return cloudPull()}
+  catch(e){if(e===401){srv=true;$('#aUp').style.display='none';return acctUi()}} // 401=서버는 있는데 로그인 전, 그 외(404 등)=정적 호스팅이라 Supabase 사용
   if(!window.supabase)return acctUi();
   sb=supabase.createClient(SB_URL,SB_KEY);
   sb.auth.onAuthStateChange((ev,s)=>{
@@ -334,14 +337,15 @@ function cloudInit(){
   });
 }
 $('#bAcct').onclick=()=>{
-  if(uid){if(confirm('로그아웃할까요? 이 브라우저의 성적은 그대로 남습니다.'))sb.auth.signOut();return}
-  if(!sb)return toast('클라우드에 연결할 수 없습니다. 인터넷 연결을 확인하세요.');
+  if(uid){if(confirm('로그아웃할까요? 이 브라우저의 성적은 그대로 남습니다.'))srv?api('POST','/api/logout').then(()=>{uid=null;pulled=false;acctUi()}):sb.auth.signOut();return}
+  if(!sb&&!srv)return toast('클라우드에 연결할 수 없습니다. 인터넷 연결을 확인하세요.');
   $('#auth').showModal();
 };
 async function authGo(signup){
   const email=$('#aEmail').value.trim(),password=$('#aPw').value;
   if(!email||password.length<6)return $('#aMsg').textContent='이메일과 6자 이상 비밀번호를 입력하세요.';
   $('#aMsg').textContent='처리 중…';
+  if(srv){try{const u=await api('POST','/api/login',{email,password});uid=u.email;pulled=false;acctUi();$('#auth').close();$('#aPw').value='';cloudPull()}catch(e){$('#aMsg').textContent=e===401?'이메일 또는 비밀번호가 맞지 않습니다.':e===429?'실패가 많아 10분간 막혔습니다.':'서버 오류 '+e}return}
   const r=signup?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});
   if(r.error)return $('#aMsg').textContent=r.error.message.includes('Invalid login')?'이메일 또는 비밀번호가 맞지 않습니다.':r.error.message;
   if(signup&&!r.data.session)return $('#aMsg').textContent='가입 확인 메일을 보냈습니다. 메일의 링크를 누른 뒤 로그인하세요.';
