@@ -717,7 +717,8 @@ async function cloudPull(){
   const {data,error}=srv?await api('GET','/api/state').then(d=>({data:{data:d}}),e=>({error:{message:'서버 오류 '+e}})):await sb.from('lens_state').select('data').maybeSingle();
   if(error){toast('불러오기 실패: '+error.message);return}
   if(data&&data.data&&Object.keys(data.data).length){ // 계정에 데이터가 있으면 그것을 따른다
-    if(hasData()&&AT&&AT>(data.data.at||'')){pulled=true;cloudPush()} // 묻지 않고 더 나중에 저장한 쪽을 따른다
+    if(data.data.at&&data.data.at===AT){} // 이미 같은 저장본이면 다시 그리지 않는다(화면 맨 위로 튀는 것 방지)
+    else if(hasData()&&AT&&AT>(data.data.at||'')){pulled=true;cloudPush()} // 묻지 않고 더 나중에 저장한 쪽을 따른다
     else{apply(data.data);try{localStorage.setItem(KEY,JSON.stringify(snap()))}catch{}setTheme(THEME,false);refresh()}
   }else if(hasData()){pulled=true;cloudPush()}
   pulled=true;acctUi();
@@ -1954,7 +1955,7 @@ $('#pmA').onclick=()=>{
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.download='성적돋보기_프롬프트.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e4);
 };
 $('#tg').onclick=()=>{document.body.classList.toggle('sbc');if(shown)render()};
-let rzT;addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>{if(shown&&cur&&!matchMedia('print').matches&&!document.body.classList.contains('pa'))render()},400)});
+let rzT,rzW=innerWidth;addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>{if(innerWidth===rzW)return;rzW=innerWidth; /* 폰·태블릿은 스크롤 때 주소창이 접히며 높이만 바뀌어 resize가 뜬다: 너비가 같으면 다시 그리지 않는다 */ if(shown&&cur&&!matchMedia('print').matches&&!document.body.classList.contains('pa'))render()},400)});
 $('#rail').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.body.classList.remove('sbc');if(shown)render();const i=+b.dataset.ac,ds=[...document.querySelectorAll('aside details.acc')];if(i>=0){ds.forEach((d,j)=>d.open=j===i);ds[i].scrollIntoView({block:'start'})}else $('.lp').scrollTop=0};
 $('#xl1').onclick=()=>exportOne(cur);
 $('#bHelp').onclick=()=>$('#help').showModal();
