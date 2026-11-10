@@ -8,6 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
+@font-face{font-family:Moneygraphy;src:url(/fonts/Moneygraphy-Rounded.woff2) format("woff2");font-display:swap}
 :root{--bg:#f6f7f9;--card:#fff;--ink:#1a1d23;--ink2:#667085;--line:#e4e7ec;--ac:#1553d6;--ac2:#e8effd;--soft:#f2f4f7;--good:#15803d;--bad:#c62828;--wbg:#fff8e6;--wln:#f0d9a0;--wtx:#8a5a00;--gbg:#e8f6ee;--gln:#b9dfc8;--gtx:#1b6b3a}
 @media screen{html[data-theme=dark]{--bg:#0f1218;--card:#171b23;--ink:#e8ebf1;--ink2:#9aa3b2;--line:#2a303b;--ac:#5b8cff;--ac2:#1c2a48;--soft:#1e232d;--good:#4ade80;--bad:#f87171;--wbg:#2a2310;--wln:#5c4a17;--wtx:#e8c26a;--gbg:#10281b;--gln:#235c3b;--gtx:#7ee0a5;color-scheme:dark}}
 @media screen{html[data-theme=cream]{--bg:#f3ead6;--card:#fbf6e8;--ink:#2d2619;--ink2:#7b6e55;--line:#e1d5b6;--ac:#9a5a1c;--ac2:#f1e4c5;--soft:#eee4cb;--wbg:#fff3d1;--wln:#e6cd8e;--gbg:#e9f0d8;--gln:#c4d4a0}}
@@ -23,7 +24,7 @@ td.hm{padding:3px 4px;font-size:12px;font-weight:600}
 #iskip{position:absolute;right:20px;bottom:20px}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 Pretendard,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;display:flex;flex-direction:column}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 Moneygraphy,Pretendard,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;display:flex;flex-direction:column}
 h1{font-size:20px;margin:0}
 h2{font-size:14px;margin:0 0 8px}
 button,select,input,textarea{font:inherit;color:inherit}
@@ -135,6 +136,27 @@ canvas{display:block;margin:0 auto}
 dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);max-width:560px;padding:20px 24px}
 dialog::backdrop{background:#0006}
 dialog li{margin:6px 0}
+#help{max-width:780px;width:calc(100% - 24px);padding:0;overflow:hidden}
+#help[open]{display:flex;flex-direction:column;max-height:88vh}
+#help .hh{display:flex;align-items:center;justify-content:space-between;padding:16px 24px 8px}
+#help h2{font-size:18px;margin:0;display:flex;align-items:center;gap:8px}
+#help .hx{border:0;background:none;font-size:16px;color:var(--ink2);padding:4px 8px}
+#help .htabs{display:flex;gap:4px;margin:6px 24px 0;padding:4px;background:var(--soft);border-radius:12px}
+#help .htabs button{flex:1;justify-content:center;border:0;background:none;border-radius:9px;color:var(--ink2);font-weight:600;padding:8px 4px}
+#help .htabs button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px #0002}
+#help .hp{display:none;padding:12px 24px 4px;overflow:auto;flex:1}#help .hp.on{display:block}
+#help h3{font-size:14px;margin:18px 0 6px}#help .hp>h3:first-child{margin-top:6px}
+#help .hs{display:flex;align-items:center;gap:8px;margin-top:14px}
+#help .hs i{font-style:normal;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--ac);color:#fff;font-size:12px;font-weight:700}
+#help .hp>p{margin:4px 0 0 30px}
+#help table{width:100%;border-collapse:collapse;font-size:13px}#help th,#help td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+#help th{color:var(--ink2);font-weight:600;background:var(--soft)}#help td small{display:block;margin-top:2px}
+#help .tg{display:inline-block;font-size:11px;font-weight:700;margin-top:2px}.tg.g{color:var(--good)}.tg.b{color:var(--ac)}.tg.o{color:var(--wtx)}
+#help .hn{background:var(--gbg);border:1px solid var(--gln);border-radius:10px;padding:10px 14px;margin:14px 0;font-size:13px}
+#help .hf{padding:12px 24px 16px;border-top:1px solid var(--line);text-align:right}
+.steps .ok i{background:var(--good);color:#fff}.steps .now i{background:var(--ac);color:#fff}
+.cta{margin-top:16px;display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;border-radius:14px;background:var(--ac);border-color:var(--ac);color:#fff;width:min(420px,100%)}
+.cta b{display:block;font-size:16px}.cta small{color:#fffc}.cta em{margin-left:auto;font-style:normal;background:#fff;color:var(--ac);border-radius:99px;padding:1px 10px;font-weight:700}
 #printArea{display:none}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:8px;display:none;z-index:99}
 @media(max-width:900px){.tag{display:none}.wrap{grid-template-columns:1fr;display:block}.lp{border:0}#main{overflow:visible}.dual{grid-template-columns:1fr}.pos{grid-template-columns:80px 1fr}.pos .pd{grid-column:1/3}.tb{position:static}body{display:block;height:auto}}
@@ -241,22 +263,81 @@ dialog li{margin:6px 0}
 <dialog id="del"><h2 style="font-size:18px">저장분 삭제</h2><small>지울 항목을 고르세요. 내신은 학기별, 모의고사는 회차별로 지웁니다.</small>
   <div id="delList" class="subj" style="margin:10px 0;max-height:300px"></div>
   <div class="row"><button class="pri" id="delGo">선택 항목 삭제</button><button onclick="this.closest('dialog').close()">닫기</button></div></dialog>
-<dialog id="help" style="max-width:640px"><h2 style="font-size:18px">사용법과 읽는 법</h2>
-<ol>
- <li><b>파일 올리기</b> — 왼쪽 <b>1. 내신 성적</b>에 나이스 파일(교과학습발달상황 또는 전과목 성적일람표)을 올립니다. 정시까지 보려면 <b>2. 모의고사 성적</b>에 성적통지표 PDF를 올립니다.</li>
- <li><b>학생 고르기</b> — 위쪽 드롭다운에서 학생을 고릅니다.</li>
- <li><b>분석 누르기</b> — 탭으로 내신 · 모의고사 · 수시·정시 · 상담 우선순위 · 학급 한눈에를 오갑니다.</li>
- <li><b>꺼내 쓰기</b> — 인쇄(PDF 저장 가능) · 프롬프트 복사 · 학급 일괄 처리(전체 인쇄/엑셀/프롬프트).</li></ol>
-<h3 style="font-size:14px">읽는 법</h3><ul>
- <li><b>소수점 등급·≈</b> — 등급이 없는 일람표는 석차÷수강자수로 예상 등급(≈)을 만듭니다. 실제 등급과 다를 수 있습니다.</li>
- <li><b>평균 등급</b> — 학점 가중(등급×학점 합 ÷ 학점 합)입니다.</li>
- <li><b>한 등급만 올리면 되는 과목</b> — 경계선에 걸린 과목 순위로, 상담의 핵심입니다.</li>
- <li><b>상담 우선순위</b> — 내신 하락 · 등급 경계 · 내신·모의 격차 · 모의 하락 네 신호의 세기(1~3)를 더한 점수입니다. 상담 순서를 정하려는 것이지 학생 평가가 아닙니다.</li>
- <li><b>학급 한눈에·상담 우선순위</b>는 다른 학생 이름이 나오므로 인쇄하지 않습니다.</li>
- <li><b>정시 라인</b> — 대학군 표는 예시 기본값입니다. 어디가(adiga.kr)의 값으로 바꿔 쓰세요. 대학별 반영비율·가산점은 반영하지 않습니다.</li>
- <li><b>동명이인</b> — 내신과 모의고사는 이름으로 맞물립니다. 표기가 다르면 다른 학생이 됩니다.</li></ul>
-<p class="sub">올린 성적은 이 브라우저에만 자동 저장되고 서버로 보내지 않습니다. 공용 컴퓨터에서는 <b>저장분 삭제</b> 또는 <b>초기화</b>를 눌러 주세요.</p>
-<button class="pri" onclick="this.closest('dialog').close()">닫기</button></dialog>
+<dialog id="help"><div class="hh"><h2><span data-ic="book" data-s="18"></span>사용법과 읽는 법</h2><button class="hx" onclick="this.closest('dialog').close()" aria-label="닫기">✕</button></div>
+<div class="htabs" id="htabs"><button class="on" data-h="0">시작하기</button><button data-h="1">어떤 파일을</button><button data-h="2">화면 읽는 법</button><button data-h="3">숫자 해석</button><button data-h="4">주의할 점</button></div>
+<div class="hp on" data-p="0">
+ <p>학급 성적 파일을 올리면 <b>과목별 추이 그래프</b>, <b>한 등급만 올리면 되는 과목</b>, <b>상담용 프롬프트</b>를 자동으로 만듭니다. 모의고사까지 올리면 <b>수시형인지 정시형인지</b>도 판정합니다.</p>
+ <div class="hs"><i>1</i><b>파일 올리기</b></div><p>왼쪽 <b>1. 내신 성적</b>에 나이스에서 받은 파일을 끌어다 놓으세요. 정시까지 보려면 <b>2. 모의고사 성적</b>에 성적통지표 PDF를 추가로 올립니다.</p>
+ <div class="hs"><i>2</i><b>학생 고르기</b></div><p>화면 위쪽 드롭다운에서 상담할 학생을 고릅니다. 올린 학생이 모두 들어 있습니다.</p>
+ <div class="hs"><i>3</i><b>분석 누르기</b></div><p><b>분석</b> 버튼을 누르면 아래에 결과가 만들어집니다. 위쪽 탭으로 내신 · 모의고사 · 수시·정시 · 상담 우선순위 · 학급 한눈에를 오갑니다.</p>
+ <div class="hs"><i>4</i><b>꺼내 쓰기</b></div>
+ <ul><li><b>인쇄</b> — 학생 1명 분량을 정리해 인쇄합니다. PDF로 저장해 학부모께 드릴 수 있습니다.</li>
+ <li><b>프롬프트</b> — 복사해서 AI에 붙여넣으면 상담 문구를 써 줍니다.</li>
+ <li><b>학급 일괄 처리</b> — 왼쪽 맨 아래에서 반 전체 인쇄·엑셀·프롬프트를 한 번에 만듭니다.</li></ul>
+ <div class="hn">올린 성적은 이 브라우저에 <b>자동 저장</b>되어 다음에 열면 그대로 나옵니다. 로그인했다면 내 계정에도 저장됩니다. 지우려면 왼쪽 위 「저장분 삭제」를 누르세요. 내신과 모의고사 회차를 하나씩 골라 지울 수 있습니다.</div>
+</div>
+<div class="hp" data-p="1">
+ <h3>내신</h3>
+ <table><thead><tr><th>파일</th><th>언제 쓰나</th></tr></thead><tbody>
+ <tr><td><b>교과학습발달상황</b></td><td>학기말 등급이 이미 나왔을 때. <b>가장 정확합니다.</b><small>나이스 › 학급담임 › 학교생활기록부 › 학생부 항목별 조회</small></td></tr>
+ <tr><td><b>전과목 성적 일람표</b></td><td>1차 고사만 봐서 아직 등급이 없을 때. 원점수와 석차로 <b>가상 등급</b>을 만듭니다.<small>나이스 › 학급담임 › 성적조회/통계 › 학기말성적조회</small></td></tr></tbody></table>
+ <h3>모의고사</h3>
+ <table><thead><tr><th>파일</th><th>얻는 값</th></tr></thead><tbody>
+ <tr><td><b>성적통지표 PDF</b><br><span class="tg g">가장 정확</span></td><td>학생당 1쪽. 영역별 원점수 · 표준점수 · 백분위 · 등급.</td></tr>
+ <tr><td><b>성적일람표 PDF</b><br><span class="tg b">빠름</span></td><td>반 전체가 한 번에 들어옵니다. 영역별 표준점수 · 백분위 · 등급을 읽고, 원점수는 없습니다.</td></tr>
+ <tr><td><b>학교 집계 엑셀</b><br><span class="tg o">참고용</span></td><td>원점수는 정확하지만 등급이 공식값과 다를 수 있습니다. 「주의할 점」 탭을 꼭 읽어 주세요.</td></tr></tbody></table>
+ <p>PDF를 넣으면 <b>회차·학년·주관처</b>를 파일에서 자동으로 읽습니다. 못 읽으면 왼쪽 「회차 이름」 칸에 적은 값이 쓰입니다.</p>
+ <div class="hn">PDF는 <b>텍스트가 살아 있는 원본</b>이어야 합니다. 성적 시스템에서 내려받은 파일을 그대로 올리세요. 종이를 스캔하거나 사진으로 찍어 만든 PDF는 글자가 그림이라 읽지 못합니다. PDF에서 글자를 드래그해 선택할 수 있으면 원본입니다.</div>
+</div>
+<div class="hp" data-p="2">
+ <h3>내신 탭</h3>
+ <ul><li><b>과목별 성적</b> — 학기별 등급표. 소수점 등급(≈)은 석차로 추정한 값입니다.</li>
+ <li><b>등급 변화 추이</b> — 위로 갈수록 좋은 등급입니다. 선이 올라가면 성적이 오르는 중입니다.</li>
+ <li><b>강점 · 약점 방사형</b> — 교과군(국어·수학·영어·사회·과학·기타) 평균입니다. 전체 평균보다 0.3등급 이상 좋으면 강점, 나쁘면 약점으로 표시합니다.</li>
+ <li><b>한 등급만 올리면 되는 과목</b> — 경계선에 걸린 과목 순위입니다. <b>상담의 핵심</b>입니다. 앞에 있는 학생이 적은 과목부터 보여 줍니다.</li>
+ <li><b>반영 조합별 평균</b> — 전과목 · 국영수 · 국영수사 · 국영수과를 학점 가중으로 봅니다. 대학 반영 방식에 가까운 조합을 보세요.</li>
+ <li><b>원점수 위치</b> — 같은 등급이어도 과목 안에서 어디쯤인지. 띠는 평균 ± 표준편차입니다.</li>
+ <li><b>목표 시뮬레이션</b> — 목표 최종 평균을 넣으면 남은 학점에서 필요한 등급을 거꾸로 계산합니다.</li></ul>
+ <h3>모의고사 탭</h3>
+ <ul><li><b>회차별 성적표</b> — 칸 아래 <b>↑</b>는 직전 회차보다 좋아짐, <b>↓</b>는 나빠짐입니다.</li>
+ <li><b>영역별 강약 진단</b> — 최근 회차에서 가장 좋은 영역은 강점, 가장 나쁜 영역은 보완으로 표시합니다.</li>
+ <li><b>영역별 등급 추이 · 방사형</b> — 바깥쪽일수록 좋은 등급입니다.</li></ul>
+ <h3>수시·정시 탭</h3>
+ <ul><li>내신과 모의고사를 같은 <b>9등급 자</b>에 올려 비교합니다. 내신이 0.5등급 이상 좋으면 수시 우위, 모의가 좋으면 정시 우위, 비슷하면 균형으로 봅니다.</li>
+ <li><b>정시 라인</b> — 국·수·영·탐 백분위 평균을 대학군 표와 비교합니다.</li></ul>
+ <h3>학급 단위 탭 <small>(인쇄되지 않습니다)</small></h3>
+ <ul><li><b>상담 우선순위</b> — 학생마다 네 가지 신호의 점수를 더해 순위를 매깁니다. 이름을 누르면 그 학생 분석으로 이동합니다.</li>
+ <li><b>학급 한눈에</b> — 학급 평균 분포 · 과목별 학급 평균 · 직전 학기 대비 급등락 학생 · 모의고사 영역×회차 히트맵.</li></ul>
+ <div class="hn">분석 전에도 <b>먼저 상담할 학생 보기</b> 버튼으로 상담 우선순위부터 열 수 있습니다.</div>
+</div>
+<div class="hp" data-p="3">
+ <h3>등급과 평균</h3>
+ <ul><li><b>소수점 등급 · ≈</b> — 등급이 없는 일람표는 <b>석차 ÷ 수강자수</b>를 누적 비율 표에 맞춰 예상 등급을 만듭니다. 실제 등급과 다를 수 있습니다.</li>
+ <li><b>평균 등급</b> — 학점 가중입니다. (등급 × 학점)의 합 ÷ 학점의 합. 체육·예술 등 등급이 없는 과목은 빠집니다.</li>
+ <li><b>5등급제 → 9등급제</b> — 1~2학년 5등급, 3학년 9등급이면 누적 비율로 환산해 맞춥니다. 근사값입니다.</li>
+ <li><b>한 등급 올리려면</b> — 지금 등급의 위쪽 경계 석차를 계산한 값입니다. 동점자·반올림 때문에 실제와 1~2명 차이가 날 수 있습니다.</li></ul>
+ <h3>상담 우선순위 점수</h3>
+ <table><thead><tr><th>신호</th><th>기준 (세기 1 / 2 / 3)</th></tr></thead><tbody>
+ <tr><td>내신 하락</td><td>직전 학기보다 0.3 / 0.6 / 1.0등급 이상 하락</td></tr>
+ <tr><td>등급 경계</td><td>위쪽 20% 이내로 경계에 걸린 과목이 1 / 2~3 / 4개 이상</td></tr>
+ <tr><td>내신·모의 격차</td><td>두 평균이 0.5 / 1.0 / 1.5등급 이상 벌어짐</td></tr>
+ <tr><td>모의 하락</td><td>직전 회차보다 0.3 / 0.6 / 1.0등급 이상 하락</td></tr></tbody></table>
+ <p>점수는 상담 <b>순서</b>를 정하려는 것이지 학생을 평가하는 값이 아닙니다.</p>
+ <h3>모의고사 지표</h3>
+ <ul><li><b>백분위</b> — 높을수록 좋습니다. 정시 라인은 국·수·영·탐 백분위 평균입니다.</li>
+ <li><b>영어</b> — 절대평가라 백분위가 없으면 등급에서 추정해 씁니다.</li>
+ <li><b>급등락</b> — 학급 한눈에에서 기준을 0.3~1.0등급으로 바꿔 볼 수 있습니다.</li></ul>
+</div>
+<div class="hp" data-p="4">
+ <ul class="hw"><li><b>대학군 표는 예시값입니다.</b> 실제 입시 결과가 아니라 구조를 보여 주려는 숫자입니다. 학생에게 보여 주기 전에 어디가(adiga.kr) 등에서 확인한 값으로 바꿔 저장하세요.</li>
+ <li><b>대학별 반영비율·변환표준점수·가산점은 반영하지 않습니다.</b> 정시 라인은 참고 지표이며, 합격 가능성을 단정하지 마세요. 최근 모의고사 한 회차 기준입니다.</li>
+ <li><b>학교 집계 엑셀의 등급은 공식값과 다를 수 있습니다.</b> 원점수는 정확하지만 등급은 학교 집계 방식에 따라 달라집니다. 등급이 중요하면 성적통지표를 쓰세요.</li>
+ <li><b>가상 등급(≈)은 예측입니다.</b> 1차 고사 일람표로 만든 등급이며, 학기말에 나오는 실제 등급과 다릅니다.</li>
+ <li><b>동명이인.</b> 내신과 모의고사는 이름으로 맞물립니다. 표기가 다르면 다른 학생이 됩니다.</li>
+ <li><b>개인정보.</b> 학급 한눈에·상담 우선순위는 다른 학생 이름이 나오므로 인쇄하지 않습니다. 화면을 공유하거나 캡처할 때도 조심하세요. 공용 컴퓨터에서는 쓰고 나서 「저장분 삭제」 또는 「초기화」를 눌러 주세요.</li>
+ <li><b>스캔·사진 PDF는 읽지 못합니다.</b> 글자가 선택되는 원본 PDF만 가능합니다.</li></ul>
+</div>
+<div class="hf"><button class="pri" onclick="this.closest('dialog').close()">닫기</button></div></dialog>
 
 <script>
 const $=s=>document.querySelector(s);
@@ -265,7 +346,7 @@ const num=v=>{const m=String(v??'').replace(/,/g,'').match(/-?\d+(\.\d+)?/);retu
 const str=v=>String(v??'').trim();
 const f2=x=>isFinite(x)?(Math.round(x*100)/100).toFixed(2):'-';
 const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3500)};
-Chart.defaults.font.family='Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+Chart.defaults.font.family='Moneygraphy,Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';
 
 /* ───── 아이콘 ───── */
 const IC={search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M7.5 12l2.5-2.5 2 2 2.5-3"/>',panel:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/>',
@@ -884,13 +965,13 @@ function mount(el,rep,list=charts){
   const box=el.lastElementChild;
   for(const [id,cfg] of rep.charts){const cv=box.querySelector('#'+id);if(!cv)continue;const c=new Chart(cv,cfg);cv.style.cssText='width:100%;height:auto';list.push(c)}
 }
-const EMPTY=(t,d)=>`<div class="empty">${svg('search',64)}<h3>${t}</h3><div>${d}</div><div class="steps"><span><i>1</i>파일 올리기</span><span><i>2</i>학생 고르기</span><span><i>3</i>분석 누르기</span></div></div>`;
+const EMPTY=(t,d,st=[0,0,0],x='')=>`<div class="empty">${svg('search',64)}<h3>${t}</h3><div>${d}</div><div class="steps">${['파일 올리기','학생 고르기','분석 누르기'].map((n,i)=>`<span class="${st[i]?'ok':st.indexOf(0)===i?'now':''}"><i>${st[i]?'✓':i+1}</i>${n}</span>`).join('')}</div>${x}</div>`;
 function render(){
   destroy();const v=$('#view');v.innerHTML='';
-  const on=shown&&cur,cls=tab==='c'||tab==='p';
+  const on=shown&&cur,cls=(tab==='c'||tab==='p')&&shown;
   $('#tabs').hidden=!(shown&&students.length);$('#pm1').hidden=$('#pr1').hidden=!on||cls;
   if(!students.length){v.innerHTML=EMPTY('성적 파일을 올려 주세요','나이스에서 내려받은 학급 성적 파일을 올리면<br>과목별 추이와 상담 자료가 자동으로 만들어집니다.');return}
-  if(!on){v.innerHTML=EMPTY('학생을 고르고 분석을 눌러 주세요',`학생 ${students.length}명의 자료를 불러왔습니다.`);return}
+  if(!on&&!cls){const k=students.map(prio).filter(p=>p.score>0).length;v.innerHTML=EMPTY('학생을 고르고 분석을 눌러 주세요',`학생 ${students.length}명의 자료를 불러왔습니다.`,[1,cur?1:0,0],k?`<button class="cta" id="ctaP"><span><b>먼저 상담할 학생 보기</b><small>${students.length}명 중 ${k}명에게 살펴볼 신호가 있습니다</small></span><em>${k}명</em></button>`:'');const c=$('#ctaP');if(c)c.onclick=()=>{shown=true;tab='p';document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='p'));render()};return}
   if(cls){v.innerHTML=tab==='p'?prioHtml():classHtml();v.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>pick(b.dataset.pick));if($('#mvth'))$('#mvth').onchange=e=>{MVTH=+e.target.value;render()};if($('#hmr'))$('#hmr').onchange=e=>{HMR=e.target.value;render()};if($('#prx'))$('#prx').onclick=prioXlsx;return}
   mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur));
   if(tab==='n'&&$('#sim_t'))sim();
@@ -1087,6 +1168,7 @@ $('#pmA').onclick=()=>{
 };
 $('#tg').onclick=()=>document.body.classList.toggle('sbc');
 $('#bHelp').onclick=()=>$('#help').showModal();
+$('#htabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#htabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('#help .hp').forEach(p=>{p.classList.toggle('on',p.dataset.p===b.dataset.h);if(p.dataset.p===b.dataset.h)p.scrollTop=0})};
 $('#bDel').onclick=delOpen;
 $('#mpasteGo').onclick=()=>{mockFromText($('#mpaste').value)};
 $('#qadd').onclick=()=>{
