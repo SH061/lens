@@ -463,8 +463,8 @@ dialog li{margin:6px 0}
 .itb{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 14px;font-size:13px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
 .itb.sm{padding:3px 11px;font-size:12px}.itb:hover{border-color:var(--ac)}
 .itb.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
-.itl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:2px 0 14px}
-.itl>div{background:var(--soft);border-radius:10px;padding:8px 12px}.itl span{display:block;font-size:12px;color:var(--ink2)}.itl b{font-size:20px}.itl b.bd{color:var(--bad)}.itl b.wn{color:var(--wtx)}
+.itl{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:2px 0 14px}
+.itl>div{background:var(--soft);border-radius:10px;padding:8px 12px}.itl span{display:block;font-size:12px;color:var(--ink2)}.itl b{font-size:20px}.itl b.bd{color:var(--bad)}.itl b.wn{color:var(--wtx)}.itl b small{font-size:12px;color:var(--ink2);font-weight:600}
 .isub{font-size:13px;font-weight:600;margin:0 0 6px}
 .ibr{display:grid;grid-template-columns:64px 1fr 80px;gap:10px;align-items:center;font-size:13px;margin:6px 0}.ibr small{color:var(--ink2);font-size:11px}
 .ibar{display:flex;height:16px;border-radius:5px;overflow:hidden;background:var(--soft)}.ibar i{height:100%;display:block}
@@ -473,7 +473,7 @@ dialog li{margin:6px 0}
 .isg{font-size:12px;color:var(--ink2);margin:8px 0 2px}
 .isr{display:grid;grid-template-columns:92px 1fr 72px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
 .itr{position:relative;height:10px;background:var(--soft);border-radius:5px}.itr i{position:absolute;left:0;top:0;height:10px;border-radius:5px;background:var(--ac)}.itr u{position:absolute;top:-3px;width:2px;height:16px;background:var(--ink);text-decoration:none}
-@media(max-width:560px){.itl{grid-template-columns:repeat(2,minmax(0,1fr))}.ibr{grid-template-columns:52px 1fr 64px}.isr{grid-template-columns:76px 1fr 60px}}
+@media(max-width:900px){.itl{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:560px){.itl{grid-template-columns:repeat(2,minmax(0,1fr))}.ibr{grid-template-columns:52px 1fr 64px}.isr{grid-template-columns:76px 1fr 60px}}
 </style>
 </head>
 <body>
@@ -1353,6 +1353,10 @@ function itemHtml(name){
     if(b)b[st==='O'?0:st==='X'?1:2]++;
     if(st==='X'&&(r==='A'||r==='B'))hot.push([e.area,i+1]);
     if((st==='N'||st==='D')&&i/len<.75)late=false}});
+  let sc=0,mx=0,scOk=false,mxOk=true;
+  S.forEach(e=>{const m=mock.find(m=>m.name===name&&m.round===ITR&&m.area===e.area),mm=(e.sub||[]).reduce((p,v)=>p+(v[1]||0),0);
+    if(m&&isFinite(m.raw)){sc+=m.raw;scOk=true}if(mm)mx+=mm;else mxOk=false});
+  const scTxt=scOk?`${+sc.toFixed(1)}<small>점${mxOk&&mx?` / ${mx}점`:''}</small>`:'—';
   const tot=o+x+n+d,LB={A:'80%+',B:'60%+',C:'40%+',D:'20%+',E:'20%-'};
   const bars=Object.keys(B).filter(k=>B[k][0]+B[k][1]+B[k][2]).map(k=>{const [a,b,c]=B[k],t=a+b+c;
     return `<div class="ibr"><span>${k} <small>${LB[k]}</small></span><div class="ibar"><i class="ok" style="width:${a/t*100}%"></i><i class="ng" style="width:${b/t*100}%"></i><i class="bl" style="width:${c/t*100}%"></i></div><span class="mut">${a}/${t}문항</span></div>`}).join('');
@@ -1364,7 +1368,7 @@ function itemHtml(name){
   if(gap&&gap.g<0)notes.push(`전국 평균보다 가장 많이 낮은 세부영역은 <b>${esc(gap.n)}</b>(${gap.v[2]}/${gap.v[1]}, 전국 평균 ${gap.v[3]})이에요.`);
   return `<div class="itabs">${rounds.map(r=>`<button type="button" class="itb${r===ITR?' on':''}" data-itr="${esc(r)}">${esc(rl(r))}</button>`).join('')}</div>
     ${R.length>1?`<div class="itabs ia">${['전체',...R.map(e=>e.area)].map(a=>`<button type="button" class="itb sm${a===ITA?' on':''}" data-ita="${esc(a)}">${esc(a)}</button>`).join('')}</div>`:''}
-    <div class="itl"><div><span>정답</span><b>${o}</b></div><div><span>오답</span><b class="bd">${x}</b></div><div><span>무표기</span><b class="wn">${n}</b></div><div><span>중복표기</span><b class="wn">${d}</b></div><div><span>쉬운 문항 놓침</span><b class="bd">${hot.length}</b></div></div>
+    <div class="itl"><div><span>득점(원점수)</span><b>${scTxt}</b></div><div><span>정답</span><b>${o}</b></div><div><span>오답</span><b class="bd">${x}</b></div><div><span>무표기</span><b class="wn">${n}</b></div><div><span>중복표기</span><b class="wn">${d}</b></div><div><span>쉬운 문항 놓침</span><b class="bd">${hot.length}</b></div></div>
     <div class="isub">정답률 구간별 정오 <span class="mut">(A 쉬움 → E 어려움 · 전체 ${tot}문항)</span></div>${bars}
     <div class="ilg"><span><i class="ok"></i>정답</span><span><i class="ng"></i>오답</span><span><i class="bl"></i>무표기·중복</span></div>
     ${sub?`<div class="isub" style="margin-top:12px">세부영역 득점 <span class="mut">(세로 선 = 전국 평균)</span></div>${sub}`:''}
