@@ -8,6 +8,7 @@ main{max-width:760px;margin:0 auto;padding:40px 16px 80px}
 h1{font-size:34px;letter-spacing:-.025em;font-weight:400;margin:0 0 6px}.sub{color:var(--mute);margin:0 0 28px}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:18px}
 label{display:block;font-size:15px;color:var(--mute);margin:0 0 6px}
+select{font:inherit;padding:10px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink)}.row select{flex:1;min-width:0}
 input,textarea{width:100%;font:inherit;padding:12px 16px;border:1px solid var(--line);border-radius:14px;outline:0;background:#fff;color:var(--ink)}input:focus,textarea:focus{border-color:var(--blue)}
 textarea{min-height:260px;resize:vertical;line-height:1.6}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
@@ -19,48 +20,54 @@ table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1p
 <div class="nav"><a href="/">← 처음으로</a></div>
 <main>
 <h1>우리 반 관리</h1><p class="sub">한 번 등록하면 성적 돋보기를 비롯한 모든 도구가 같은 명단을 씁니다.</p>
+<div class="card" id="rq" hidden><label>가입 신청 <b id="rn"></b></label><div id="rl"></div><div class="hint">학번과 이름이 우리 반 명단과 맞는지 확인하고 승인하세요. 모르는 학생이거나 이름이 명단과 다르면 거절하세요.</div></div>
 <div class="card">
-<label for="cls">학급 이름 (예: 2학년 3반)</label><input id="cls" maxlength="20" placeholder="2학년 3반">
-<label for="ta" style="margin-top:18px">학생 명단 — 한 줄에 한 명, 「학번 이름」</label>
-<textarea id="ta" placeholder="20301 강건우&#10;20302 김하늘&#10;20303 이서준"></textarea>
-<div class="hint">엑셀에서 학번·이름 두 열을 복사해 붙여 넣어도 됩니다. 이름만 적으면 위에서부터 1, 2, 3번으로 매겨요.</div>
+<label>담임 학급</label><div class="row" style="margin:0 0 18px"><select id="g"><option value="0">담임 아님</option><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select><select id="c"></select></div>
+<label for="ta">학생 명단 — 한 줄에 한 명, 「학번 이름」</label>
+<textarea id="ta" placeholder="10101 강건우&#10;10102 김하늘&#10;10103 이서준"></textarea>
+<div class="hint">엑셀에서 학번·이름 두 열을 복사해 붙여 넣어도 됩니다. 이름만 적으면 위에서부터 1, 2, 3번으로 매겨요. 학번은 학년(1자리)+반(2자리)+번호(2자리)예요. 예: 1학년 1반 1번 → 10101</div>
 <div class="row"><button id="sv">명단 저장</button><button class="g" id="rs">저장된 명단으로 되돌리기</button></div>
 <div class="msg" id="msg"></div>
 </div>
-<div class="card" id="jc"><label>학생 가입 — 수업 시간에 열고, 끝나면 닫으세요</label>
-<div id="jo" hidden><div class="big" id="code"></div><div class="hint">학생들은 <b id="url"></b> 에서 이 코드를 입력하고, 자기 이름을 골라 6자 이상 비밀번호를 정해요.<br>남은 시간 <b id="left"></b> · 가입 <b id="jn"></b></div></div>
-<div class="row"><button id="op">가입 열기 (10분)</button><button class="g" id="cl" hidden>가입 닫기</button></div>
-<div class="hint">이미 가입된 이름은 다른 사람이 고를 수 없어요. 이름을 도용당했거나 비밀번호를 잊은 학생은 아래 목록에서 「가입 초기화」를 누르면 다시 가입할 수 있어요.</div></div>
-<div class="card"><label>저장된 우리 반 <b id="cnt"></b></label><table><thead><tr><th style="width:90px">학번</th><th>이름</th><th style="width:90px">가입</th><th style="width:110px"></th></tr></thead><tbody id="tb"></tbody></table><div class="hint" id="emp">아직 등록한 명단이 없습니다.</div></div>
+<div class="card"><label>저장된 우리 반 <b id="cnt"></b></label><table><thead><tr><th style="width:90px">학번</th><th>이름</th><th style="width:90px">가입</th><th style="width:80px"></th></tr></thead><tbody id="tb"></tbody></table><div class="hint" id="emp">아직 등록한 명단이 없습니다.</div></div>
 </main>
 <script>
 var $=function(s){return document.querySelector(s)},saved={cls:'',students:[]};
+for(var i=1;i<=15;i++)$('#c').insertAdjacentHTML('beforeend','<option value="'+i+'">'+i+'반</option>');
 function parse(t){var out=[],seen={};t.split(/\r?\n/).forEach(function(l){l=l.trim();if(!l)return;
   var p=l.split(/[\t,\s]+/).filter(Boolean),no='',name;
   if(p.length>1&&/^\d+$/.test(p[0])){no=p[0];name=p.slice(1).join(' ')}else name=p.join(' ');
   if(name)out.push({no:no,name:name})});
   out.forEach(function(x,i){if(!x.no)x.no=String(i+1)});return out}
-function draw(){$('#tb').textContent='';saved.students.forEach(function(s){var tr=document.createElement('tr');
-  [s.no,s.name,s.joined?'✓ 완료':'—'].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.append(td)});
-  var td=document.createElement('td');if(s.joined){var b=document.createElement('button');b.className='g';b.style.padding='4px 12px';b.style.fontSize='14px';b.textContent='가입 초기화';
-   b.onclick=function(){if(confirm(s.name+' 학생의 가입을 초기화할까요? 그 학생은 다시 가입해야 해요.'))post('/api/roster/reset',{name:s.name}).then(load)};td.append(b)}tr.append(td);$('#tb').append(tr)});
-  var j=saved.students.filter(function(x){return x.joined}).length;$('#cnt').textContent=saved.students.length?'('+saved.students.length+'명, 가입 '+j+'명)':'';$('#emp').hidden=!!saved.students.length;
-  var o=saved.join&&saved.join.until>Date.now();$('#jo').hidden=!o;$('#cl').hidden=!o;$('#op').hidden=!!o;
-  if(o){$('#code').textContent=saved.join.code;$('#url').textContent=location.host+'/join';$('#jn').textContent=j+'/'+saved.students.length+'명';tick()}}
-function tick(){if(!saved.join)return;var m=Math.max(0,Math.round((saved.join.until-Date.now())/1000));$('#left').textContent=Math.floor(m/60)+':'+String(m%60).padStart(2,'0');if(!m)load()}
 function post(u,b){return fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b||{})})}
-$('#op').onclick=function(){post('/api/roster/open').then(function(r){if(!r.ok)say('먼저 명단을 저장하세요.','bad');else load()})};
-$('#cl').onclick=function(){post('/api/roster/close').then(load)};
-setInterval(function(){if(saved.join&&saved.join.until>Date.now()){tick();load(true)}},5000);
-function fill(){$('#cls').value=saved.cls||'';$('#ta').value=saved.students.map(function(s){return s.no+' '+s.name}).join('\n')}
 function say(t,c){var m=$('#msg');m.textContent=t;m.className='msg '+(c||'')}
-function load(quiet){return fetch('/api/roster').then(function(r){if(r.status===401)return location.href='/';return r.json()}).then(function(d){if(!d)return;var first=!saved.students.length&&!saved.cls;saved=d;if(first||!quiet&&false)fill();draw()}).catch(function(){say('서버에서 명단을 불러오지 못했습니다.','bad')})}
+function btn(t,f,g){var b=document.createElement('button');b.textContent=t;b.style.cssText='padding:4px 12px;font-size:14px;margin-left:6px';if(g)b.className='g';b.onclick=f;return b}
+function draw(){$('#tb').textContent='';saved.students.forEach(function(s){var tr=document.createElement('tr');
+  [s.no,s.name,s.joined?'✓':'—'].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.append(td)});
+  var td=document.createElement('td');td.append(btn('수정',function(){edit(s)},1));tr.append(td);$('#tb').append(tr)});
+  var j=saved.students.filter(function(x){return x.joined}).length;$('#cnt').textContent=saved.students.length?'('+saved.students.length+'명, 가입 '+j+'명)':'';$('#emp').hidden=!!saved.students.length}
+function edit(s){var n=prompt(s.no+' 이름 수정 (바꾸지 않으려면 그대로 확인):',s.name);if(n===null)return;n=n.trim();
+  var pw=prompt('비밀번호를 새로 정하려면 6자 이상 입력하세요 (비워 두면 그대로). 학생은 다시 로그인해야 해요.','');if(pw===null)return;
+  var no=prompt('번호를 바꾸려면 새 번호(1~60)를 입력하세요 (비워 두면 그대로). 학번이 바뀌어요.','');if(no===null)return;
+  var b={no:s.no};if(n&&n!==s.name)b.name=n;if(pw)b.password=pw;if(no)b.n=+no;
+  post('/api/people/student',b).then(function(r){say(r.ok?'수정했어요.':r.status===409?'이미 있는 학번이에요.':r.status===400?'입력을 확인해 주세요(비밀번호는 영문·숫자·기호 6자 이상).':'수정하지 못했어요.',r.ok?'ok':'bad');load().then(fill)})}
+function drawReq(L){$('#rq').hidden=!L.length;$('#rn').textContent=L.length?'('+L.length+')':'';$('#rl').textContent='';
+  var tx={nohome:'이 반 담임이 없어 총괄관리자만 승인할 수 있어요',new:'명단에 없는 학번 — 승인하면 명단에 추가돼요',match:'명단과 일치해요',mismatch:'명단의 이름은 「'};
+  L.forEach(function(r){var d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)';
+   var t=document.createElement('div');t.innerHTML='<b></b> <span></span><div class="hint" style="margin:2px 0 0"></div>';t.children[0].textContent=r.no+' '+r.name;t.children[1].textContent=r.cls;
+   t.children[2].textContent=r.state==='mismatch'?'명단의 이름은 「'+r.rosterName+'」이에요 — 다르면 승인할 수 없어요':tx[r.state];
+   d.append(t);var bs=document.createElement('div');
+   if(r.state!=='mismatch')bs.append(btn('승인',function(){post('/api/requests/approve',{no:r.no}).then(function(x){if(!x.ok)say('승인하지 못했어요.','bad');load().then(fill)})}));
+   bs.append(btn('거절',function(){if(confirm(r.no+' '+r.name+' 신청을 거절할까요?'))post('/api/requests/reject',{no:r.no}).then(load)},1));d.append(bs);$('#rl').append(d)})}
+function fill(){$('#g').value=saved.g||0;$('#c').value=saved.c||1;$('#ta').value=saved.students.map(function(s){return s.no+' '+s.name}).join('\n')}
+function load(){return Promise.all([fetch('/api/roster'),fetch('/api/requests')]).then(function(rs){if(rs[0].status===401)return location.href='/';return Promise.all([rs[0].json(),rs[1].ok?rs[1].json():[]])}).then(function(d){if(!d)return;saved=d[0];draw();drawReq(d[1])}).catch(function(){say('서버에서 불러오지 못했습니다.','bad')})}
 load().then(fill);
+setInterval(function(){fetch('/api/requests').then(function(r){return r.ok?r.json():[]}).then(drawReq)},15000);
 $('#rs').onclick=function(){fill();say('')};
 $('#sv').onclick=function(){var st=parse($('#ta').value),names={},dup=[];
   st.forEach(function(x){if(names[x.name])dup.push(x.name);names[x.name]=1});
   if(dup.length&&!confirm('같은 이름이 있습니다: '+dup.join(', ')+'\n성적 파일의 이름으로 구분하므로 동명이인이 있으면 서로 섞일 수 있어요. 그래도 저장할까요?'))return;
-  fetch('/api/roster',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({cls:$('#cls').value,students:st})})
+  fetch('/api/roster',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({g:+$('#g').value,c:+$('#c').value,students:st})})
    .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(){load();say('저장했어요. '+st.length+'명이 모든 도구에 연동됩니다.','ok')})
    .catch(function(){say('저장하지 못했습니다(100명 이하만 저장돼요). 다시 시도해 주세요.','bad')})};
 </script></body></html>

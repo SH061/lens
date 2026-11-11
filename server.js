@@ -69,6 +69,9 @@ h1,h2,h3,p{margin:0;font-weight:400}button,input{font-family:inherit;font-size:1
 .box input{display:block;width:100%;padding:12px 18px;margin-bottom:10px;border:1px solid var(--line);border-radius:999px;background:var(--canvas);color:var(--ink);outline:0}.box input:focus{border-color:var(--primary)}
 .box .pill{margin-top:16px}.msg{min-height:22px;margin-top:12px;font-size:15px;color:var(--mute)}
 .login.up{background:var(--tile)}.login.up .box{background:#1d1d1f;border-color:#3a3a3c;color:var(--on-tile)}.login.up .box input{background:#2c2c2e;border-color:#3a3a3c;color:var(--on-tile)}.login.up .sub{color:var(--on-tile-mute)}.login.up .sw{color:#2997ff}.login.up .msg{color:var(--on-tile-mute)}.pw{position:relative;margin-bottom:10px}.pw[hidden]{display:none}.pw input{margin-bottom:0;padding-right:48px}.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;border-radius:50%;background:none;color:var(--mute);cursor:pointer;display:flex;align-items:center;justify-content:center}.eye .sl{display:none}.eye.on .sl{display:inline}.eye.on{color:var(--primary)}.login.up .eye.on{color:#2997ff}
+.fm{display:flex;flex-direction:column;gap:10px;margin:0 0 36px}.fm h2{font-size:24px;margin:0 0 6px}.fm input,.fm select{padding:12px 18px;border:1px solid var(--line);border-radius:999px;font:inherit;background:var(--canvas);color:var(--ink);outline:0}.fm .row{display:flex;gap:8px}.fm .row>*{flex:1;min-width:0}.fm .pill{width:auto;align-self:flex-start;padding:10px 28px}.fm .ok{color:#1a7f37}.fm .bad{color:#c62828}
+.seg{display:flex;gap:8px;margin-bottom:12px}.seg button{flex:1;padding:10px;border:1px solid var(--line);border-radius:999px;background:var(--canvas);font:inherit;color:var(--ink);cursor:pointer}.seg button.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.selrow{display:flex;gap:8px;margin-bottom:10px}.selrow select,.selrow .box input,.selrow input{flex:1;min-width:0;width:auto!important;margin:0!important;padding:12px 14px;border:1px solid var(--line);border-radius:999px;font:inherit;background:var(--canvas);color:var(--ink)}.login.up .selrow select,.login.up .seg button{background:#2c2c2e;border-color:#3a3a3c;color:var(--on-tile)}.login.up .seg button.on{background:var(--primary);border-color:var(--primary)}
 .sw{display:inline-block;margin-top:14px;color:var(--primary);font-size:15px;text-decoration:none}
 .nav{position:sticky;top:0;z-index:5;height:48px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;background:#000c;backdrop-filter:saturate(180%) blur(20px);color:var(--on-tile);font-size:14px}
 .nav .adm{color:#2997ff;text-decoration:none;font-size:14px;margin-right:18px}.nav button{background:none;border:0;color:#2997ff;cursor:pointer;font-size:14px}
@@ -83,9 +86,11 @@ h2{font-size:34px;line-height:1.12;letter-spacing:-.025em;margin-bottom:36px}
 const page = (body, script = '') => `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학교 업무 도구</title><style>${CSS}</style></head><body>${body}${script ? '<script>' + script + '</script>' : ''}</body></html>`;
 const eyeBtn = '<button type="button" class="eye" aria-label="비밀번호 보기" tabindex="-1"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/><path class="sl" d="M3 3l18 18"/></svg></button>';
 const loginPage = () => page(`<main class="login"><form class="box" id="f"><h1 id="t">로그인</h1><p class="sub" id="sub">학교 업무 도구</p>
-<input id="e" type="text" maxlength="30" placeholder="이름" autocomplete="username" required><div class="pw"><input id="p" type="password" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" style="ime-mode:disabled" placeholder="비밀번호" autocomplete="current-password" required>${eyeBtn}</div><div class="pw" id="p2w" hidden><input id="p2" type="password" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" style="ime-mode:disabled" placeholder="비밀번호 확인" autocomplete="new-password">${eyeBtn}</div>
-<button class="pill" id="go">로그인</button><div class="msg" id="msg"></div><a class="sw" id="sw" href="#">처음이세요? 가입하기</a><br><a class="sw" href="/join">학생이에요 · 우리 반 가입 / 로그인</a></form></main>`,
-`var up=false,$=function(s){return document.querySelector(s)};
+<div class="seg" id="roles" hidden><button type="button" id="rT" class="on">교사</button><button type="button" id="rS">학생</button></div><input id="e" type="text" maxlength="30" placeholder="이름 (학생은 학번 5자리)" autocomplete="username" required><div class="selrow" id="tx" hidden><select id="tg"><option value="0">담임 아님</option><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select><select id="tc"><option value="1">1반</option><option value="2">2반</option><option value="3">3반</option><option value="4">4반</option><option value="5">5반</option><option value="6">6반</option><option value="7">7반</option><option value="8">8반</option><option value="9">9반</option><option value="10">10반</option><option value="11">11반</option><option value="12">12반</option><option value="13">13반</option><option value="14">14반</option><option value="15">15반</option></select></div><div class="selrow" id="sx" hidden><select id="sg"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select><select id="sc"><option value="1">1반</option><option value="2">2반</option><option value="3">3반</option><option value="4">4반</option><option value="5">5반</option><option value="6">6반</option><option value="7">7반</option><option value="8">8반</option><option value="9">9반</option><option value="10">10반</option><option value="11">11반</option><option value="12">12반</option><option value="13">13반</option><option value="14">14반</option><option value="15">15반</option></select><input id="sn" type="number" min="1" max="60" placeholder="번호"></div><div class="pw"><input id="p" type="password" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" style="ime-mode:disabled" placeholder="비밀번호" autocomplete="current-password" required>${eyeBtn}</div><div class="pw" id="p2w" hidden><input id="p2" type="password" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" style="ime-mode:disabled" placeholder="비밀번호 확인" autocomplete="new-password">${eyeBtn}</div>
+<button class="pill" id="go">로그인</button><div class="msg" id="msg"></div><a class="sw" id="sw" href="#">처음이세요? 가입하기</a></form></main>`,
+`var up=false,role='t',$=function(s){return document.querySelector(s)};
+function roleUi(){$('#rT').classList.toggle('on',role==='t');$('#rS').classList.toggle('on',role==='s');$('#tx').hidden=!up||role!=='t';$('#sx').hidden=!up||role!=='s'}
+$('#rT').onclick=function(){role='t';roleUi()};$('#rS').onclick=function(){role='s';roleUi()};
 /* 비밀번호 칸: 한글 상태에서 눌러도 영문 자판 글자로 바꿔 넣는다(ㅂ→q). 브라우저는 입력기 전환을 강제할 수 없어 입력된 한글을 변환한다 */
 var KI=['r','R','s','e','E','f','a','q','Q','t','T','d','w','W','c','z','x','v','g'],KV=['k','o','i','O','j','p','u','P','h','hk','ho','hl','y','n','nj','np','nl','b','m','ml','l'],KF=['','r','R','rt','s','sw','sg','e','f','fr','fa','fq','ft','fx','fv','fg','a','q','qt','t','T','d','w','c','z','x','v','g'],
 JA='ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ',JK=['r','R','rt','s','sw','sg','e','E','f','fr','fa','fq','ft','fx','fv','fg','a','q','Q','qt','t','T','d','w','W','c','z','x','v','g'],VO='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
@@ -93,63 +98,71 @@ function eng(t){return t.replace(/[가-힣ㄱ-ㅣ]/g,function(c){var n=c.charCod
 function fixPw(e){var el=e.target,v=el.value,c=eng(v);if(c!==v)el.value=c}
 ['#p','#p2'].forEach(function(id){$(id).addEventListener('input',function(e){if(!e.isComposing)fixPw(e)});$(id).addEventListener('compositionend',fixPw)});
 Array.prototype.forEach.call(document.querySelectorAll('.eye'),function(b){b.onclick=function(){var i=b.previousElementSibling,show=i.type==='password';i.type=show?'text':'password';b.classList.toggle('on',show);b.setAttribute('aria-label',show?'비밀번호 숨기기':'비밀번호 보기');i.focus()}});
-function mode(u){up=u;$('.login').classList.toggle('up',u);$('#t').textContent=u?'가입 신청':'로그인';$('#sub').textContent=u?'신청하면 관리자가 승인한 뒤 사용할 수 있어요':'학교 업무 도구';$('#go').textContent=u?'가입 신청하기':'로그인';$('#sw').textContent=u?'이미 계정이 있어요':'처음이세요? 가입하기';$('#p2w').hidden=!u;$('#p2').value='';$('#msg').textContent='';document.title=u?'가입 신청':'학교 업무 도구'}
+function mode(u){up=u;$('.login').classList.toggle('up',u);$('#t').textContent=u?'가입 신청':'로그인';$('#sub').textContent=u?'교사는 관리자가, 학생은 담임 선생님이 승인한 뒤 사용할 수 있어요':'학교 업무 도구';$('#go').textContent=u?'가입 신청하기':'로그인';$('#sw').textContent=u?'이미 계정이 있어요':'처음이세요? 가입하기';$('#p2w').hidden=!u;$('#p2').value='';$('#roles').hidden=!u;role=u?role:'t';roleUi();$('#e').placeholder=u?'이름':'이름 (학생은 학번 5자리)';$('#msg').textContent='';document.title=u?'가입 신청':'학교 업무 도구'}
 $('#sw').onclick=function(e){e.preventDefault();mode(!up)};
 $('#f').onsubmit=async function(e){e.preventDefault();$('#msg').textContent='';
 if(up&&$('#p').value!==$('#p2').value)return $('#msg').textContent='비밀번호가 서로 다릅니다.';
-var r=await fetch(up?'/api/signup':'/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('#e').value,password:$('#p').value})});
-if(r.status==202){mode(false);$('#p').value='';return $('#msg').textContent='가입을 신청했습니다. 관리자가 승인하면 로그인할 수 있습니다.'}
+var ep=up?(role==='s'?'/api/student/signup':'/api/signup'):'/api/login',bd={email:$('#e').value,password:$('#p').value};
+if(up&&role==='s')bd={g:+$('#sg').value,c:+$('#sc').value,n:+$('#sn').value,name:$('#e').value,password:$('#p').value};
+else if(up&&+$('#tg').value)bd.cls={g:+$('#tg').value,c:+$('#tc').value};
+var r=await fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(bd)});
+var wasS=up&&role==='s';
+if(r.status==202){mode(false);$('#p').value='';return $('#msg').textContent=wasS?'가입을 신청했어요. 담임 선생님이 승인하면 로그인할 수 있어요.':'가입을 신청했습니다. 관리자가 승인하면 로그인할 수 있습니다.'}
 if(r.ok)return location.reload();
-$('#msg').textContent=({401:'이름 또는 비밀번호가 맞지 않습니다.',423:'관리자 승인을 기다리고 있습니다.',409:'이미 사용 중인 이름입니다.',400:'이름과 6자 이상의 비밀번호를 입력하세요.',403:'가입 인원이 가득 찼습니다.',429:'시도가 많아 잠시 막혔습니다. 나중에 다시 하세요.'})[r.status]||'서버 오류'};`);
-const home = (apps, email, admin, pend) => page(`<div class="nav"><span>${esc(email)}</span><span>${admin ? `<a class="adm" href="/admin">관리자${pend ? ' (' + pend + ')' : ''}</a>` : ''}<button id="out">로그아웃</button></span></div>
+$('#msg').textContent=({401:'이름 또는 비밀번호가 맞지 않습니다.',423:'승인을 기다리고 있습니다(교사는 관리자, 학생은 담임 선생님).',404:'그 반 담임 선생님이 아직 가입하지 않았어요.',409:wasS?'이미 가입되었거나 신청 중인 학번이에요.':'이미 사용 중인 이름입니다.',400:wasS?'학년·반·번호, 이름, 영문·숫자 6자 이상의 비밀번호를 입력하세요.':'이름과 6자 이상의 비밀번호를 입력하세요.',403:'가입 인원이 가득 찼습니다.',429:'시도가 많아 잠시 막혔습니다. 나중에 다시 하세요.'})[r.status]||'서버 오류'};`);
+const home = (apps, email, admin, pend) => page(`<div class="nav"><span>${esc(email)}</span><span>${admin ? `<a class="adm" href="/admin">관리자${pend ? ' (' + pend + ')' : ''}</a>` : ''}<a class="adm" href="/me">내 정보</a><button id="out">로그아웃</button></span></div>
 <section class="tile hero"><h1>학교 업무 도구</h1><p>사용할 프로그램을 선택하세요.</p></section>
 <section class="tile parch"><div class="grid">${Object.entries(apps).map(([k, a]) => `<a class="card" href="/${k}/"><h3>${esc(a.title)}</h3><p>${esc(a.desc)}</p><span>열기 ›</span></a>`).join('')}</div></section>
 <section class="tile dark"><h2>한 번 로그인하면</h2><p>어느 프로그램에서든 같은 계정으로 이어서 쓸 수 있고, 성적과 메모는 본인 계정에만 저장됩니다.</p></section>`,
 `document.getElementById('out').onclick=async function(){await fetch('/api/logout',{method:'POST'});location.reload()}`);
-const studentHome = (name, cls) => page(`<div class="nav"><span>${esc(cls)} ${esc(name)}</span><button id="out">로그아웃</button></div>
+const studentHome = (name, cls) => page(`<div class="nav"><span>${esc(cls)} ${esc(name)}</span><span><a class="adm" href="/me">내 정보</a><button id="out">로그아웃</button></span></div>
 <section class="tile hero"><h1>${esc(name)} 님, 반가워요</h1><p>${esc(cls || '우리 반')}에 가입됐어요.</p></section>
 <section class="tile parch"><div class="grid" style="display:block;max-width:640px;text-align:center"><p style="color:var(--mute)">선생님이 열어 주는 기능이 여기에 나타납니다.</p></div></section>`,
 `document.getElementById('out').onclick=async function(){await fetch('/api/student/logout',{method:'POST'});location.reload()}`);
-const joinPage = () => page(`<main class="login"><div class="box" id="bx"><h1>우리 반 가입</h1><p class="sub" id="sub">선생님이 알려 준 6자리 반 코드를 입력하세요.</p>
-<div id="s1"><input id="code" inputmode="numeric" maxlength="6" placeholder="반 코드 6자리" autocomplete="off"><button class="pill" id="b1">다음</button></div>
-<div id="s2" hidden><select id="who" style="width:100%;padding:12px 18px;border:1px solid var(--line);border-radius:999px;font:inherit;background:#fff;margin-bottom:10px"></select><input id="pin" type="password" inputmode="latin" maxlength="30" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="비밀번호 (영문·숫자 6자 이상)" autocomplete="new-password"><button class="pill" id="b2">가입하기</button></div>
-<div class="msg" id="msg"></div><a class="sw" id="sw" href="#">이미 가입했어요 · 로그인</a><br><a class="sw" href="/">선생님 로그인</a></div></main>
-<style>select{-webkit-appearance:none}</style>`,
-`var $=function(s){return document.querySelector(s)},code='',login=false;
-function say(t){$('#msg').textContent=t}
-function show(i){$('#s1').hidden=i!==1;$('#s2').hidden=i!==2}
-$('#sw').onclick=function(e){e.preventDefault();login=!login;
- if(login){$('#sub').textContent='학번과 비밀번호를 입력하세요.';$('#s1').hidden=true;$('#s2').hidden=false;$('#who').outerHTML='<input id="who" inputmode="numeric" maxlength="10" placeholder="학번">';$('#b2').textContent='로그인';$('#sw').textContent='처음이에요 · 가입하기'}
- else location.reload()};
-$('#b1').onclick=async function(){code=$('#code').value.trim();var r=await fetch('/api/join/lookup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({code:code})});
- if(!r.ok)return say(r.status==429?'시도가 많아 잠시 막혔습니다.':'가입창이 닫혀 있거나 코드가 틀렸어요. 선생님께 확인하세요.');
- var d=await r.json(),w=$('#who');$('#sub').textContent=(d.cls||'우리 반')+' · 내 이름을 고르고 비밀번호(6자 이상)를 정하세요.';w.textContent='';
- d.students.forEach(function(s){var o=document.createElement('option');o.value=s.no;o.textContent=s.no+' '+s.name+(s.joined?' (가입 완료)':'');o.disabled=s.joined;w.appendChild(o)});show(2);say('')};
-$('#b2').onclick=async function(){var pin=$('#pin').value;if(!/^[\u0021-\u007e]{6,30}$/.test(pin))return say('비밀번호는 영문·숫자·기호 6자 이상이에요. 한글 자판이면 영문으로 바꿔 주세요.');
- var r=await fetch(login?'/api/student/login':'/api/join',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(login?{no:$('#who').value,pin:pin}:{code:code,no:$('#who').value,pin:pin})});
- if(r.ok)return location.href='/';
- say(({401:'학번 또는 비밀번호가 맞지 않아요.',409:'이미 가입된 이름이에요. 본인이 아니라면 선생님께 알려 주세요.',404:'가입창이 닫혔어요. 선생님께 다시 열어 달라고 하세요.',429:'시도가 많아 잠시 막혔습니다. 10분 뒤에 해 보세요.'})[r.status]||'다시 시도해 주세요.')};`);
+const mePage = (kind, name, cls, g, c) => page(`<div class="nav"><a class="adm" href="/">← 처음으로</a><span>${esc(name)}</span></div>
+<section class="tile hero" style="padding-bottom:32px"><h1 style="font-size:40px">내 정보</h1><p>${esc(kind === 't' ? '교사' : '학생')} · ${esc(name)}${cls ? ' · ' + esc(cls) : ''}</p></section>
+<section class="tile parch"><div class="grid" style="display:block;max-width:560px;text-align:left">
+${kind === 't' ? `<div class="fm"><h2>담임 학급</h2><div class="row"><select id="mg"><option value="0">담임 아님</option>%OG%</select><select id="mc">%OC%</select></div><button class="pill" id="sc">학급 저장</button><div class="msg" id="m1"></div></div>` : `<p style="color:var(--mute);margin-bottom:28px">이름·학번·반을 바꿔야 하면 담임 선생님께 말씀드리세요.</p>`}
+<div class="fm"><h2>비밀번호 변경</h2><input id="p0" type="password" placeholder="현재 비밀번호" autocomplete="current-password"><input id="p1" type="password" placeholder="새 비밀번호 (6자 이상)" autocomplete="new-password"><input id="p2" type="password" placeholder="새 비밀번호 확인" autocomplete="new-password"><button class="pill" id="sp">비밀번호 변경</button><div class="msg" id="m2"></div></div>
+</div></section>`.replace('%OG%', `<option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option>`).replace('%OC%', `<option value="1">1반</option><option value="2">2반</option><option value="3">3반</option><option value="4">4반</option><option value="5">5반</option><option value="6">6반</option><option value="7">7반</option><option value="8">8반</option><option value="9">9반</option><option value="10">10반</option><option value="11">11반</option><option value="12">12반</option><option value="13">13반</option><option value="14">14반</option><option value="15">15반</option>`),
+`var $=function(s){return document.querySelector(s)},K=${JSON.stringify(kind)};
+function say(id,t,ok){var m=$(id);m.textContent=t;m.className='msg '+(ok?'ok':'bad')}
+function post(u,b){return fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)})}
+if(K==='t'){$('#mg').value=${+g || 0};$('#mc').value=${+c || 1};$('#sc').onclick=async function(){var r=await post('/api/me/cls',{g:+$('#mg').value,c:+$('#mc').value});say('#m1',r.ok?'저장했어요.':'저장하지 못했어요.',r.ok)}}
+$('#sp').onclick=async function(){if($('#p1').value.length<6)return say('#m2','새 비밀번호는 6자 이상이에요.');if($('#p1').value!==$('#p2').value)return say('#m2','새 비밀번호가 서로 달라요.');
+ var r=await post(K==='t'?'/api/me/password':'/api/student/password',{old:$('#p0').value,pw:$('#p1').value});
+ if(r.ok){say('#m2','비밀번호를 바꿨어요.',1);$('#p0').value=$('#p1').value=$('#p2').value=''}else say('#m2',r.status==401?'현재 비밀번호가 맞지 않아요.':r.status==400?(K==='s'?'비밀번호는 영문·숫자·기호 6자 이상이에요.':'새 비밀번호는 6자 이상이에요.'):'바꾸지 못했어요.')}`);
 const adminPage = me => page(`<div class="nav"><a class="adm" href="/">← 프로그램 선택</a><span>${esc(me)}</span></div>
 <section class="tile hero" style="padding-bottom:32px"><h1 style="font-size:40px">관리자</h1><p>가입 신청을 승인하고 계정을 관리합니다.</p></section>
-<section class="tile parch"><div class="grid" style="display:block;max-width:720px"><h2 style="font-size:24px;margin-bottom:12px">승인 대기</h2><div id="pend"></div><h2 style="font-size:24px;margin:36px 0 12px">전체 계정</h2><div id="all"></div></div></section>`,
+<section class="tile parch"><div class="grid" style="display:block;max-width:720px"><h2 style="font-size:24px;margin-bottom:12px">승인 대기</h2><div id="pend"></div><h2 style="font-size:24px;margin:36px 0 12px">전체 계정</h2><div id="all"></div><h2 style="font-size:24px;margin:36px 0 12px">학생</h2><div id="stu"></div></div></section>`,
 `var $=function(s){return document.querySelector(s)};
 function row(u,btns){var d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;margin-bottom:8px;border:1px solid var(--line);border-radius:18px;background:var(--canvas)';
-var n=document.createElement('span');n.textContent=u.name+(u.admin?' (관리자)':'')+(u.at?'  · '+u.at.slice(0,10):'');d.appendChild(n);var b=document.createElement('span');
+var n=document.createElement('span');n.textContent=u.name+(u.admin?' (관리자)':'')+(u.cls?' · '+u.cls+' 담임':'')+(u.at?'  · '+u.at.slice(0,10):'');d.appendChild(n);var b=document.createElement('span');
 btns.forEach(function(x){var e=document.createElement('button');e.textContent=x[0];e.style.cssText='margin-left:8px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:'+(x[2]?'var(--primary)':'var(--canvas)')+';color:'+(x[2]?'#fff':'var(--ink)')+';cursor:pointer';
 e.onclick=async function(){if(x[3]&&!confirm(x[3]))return;await fetch('/api/admin/'+x[1],{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:u.name})});load()};b.appendChild(e)});d.appendChild(b);return d}
 async function load(){var r=await fetch('/api/admin/users');if(!r.ok)return location.href='/';var L=await r.json();$('#pend').textContent='';$('#all').textContent='';
 var P=L.filter(function(u){return u.status==='pending'});if(!P.length){$('#pend').textContent='대기 중인 신청이 없습니다.'}
 P.forEach(function(u){$('#pend').appendChild(row(u,[['거절','reject',0,u.name+' 신청을 거절할까요?'],['승인','approve',1]]))});
-L.filter(function(u){return u.status!=='pending'}).forEach(function(u){$('#all').appendChild(row(u,u.admin?[]:[['삭제','delete',0,u.name+' 계정을 삭제할까요? 저장된 성적 파일은 남지만 로그인할 수 없게 됩니다.']]))})}
+L.filter(function(u){return u.status!=='pending'}).forEach(function(u){var d=row(u,u.admin?[]:[['삭제','delete',0,u.name+' 계정을 삭제할까요? 저장된 성적 파일은 남지만 로그인할 수 없게 됩니다.']]);var e=document.createElement('button');e.textContent='수정';e.style.cssText='margin-left:8px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--canvas);color:var(--ink);cursor:pointer';
+e.onclick=async function(){var g=prompt(u.name+' 담임 학년 (1~3, 담임 아니면 0):',u.g);if(g===null)return;var c=+g?prompt('반 (1~20):',u.c||1):0;if(c===null)return;var pw=prompt('새 비밀번호 (6자 이상, 비워 두면 그대로):','');if(pw===null)return;
+var b={name:u.name,g:+g,c:+c};if(pw)b.password=pw;var r=await fetch('/api/people/user',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)});if(!r.ok)alert('수정하지 못했어요(비밀번호는 6자 이상).');load()};d.lastChild.insertBefore(e,d.lastChild.firstChild);$('#all').appendChild(d)});
+var sr=await fetch('/api/people/students');var S=sr.ok?await sr.json():[];$('#stu').textContent='';if(!S.length)$('#stu').textContent='등록된 학생이 없습니다.';
+S.forEach(function(s){var d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;margin-bottom:8px;border:1px solid var(--line);border-radius:18px;background:var(--canvas)';var n=document.createElement('span');n.textContent=s.no+' '+s.name+' · '+s.cls+(s.joined?'':' (미가입)');d.appendChild(n);
+var e=document.createElement('button');e.textContent='수정';e.style.cssText='padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--canvas);color:var(--ink);cursor:pointer';
+e.onclick=async function(){var nm=prompt('이름:',s.name);if(nm===null)return;var no=prompt('학년 반 번호를 학번 5자리로 (예: 10101). 바꾸지 않으려면 그대로:',s.no);if(no===null)return;var pw=prompt('새 비밀번호 (영문·숫자·기호 6자 이상, 비워 두면 그대로):','');if(pw===null)return;
+var b={no:s.no};if(nm&&nm!==s.name)b.name=nm;if(pw)b.password=pw;if(no&&no!==s.no&&/^[0-9]{5}$/.test(no)){b.g=+no[0];b.c=+no.slice(1,3);b.n=+no.slice(3)}var r=await fetch('/api/people/student',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)});if(!r.ok)alert(r.status==409?'이미 있는 학번이에요.':r.status==400?'입력을 확인해 주세요.':'수정하지 못했어요.');load()};d.appendChild(e);$('#stu').appendChild(d)})}
 load();`);
 const fails = {}; // shortcut: 메모리 기록이라 서버를 다시 켜면 초기화됨, 외부에 노출할 때는 충분
 // ── 우리 반 명단 · 학생 가입(수업 시간에 교사가 가입창을 열면 학생이 이름을 고르고 6자 이상 비밀번호를 정한다)
 const RF = id => path.join(DIR, 'data', id + '.__roster.json'); // 밑줄이 있어 프로그램 이름(a-z0-9-)과 겹치지 않는다
 const readRoster = id => { try { return JSON.parse(fs.readFileSync(RF(id), 'utf8')); } catch { return { cls: '', students: [] }; } };
-const JOIN = new Map(); // 가입 코드 → { id, until }  (메모리, 서버를 다시 켜면 사라지고 10분 뒤 자동으로 닫힌다)
-const JOIN_MIN = 10;
-const openJoin = id => { for (const [c, j] of JOIN) if (j.id === id || j.until < Date.now()) JOIN.delete(c); let c; do { c = String(crypto.randomInt(0, 1e6)).padStart(6, '0'); } while (JOIN.has(c)); const j = { id, until: Date.now() + JOIN_MIN * 60e3 }; JOIN.set(c, j); return { code: c, until: j.until }; };
-const joinOf = id => { for (const [c, j] of JOIN) if (j.id === id && j.until > Date.now()) return { code: c, until: j.until }; return null; };
+const QF = path.join(DIR, 'student-requests.json'); // 학생 가입 신청(승인 대기)
+const reqs = () => { try { return JSON.parse(fs.readFileSync(QF, 'utf8')); } catch { return []; } };
+const PW_RE = /^[\x21-\x7e]{6,30}$/; // 영문·숫자·기호 6자 이상
+const okCls = c => !!c && Number.isInteger(c.g) && c.g >= 1 && c.g <= 3 && Number.isInteger(c.c) && c.c >= 1 && c.c <= 20;
+const clsLabel = c => (okCls(c) ? c.g + '학년 ' + c.c + '반' : '');
+const stuNo = (g, c, n) => `${g}${String(c).padStart(2, '0')}${String(n).padStart(2, '0')}`; // 1학년 1반 1번 → 10101
+const homeroom = (g, c) => { for (const [e, u] of Object.entries(users())) if (u.status !== 'pending' && u.cls && u.cls.g === g && u.cls.c === c) return { email: e, id: u.id }; return null; };
 const pubStudent = x => ({ no: x.no, name: x.name, joined: !!x.ph });
 const mkStu = (id, no, sv) => { const b = ['s', id, no, sv, Date.now() + 30 * 864e5].join('|'); return Buffer.from(b).toString('base64url') + '.' + sign(b); };
 function whoS(req) { // 학생 쿠키 → { id, st(명단 항목), cls } (교사가 비밀번호를 초기화하면 sv가 달라져 자동으로 무효)
@@ -159,7 +172,7 @@ function whoS(req) { // 학생 쿠키 → { id, st(명단 항목), cls } (교사
   if (sig.length !== want.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(want))) return null;
   const [t, id, no, sv, exp] = b.split('|'); if (t !== 's' || +exp < Date.now() || !/^[0-9a-f]{24}$/.test(id)) return null;
   const R = readRoster(id), st = R.students.find(x => x.no === no && x.ph && x.sv === sv);
-  return st ? { id, st, cls: R.cls } : null;
+  return st ? { id, st, cls: /^[0-9]{5}$/.test(st.no) ? +st.no[0] + '학년 ' + +st.no.slice(1, 3) + '반' : R.cls } : null;
 }
 const throttle = (k, max, ms) => { const f = fails[k] || { n: 0, t: Date.now() }; if (Date.now() - f.t > ms) { f.n = 0; f.t = Date.now(); } fails[k] = f; return f.n >= max ? true : (f.n++, false); };
 const body = req => new Promise((ok, no) => { let n = 0; const c = []; req.on('data', d => { n += d.length; if (n > 20e6) { no(413); req.destroy(); } else c.push(d); }); req.on('end', () => ok(Buffer.concat(c).toString())); });
@@ -168,11 +181,15 @@ const send = (res, code, obj, hdr = {}) => { res.writeHead(code, { 'content-type
 http.createServer(async (req, res) => {
   try {
     const url = req.url.split('?')[0];
+    const secC = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+    const stuCookie = (id, st) => ({ 'set-cookie': `stu=${mkStu(id, st.no, st.sv)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${30 * 86400}${secC}` });
     if (req.method === 'GET' && !url.startsWith('/api/')) { // 화면: 첫 화면(/)과 프로그램별 주소(/lens/, /다른이름/)
       const apps = listApps(), seg = url.split('/')[1];
       const html = (s) => { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache' }); res.end(s); };
       const me = who(req);
-      if (url === '/join') return html(joinPage());
+      if (url === '/me') { const u = me && users()[me], ws = me ? null : whoS(req); if (!u && !ws) { res.writeHead(302, { location: '/' }); return res.end(); }
+        return html(u ? mePage('t', me, clsLabel(u.cls), u.cls && u.cls.g, u.cls && u.cls.c) : mePage('s', ws.st.name, ws.cls, 0, 0)); }
+      if (url === '/join') { res.writeHead(302, { location: '/' }); return res.end(); }
       if (url === '/') { const ws = me ? null : whoS(req); return html(me ? home(apps, me, !!users()[me].admin, Object.values(users()).filter(u => u.status === 'pending').length) : ws ? studentHome(ws.st.name, ws.cls) : loginPage()); }
       if (url === '/admin') { if (!me || !users()[me].admin) { res.writeHead(302, { location: '/' }); return res.end(); } return html(adminPage(me)); }
       if (url === '/fonts/Moneygraphy-Rounded.woff2') { res.writeHead(200, { 'content-type': 'font/woff2', 'cache-control': 'public, max-age=604800' }); return res.end(fs.readFileSync(path.join(__dirname, 'fonts', 'Moneygraphy-Rounded.woff2'))); }
@@ -187,6 +204,15 @@ http.createServer(async (req, res) => {
       const k = req.socket.remoteAddress + '|' + e, f = fails[k] || { n: 0, t: 0 };
       if (f.n >= 5 && Date.now() - f.t < 600e3) return send(res, 429, { error: 'too many' });
       const u = users()[e];
+      if (!u && /^\d{5}$/.test(e)) { // 교사 계정이 아니고 학번(5자리)이면 학생 로그인
+        if (throttle('sl|' + e, 5, 600e3) || throttle('sl|' + req.socket.remoteAddress, 60, 600e3)) return send(res, 429, { error: 'too many' });
+        for (const f of fs.readdirSync(path.join(DIR, 'data')).filter(x => x.endsWith('.__roster.json'))) {
+          const id = f.slice(0, -'.__roster.json'.length), st = readRoster(id).students.find(x => x.no === e && x.ph);
+          if (st && hash(password, st.ps) === st.ph) { delete fails['sl|' + e]; return send(res, 200, { name: st.name }, stuCookie(id, st)); }
+        }
+        const q = reqs().find(x => x.no === e); if (q && hash(password, q.ps) === q.ph) return send(res, 423, { error: 'pending' });
+        return send(res, 401, { error: 'bad login' });
+      }
       if (!u || hash(password, u.salt) !== u.hash) { fails[k] = { n: f.n + 1, t: Date.now() }; return send(res, 401, { error: 'bad login' }); }
       delete fails[k];
       if (u.status === 'pending') return send(res, 423, { error: 'pending' });
@@ -194,7 +220,7 @@ http.createServer(async (req, res) => {
       return send(res, 200, { email: e }, { 'set-cookie': `lens=${mkTok(e)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${30 * 86400}${sec}` });
     }
     if (url === '/api/signup' && req.method === 'POST') { // 누구나 가입 가능하되 인원 상한과 IP당 횟수 제한으로 남용을 막는다
-      const { email = '', password = '' } = JSON.parse(await body(req) || '{}'), e = normName(email), U = users();
+      const { email = '', password = '', cls = null } = JSON.parse(await body(req) || '{}'), e = normName(email), U = users();
       const k = 'signup|' + req.socket.remoteAddress, f = fails[k] || { n: 0, t: Date.now() };
       if (Date.now() - f.t > 3600e3) { f.n = 0; f.t = Date.now(); }
       if (f.n >= 5) return send(res, 429, { error: 'too many' });
@@ -203,50 +229,43 @@ http.createServer(async (req, res) => {
       if (Object.keys(U).length >= MAX_USERS) return send(res, 403, { error: 'full' });
       fails[k] = { n: f.n + 1, t: f.t };
       const salt = crypto.randomBytes(16).toString('hex');
-      U[e] = { salt, hash: hash(password, salt), id: crypto.randomBytes(12).toString('hex'), status: 'pending', at: new Date().toISOString() };
+      U[e] = { salt, hash: hash(password, salt), id: crypto.randomBytes(12).toString('hex'), status: 'pending', at: new Date().toISOString(), ...(okCls(cls) ? { cls: { g: cls.g, c: cls.c } } : {}) };
       atomic(UF, JSON.stringify(U, null, 1));
       return send(res, 202, { pending: true }); // 승인 전에는 로그인되지 않는다
     }
     if (url === '/api/logout' && req.method === 'POST') return send(res, 200, {}, { 'set-cookie': 'lens=; HttpOnly; Path=/; Max-Age=0' });
-    const secC = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
-    const stuCookie = (id, st) => ({ 'set-cookie': `stu=${mkStu(id, st.no, st.sv)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${30 * 86400}${secC}` });
-    if (url === '/api/join/lookup' && req.method === 'POST') { // 반 코드 → 그 반의 명단(이름·학번·가입 여부만)
-      if (throttle('jl|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' });
-      const { code = '' } = JSON.parse(await body(req) || '{}'), j = JOIN.get(String(code));
-      if (!j || j.until < Date.now()) return send(res, 404, { error: 'closed' });
-      const R = readRoster(j.id); return send(res, 200, { cls: R.cls, students: R.students.map(pubStudent) });
-    }
-    if (url === '/api/join' && req.method === 'POST') {
-      if (throttle('jn|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' });
-      const { code = '', no = '', pin = '' } = JSON.parse(await body(req) || '{}'), j = JOIN.get(String(code));
-      if (!j || j.until < Date.now()) return send(res, 404, { error: 'closed' });
-      if (!/^[\x21-\x7e]{6,30}$/.test(String(pin))) return send(res, 400, { error: 'pin' }); // 영문·숫자·기호 6자 이상
-      const R = readRoster(j.id), st = R.students.find(x => x.no === String(no));
-      if (!st) return send(res, 404, { error: 'no student' });
-      if (st.ph) return send(res, 409, { error: 'taken' }); // 이미 가입된 이름은 다른 사람이 가입할 수 없다
-      st.ps = crypto.randomBytes(16).toString('hex'); st.ph = hash(String(pin), st.ps); st.sv = crypto.randomBytes(8).toString('hex');
-      atomic(RF(j.id), JSON.stringify(R)); return send(res, 200, { name: st.name }, stuCookie(j.id, st));
-    }
-    if (url === '/api/student/login' && req.method === 'POST') {
-      const { no = '', pin = '' } = JSON.parse(await body(req) || '{}'), n = String(no).trim().slice(0, 10);
-      if (throttle('sl|' + n, 5, 600e3) || throttle('sl|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' }); // 학번별·접속지별로 시도 횟수를 막는다
-      for (const f of fs.readdirSync(path.join(DIR, 'data')).filter(x => x.endsWith('.__roster.json'))) {
-        const id = f.slice(0, -'.__roster.json'.length), R = readRoster(id), st = R.students.find(x => x.no === n && x.ph);
-        if (st && hash(String(pin), st.ps) === st.ph) { delete fails['sl|' + n]; return send(res, 200, { name: st.name }, stuCookie(id, st)); }
-      }
-      return send(res, 401, { error: 'bad login' });
+    if (url === '/api/student/signup' && req.method === 'POST') { // 학생 가입 신청: 그 반 담임(또는 총괄관리자)이 승인하면 로그인할 수 있다
+      if (throttle('ss|' + req.socket.remoteAddress, 60, 3600e3)) return send(res, 429, { error: 'too many' }); // 학교 와이파이는 같은 주소라 넉넉히
+      const b = JSON.parse(await body(req) || '{}'), g = +b.g, c = +b.c, n = +b.n, name = String(b.name || '').trim(), pw = String(b.password || '');
+      if (!okCls({ g, c }) || !Number.isInteger(n) || n < 1 || n > 60 || !name || name.length > 20 || !PW_RE.test(pw)) return send(res, 400, { error: 'invalid' });
+      const h = homeroom(g, c); if (!h) return send(res, 404, { error: 'no homeroom' });
+      const no = stuNo(g, c, n), ex = readRoster(h.id).students.find(x => x.no === no), Q = reqs();
+      if (ex && ex.ph) return send(res, 409, { error: 'exists' });
+      if (Q.some(x => x.no === no)) return send(res, 409, { error: 'pending' });
+      if (Q.length >= 500) return send(res, 403, { error: 'full' });
+      const ps = crypto.randomBytes(16).toString('hex'); Q.push({ no, name, g, c, ps, ph: hash(pw, ps), at: new Date().toISOString() });
+      atomic(QF, JSON.stringify(Q, null, 1)); return send(res, 202, { pending: true });
     }
     if (url === '/api/student/logout' && req.method === 'POST') return send(res, 200, {}, { 'set-cookie': 'stu=; HttpOnly; Path=/; Max-Age=0' });
+    if (url === '/api/student/password' && req.method === 'POST') {
+      const w = whoS(req); if (!w) return send(res, 401, { error: 'login required' });
+      const b = JSON.parse(await body(req) || '{}'); if (throttle('sp|' + w.st.no, 5, 600e3)) return send(res, 429, { error: 'too many' });
+      if (hash(String(b.old || ''), w.st.ps) !== w.st.ph) return send(res, 401, { error: 'bad password' });
+      if (!PW_RE.test(String(b.pw || ''))) return send(res, 400, { error: 'pw' });
+      const R = readRoster(w.id), st = R.students.find(x => x.no === w.st.no);
+      st.ps = crypto.randomBytes(16).toString('hex'); st.ph = hash(String(b.pw), st.ps); st.sv = crypto.randomBytes(8).toString('hex'); // 다른 기기의 로그인은 풀린다
+      atomic(RF(w.id), JSON.stringify(R)); return send(res, 200, { ok: true }, stuCookie(w.id, st));
+    }
     if (url === '/api/student/me') { const w = whoS(req); return w ? send(res, 200, { name: w.st.name, no: w.st.no, cls: w.cls }) : send(res, 401, { error: 'login required' }); }
     if (!url.startsWith('/api/')) return send(res, 404, { error: 'not found' });
     const email = who(req);
     if (!email) return send(res, 401, { error: 'login required' });
     const isAdmin = !!users()[email].admin;
-    if (url === '/api/me') return send(res, 200, { email, admin: isAdmin });
+    if (url === '/api/me') return send(res, 200, { email, admin: isAdmin, cls: clsLabel(users()[email].cls) });
     if (url.startsWith('/api/admin/')) { // 관리자 전용: 가입 신청 승인·거절, 계정 삭제
       if (!isAdmin) return send(res, 403, { error: 'admin only' });
       const U = users();
-      if (url === '/api/admin/users' && req.method === 'GET') return send(res, 200, Object.entries(U).map(([name, u]) => ({ name, status: u.status || 'approved', admin: !!u.admin, at: u.at || '' })));
+      if (url === '/api/admin/users' && req.method === 'GET') return send(res, 200, Object.entries(U).map(([name, u]) => ({ name, status: u.status || 'approved', admin: !!u.admin, at: u.at || '', cls: clsLabel(u.cls), g: u.cls ? u.cls.g : 0, c: u.cls ? u.cls.c : 0 })));
       if (req.method === 'POST') {
         const name = normName(JSON.parse(await body(req) || '{}').name), u = U[name];
         if (!u) return send(res, 404, { error: 'no user' });
@@ -258,21 +277,95 @@ http.createServer(async (req, res) => {
     }
     if (url.startsWith('/api/roster')) { // 우리 반 명단: 교사 계정마다 하나, 모든 프로그램이 GET /api/roster 로 같은 명단을 읽는다 → {cls, students:[{no,name,joined}], join}
       const id = users()[email].id, R = readRoster(id);
-      if (url === '/api/roster' && req.method === 'GET') return send(res, 200, { cls: R.cls, students: R.students.map(pubStudent), join: joinOf(id) });
+      const me = users()[email];
+      if (url === '/api/roster' && req.method === 'GET') return send(res, 200, { cls: clsLabel(me.cls) || R.cls, g: me.cls ? me.cls.g : 0, c: me.cls ? me.cls.c : 0, students: R.students.map(pubStudent) });
       if (url === '/api/roster' && req.method === 'PUT') {
         const n = JSON.parse(await body(req) || '{}'), st = Array.isArray(n.students) ? n.students : null;
         if (!st || st.length > 100) return send(res, 400, { error: 'bad roster' });
-        const old = new Map(R.students.map(x => [x.name, x])); // 같은 이름은 가입 정보(비밀번호·세션)를 이어 받는다
+        if ('g' in n) { const U = users(); if (okCls({ g: +n.g, c: +n.c })) U[email].cls = { g: +n.g, c: +n.c }; else delete U[email].cls; atomic(UF, JSON.stringify(U, null, 1)); } // 담임 학급 변경(0이면 담임 아님)
+        const cl = users()[email].cls, old = new Map(R.students.map(x => [x.name, x])); // 같은 이름은 가입 정보(비밀번호·세션)를 이어 받는다
         const clean = st.map(x => ({ no: String((x && x.no) || '').trim().slice(0, 10), name: String((x && x.name) || '').trim().slice(0, 20) })).filter(x => x.name).map(x => { const o = old.get(x.name); return o && o.ph ? { ...x, ps: o.ps, ph: o.ph, sv: o.sv } : x; });
-        atomic(RF(id), JSON.stringify({ cls: String(n.cls || '').trim().slice(0, 20), students: clean, at: new Date().toISOString() }));
+        atomic(RF(id), JSON.stringify({ cls: clsLabel(cl) || String(n.cls || '').trim().slice(0, 20), students: clean, at: new Date().toISOString() }));
         return send(res, 200, { ok: true, n: clean.length });
       }
-      if (url === '/api/roster/open' && req.method === 'POST') { if (!R.students.length) return send(res, 400, { error: 'empty' }); return send(res, 200, openJoin(id)); }
-      if (url === '/api/roster/close' && req.method === 'POST') { for (const [c, j] of JOIN) if (j.id === id) JOIN.delete(c); return send(res, 200, { ok: true }); }
       if (url === '/api/roster/reset' && req.method === 'POST') { // 이름을 도용당했거나 비밀번호를 잊은 학생: 가입 정보를 지우면 다시 가입할 수 있다
         const nm = String(JSON.parse(await body(req) || '{}').name || ''), st = R.students.find(x => x.name === nm);
         if (!st) return send(res, 404, { error: 'no student' });
         delete st.ph; delete st.ps; delete st.sv; atomic(RF(id), JSON.stringify(R)); return send(res, 200, { ok: true });
+      }
+    }
+    if (url === '/api/me/password' && req.method === 'POST') {
+      const b = JSON.parse(await body(req) || '{}'), U = users(), u = U[email];
+      if (throttle('mp|' + email, 5, 600e3)) return send(res, 429, { error: 'too many' });
+      if (hash(String(b.old || ''), u.salt) !== u.hash) return send(res, 401, { error: 'bad password' });
+      if (String(b.pw || '').length < 6 || String(b.pw).length > 100) return send(res, 400, { error: 'short' });
+      u.salt = crypto.randomBytes(16).toString('hex'); u.hash = hash(String(b.pw), u.salt); atomic(UF, JSON.stringify(U, null, 1)); return send(res, 200, { ok: true });
+    }
+    if (url === '/api/me/cls' && req.method === 'POST') {
+      const b = JSON.parse(await body(req) || '{}'), U = users();
+      if (okCls({ g: +b.g, c: +b.c })) U[email].cls = { g: +b.g, c: +b.c }; else delete U[email].cls;
+      atomic(UF, JSON.stringify(U, null, 1)); return send(res, 200, { ok: true });
+    }
+    if (url.startsWith('/api/people/')) { // 총괄관리자는 교사·학생 모두, 담임은 자기 반 학생의 정보를 고친다
+      const me = users()[email], listAll = () => fs.readdirSync(path.join(DIR, 'data')).filter(x => x.endsWith('.__roster.json')).map(x => x.slice(0, -'.__roster.json'.length));
+      if (url === '/api/people/students' && req.method === 'GET') {
+        const ids = me.admin ? listAll() : [me.id], U = users(), out = [];
+        for (const id of ids) { const R = readRoster(id), t = Object.values(U).find(u => u.id === id); for (const st of R.students) out.push({ no: st.no, name: st.name, joined: !!st.ph, cls: (/^\d{5}$/.test(st.no) ? +st.no[0] + '학년 ' + +st.no.slice(1, 3) + '반' : R.cls || (t && clsLabel(t.cls)) || '') }); }
+        return send(res, 200, out.sort((a, b) => a.no.localeCompare(b.no)));
+      }
+      if (url === '/api/people/student' && req.method === 'POST') {
+        const b = JSON.parse(await body(req) || '{}'), no = String(b.no || '');
+        const ownerId = me.admin ? listAll().find(id => readRoster(id).students.some(x => x.no === no)) : (readRoster(me.id).students.some(x => x.no === no) ? me.id : null);
+        if (!ownerId) return send(res, 404, { error: 'no student' });
+        const R = readRoster(ownerId), st = R.students.find(x => x.no === no);
+        if (b.name != null) { const nm = String(b.name).trim(); if (!nm || nm.length > 20) return send(res, 400, { error: 'name' }); st.name = nm; }
+        if (b.password) { if (!PW_RE.test(String(b.password))) return send(res, 400, { error: 'pw' }); st.ps = crypto.randomBytes(16).toString('hex'); st.ph = hash(String(b.password), st.ps); st.sv = crypto.randomBytes(8).toString('hex'); }
+        const toG = b.g ? +b.g : null, toC = b.c ? +b.c : null, toN = b.n ? +b.n : null;
+        if (toG || toC || toN) { // 번호·반 변경 → 학번이 바뀐다(학번 형식이 5자리일 때만)
+          if (!/^\d{5}$/.test(no)) return send(res, 400, { error: 'format' });
+          const g = toG || +no[0], c = toC || +no.slice(1, 3), n = toN || +no.slice(3, 5);
+          if (!okCls({ g, c }) || !Number.isInteger(n) || n < 1 || n > 60) return send(res, 400, { error: 'invalid' });
+          const nn = stuNo(g, c, n), cur = +no[0] === g && +no.slice(1, 3) === c;
+          if (nn !== no) {
+            let T = R, tid = ownerId;
+            if (!cur) { if (!me.admin) return send(res, 403, { error: 'admin only' }); const h = homeroom(g, c); if (!h) return send(res, 400, { error: 'no homeroom' }); tid = h.id; T = tid === ownerId ? R : readRoster(tid); }
+            if (T.students.some(x => x.no === nn)) return send(res, 409, { error: 'taken' });
+            st.no = nn; if (st.ph) st.sv = crypto.randomBytes(8).toString('hex'); // 학번이 바뀌면 다시 로그인해야 한다
+            if (tid !== ownerId) { R.students = R.students.filter(x => x !== st); T.students.push(st); T.students.sort((a, b2) => a.no.localeCompare(b2.no)); atomic(RF(tid), JSON.stringify(T)); }
+            else R.students.sort((a, b2) => a.no.localeCompare(b2.no));
+          }
+        }
+        atomic(RF(ownerId), JSON.stringify(R)); return send(res, 200, { ok: true });
+      }
+      if (url === '/api/people/user' && req.method === 'POST') { // 총괄관리자 전용: 교사 비밀번호 재설정, 담임 학급 변경
+        if (!me.admin) return send(res, 403, { error: 'admin only' });
+        const b = JSON.parse(await body(req) || '{}'), U = users(), u = U[normName(b.name)];
+        if (!u) return send(res, 404, { error: 'no user' });
+        if (b.password) { if (String(b.password).length < 6) return send(res, 400, { error: 'short' }); u.salt = crypto.randomBytes(16).toString('hex'); u.hash = hash(String(b.password), u.salt); }
+        if ('g' in b) { if (okCls({ g: +b.g, c: +b.c })) u.cls = { g: +b.g, c: +b.c }; else delete u.cls; }
+        atomic(UF, JSON.stringify(U, null, 1)); return send(res, 200, { ok: true });
+      }
+    }
+    if (url.startsWith('/api/requests')) { // 학생 가입 신청: 그 반 담임 또는 총괄관리자만 본다
+      const me = users()[email], mine = r => !!me.admin || (!!me.cls && me.cls.g === r.g && me.cls.c === r.c);
+      if (url === '/api/requests' && req.method === 'GET') return send(res, 200, reqs().filter(mine).map(r => {
+        const h = homeroom(r.g, r.c), ex = h && readRoster(h.id).students.find(x => x.no === r.no);
+        return { no: r.no, name: r.name, cls: r.g + '학년 ' + r.c + '반', at: r.at, state: !h ? 'nohome' : !ex ? 'new' : ex.name === r.name ? 'match' : 'mismatch', rosterName: ex ? ex.name : '' };
+      }));
+      if (req.method === 'POST' && (url === '/api/requests/approve' || url === '/api/requests/reject')) {
+        const no = String(JSON.parse(await body(req) || '{}').no || ''), Q = reqs(), r = Q.find(x => x.no === no);
+        if (!r || !mine(r)) return send(res, 404, { error: 'no request' });
+        if (url.endsWith('/approve')) {
+          const h = me.cls && me.cls.g === r.g && me.cls.c === r.c ? { id: me.id } : homeroom(r.g, r.c);
+          if (!h) return send(res, 400, { error: 'no homeroom' });
+          const R = readRoster(h.id); let ex = R.students.find(x => x.no === no);
+          if (ex && ex.ph) return send(res, 409, { error: 'exists' });
+          if (ex && ex.name !== r.name) return send(res, 409, { error: 'mismatch', rosterName: ex.name }); // 명단과 이름이 다르면 승인하지 않는다
+          if (!ex) { if (R.students.length >= 100) return send(res, 400, { error: 'full' }); ex = { no, name: r.name }; R.students.push(ex); R.students.sort((a, b) => a.no.localeCompare(b.no)); }
+          ex.ps = r.ps; ex.ph = r.ph; ex.sv = crypto.randomBytes(8).toString('hex');
+          atomic(RF(h.id), JSON.stringify(R));
+        }
+        atomic(QF, JSON.stringify(Q.filter(x => x.no !== no), null, 1)); return send(res, 200, { ok: true });
       }
     }
     if (url === '/api/state') {
