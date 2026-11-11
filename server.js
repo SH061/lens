@@ -84,7 +84,7 @@ const page = (body, script = '') => `<!doctype html><html lang="ko"><head><meta 
 const eyeBtn = '<button type="button" class="eye" aria-label="비밀번호 보기" tabindex="-1"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/><path class="sl" d="M3 3l18 18"/></svg></button>';
 const loginPage = () => page(`<main class="login"><form class="box" id="f"><h1 id="t">로그인</h1><p class="sub" id="sub">학교 업무 도구</p>
 <input id="e" type="text" maxlength="30" placeholder="이름" autocomplete="username" required><div class="pw"><input id="p" type="password" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" style="ime-mode:disabled" placeholder="비밀번호" autocomplete="current-password" required>${eyeBtn}</div><div class="pw" id="p2w" hidden><input id="p2" type="password" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" style="ime-mode:disabled" placeholder="비밀번호 확인" autocomplete="new-password">${eyeBtn}</div>
-<button class="pill" id="go">로그인</button><div class="msg" id="msg"></div><a class="sw" id="sw" href="#">처음이세요? 가입하기</a></form></main>`,
+<button class="pill" id="go">로그인</button><div class="msg" id="msg"></div><a class="sw" id="sw" href="#">처음이세요? 가입하기</a><br><a class="sw" href="/join">학생이에요 · 우리 반 가입 / 로그인</a></form></main>`,
 `var up=false,$=function(s){return document.querySelector(s)};
 /* 비밀번호 칸: 한글 상태에서 눌러도 영문 자판 글자로 바꿔 넣는다(ㅂ→q). 브라우저는 입력기 전환을 강제할 수 없어 입력된 한글을 변환한다 */
 var KI=['r','R','s','e','E','f','a','q','Q','t','T','d','w','W','c','z','x','v','g'],KV=['k','o','i','O','j','p','u','P','h','hk','ho','hl','y','n','nj','np','nl','b','m','ml','l'],KF=['','r','R','rt','s','sw','sg','e','f','fr','fa','fq','ft','fx','fv','fg','a','q','qt','t','T','d','w','c','z','x','v','g'],
@@ -106,6 +106,29 @@ const home = (apps, email, admin, pend) => page(`<div class="nav"><span>${esc(em
 <section class="tile parch"><div class="grid">${Object.entries(apps).map(([k, a]) => `<a class="card" href="/${k}/"><h3>${esc(a.title)}</h3><p>${esc(a.desc)}</p><span>열기 ›</span></a>`).join('')}</div></section>
 <section class="tile dark"><h2>한 번 로그인하면</h2><p>어느 프로그램에서든 같은 계정으로 이어서 쓸 수 있고, 성적과 메모는 본인 계정에만 저장됩니다.</p></section>`,
 `document.getElementById('out').onclick=async function(){await fetch('/api/logout',{method:'POST'});location.reload()}`);
+const studentHome = (name, cls) => page(`<div class="nav"><span>${esc(cls)} ${esc(name)}</span><button id="out">로그아웃</button></div>
+<section class="tile hero"><h1>${esc(name)} 님, 반가워요</h1><p>${esc(cls || '우리 반')}에 가입됐어요.</p></section>
+<section class="tile parch"><div class="grid" style="display:block;max-width:640px;text-align:center"><p style="color:var(--mute)">선생님이 열어 주는 기능이 여기에 나타납니다.</p></div></section>`,
+`document.getElementById('out').onclick=async function(){await fetch('/api/student/logout',{method:'POST'});location.reload()}`);
+const joinPage = () => page(`<main class="login"><div class="box" id="bx"><h1>우리 반 가입</h1><p class="sub" id="sub">선생님이 알려 준 6자리 반 코드를 입력하세요.</p>
+<div id="s1"><input id="code" inputmode="numeric" maxlength="6" placeholder="반 코드 6자리" autocomplete="off"><button class="pill" id="b1">다음</button></div>
+<div id="s2" hidden><select id="who" style="width:100%;padding:12px 18px;border:1px solid var(--line);border-radius:999px;font:inherit;background:#fff;margin-bottom:10px"></select><input id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="비밀번호 숫자 4자리" autocomplete="new-password"><button class="pill" id="b2">가입하기</button></div>
+<div class="msg" id="msg"></div><a class="sw" id="sw" href="#">이미 가입했어요 · 로그인</a><br><a class="sw" href="/">선생님 로그인</a></div></main>
+<style>select{-webkit-appearance:none}</style>`,
+`var $=function(s){return document.querySelector(s)},code='',login=false;
+function say(t){$('#msg').textContent=t}
+function show(i){$('#s1').hidden=i!==1;$('#s2').hidden=i!==2}
+$('#sw').onclick=function(e){e.preventDefault();login=!login;
+ if(login){$('#sub').textContent='학번과 비밀번호 4자리를 입력하세요.';$('#s1').hidden=true;$('#s2').hidden=false;$('#who').outerHTML='<input id="who" inputmode="numeric" maxlength="10" placeholder="학번">';$('#b2').textContent='로그인';$('#sw').textContent='처음이에요 · 가입하기'}
+ else location.reload()};
+$('#b1').onclick=async function(){code=$('#code').value.trim();var r=await fetch('/api/join/lookup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({code:code})});
+ if(!r.ok)return say(r.status==429?'시도가 많아 잠시 막혔습니다.':'가입창이 닫혀 있거나 코드가 틀렸어요. 선생님께 확인하세요.');
+ var d=await r.json(),w=$('#who');$('#sub').textContent=(d.cls||'우리 반')+' · 내 이름을 고르고 비밀번호를 정하세요.';w.textContent='';
+ d.students.forEach(function(s){var o=document.createElement('option');o.value=s.no;o.textContent=s.no+' '+s.name+(s.joined?' (가입 완료)':'');o.disabled=s.joined;w.appendChild(o)});show(2);say('')};
+$('#b2').onclick=async function(){var pin=$('#pin').value.trim();if(!/^[0-9]{4}$/.test(pin))return say('비밀번호는 숫자 4자리예요.');
+ var r=await fetch(login?'/api/student/login':'/api/join',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(login?{no:$('#who').value,pin:pin}:{code:code,no:$('#who').value,pin:pin})});
+ if(r.ok)return location.href='/';
+ say(({401:'학번 또는 비밀번호가 맞지 않아요.',409:'이미 가입된 이름이에요. 본인이 아니라면 선생님께 알려 주세요.',404:'가입창이 닫혔어요. 선생님께 다시 열어 달라고 하세요.',429:'시도가 많아 잠시 막혔습니다. 10분 뒤에 해 보세요.'})[r.status]||'다시 시도해 주세요.')};`);
 const adminPage = me => page(`<div class="nav"><a class="adm" href="/">← 프로그램 선택</a><span>${esc(me)}</span></div>
 <section class="tile hero" style="padding-bottom:32px"><h1 style="font-size:40px">관리자</h1><p>가입 신청을 승인하고 계정을 관리합니다.</p></section>
 <section class="tile parch"><div class="grid" style="display:block;max-width:720px"><h2 style="font-size:24px;margin-bottom:12px">승인 대기</h2><div id="pend"></div><h2 style="font-size:24px;margin:36px 0 12px">전체 계정</h2><div id="all"></div></div></section>`,
@@ -120,6 +143,25 @@ P.forEach(function(u){$('#pend').appendChild(row(u,[['거절','reject',0,u.name+
 L.filter(function(u){return u.status!=='pending'}).forEach(function(u){$('#all').appendChild(row(u,u.admin?[]:[['삭제','delete',0,u.name+' 계정을 삭제할까요? 저장된 성적 파일은 남지만 로그인할 수 없게 됩니다.']]))})}
 load();`);
 const fails = {}; // shortcut: 메모리 기록이라 서버를 다시 켜면 초기화됨, 외부에 노출할 때는 충분
+// ── 우리 반 명단 · 학생 가입(수업 시간에 교사가 가입창을 열면 학생이 이름을 고르고 4자리 비밀번호를 정한다)
+const RF = id => path.join(DIR, 'data', id + '.__roster.json'); // 밑줄이 있어 프로그램 이름(a-z0-9-)과 겹치지 않는다
+const readRoster = id => { try { return JSON.parse(fs.readFileSync(RF(id), 'utf8')); } catch { return { cls: '', students: [] }; } };
+const JOIN = new Map(); // 가입 코드 → { id, until }  (메모리, 서버를 다시 켜면 사라지고 10분 뒤 자동으로 닫힌다)
+const JOIN_MIN = 10;
+const openJoin = id => { for (const [c, j] of JOIN) if (j.id === id || j.until < Date.now()) JOIN.delete(c); let c; do { c = String(crypto.randomInt(0, 1e6)).padStart(6, '0'); } while (JOIN.has(c)); const j = { id, until: Date.now() + JOIN_MIN * 60e3 }; JOIN.set(c, j); return { code: c, until: j.until }; };
+const joinOf = id => { for (const [c, j] of JOIN) if (j.id === id && j.until > Date.now()) return { code: c, until: j.until }; return null; };
+const pubStudent = x => ({ no: x.no, name: x.name, joined: !!x.ph });
+const mkStu = (id, no, sv) => { const b = ['s', id, no, sv, Date.now() + 30 * 864e5].join('|'); return Buffer.from(b).toString('base64url') + '.' + sign(b); };
+function whoS(req) { // 학생 쿠키 → { id, st(명단 항목), cls } (교사가 비밀번호를 초기화하면 sv가 달라져 자동으로 무효)
+  const m = /(?:^|; )stu=([^;]+)/.exec(req.headers.cookie || ''); if (!m) return null;
+  const [b64, sig] = m[1].split('.'); if (!b64 || !sig) return null;
+  const b = Buffer.from(b64, 'base64url').toString(), want = sign(b);
+  if (sig.length !== want.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(want))) return null;
+  const [t, id, no, sv, exp] = b.split('|'); if (t !== 's' || +exp < Date.now() || !/^[0-9a-f]{24}$/.test(id)) return null;
+  const R = readRoster(id), st = R.students.find(x => x.no === no && x.ph && x.sv === sv);
+  return st ? { id, st, cls: R.cls } : null;
+}
+const throttle = (k, max, ms) => { const f = fails[k] || { n: 0, t: Date.now() }; if (Date.now() - f.t > ms) { f.n = 0; f.t = Date.now(); } fails[k] = f; return f.n >= max ? true : (f.n++, false); };
 const body = req => new Promise((ok, no) => { let n = 0; const c = []; req.on('data', d => { n += d.length; if (n > 20e6) { no(413); req.destroy(); } else c.push(d); }); req.on('end', () => ok(Buffer.concat(c).toString())); });
 const send = (res, code, obj, hdr = {}) => { res.writeHead(code, { 'content-type': 'application/json', ...hdr }); res.end(JSON.stringify(obj)); };
 
@@ -130,7 +172,8 @@ http.createServer(async (req, res) => {
       const apps = listApps(), seg = url.split('/')[1];
       const html = (s) => { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache' }); res.end(s); };
       const me = who(req);
-      if (url === '/') return html(me ? home(apps, me, !!users()[me].admin, Object.values(users()).filter(u => u.status === 'pending').length) : loginPage());
+      if (url === '/join') return html(joinPage());
+      if (url === '/') { const ws = me ? null : whoS(req); return html(me ? home(apps, me, !!users()[me].admin, Object.values(users()).filter(u => u.status === 'pending').length) : ws ? studentHome(ws.st.name, ws.cls) : loginPage()); }
       if (url === '/admin') { if (!me || !users()[me].admin) { res.writeHead(302, { location: '/' }); return res.end(); } return html(adminPage(me)); }
       if (url === '/fonts/Moneygraphy-Rounded.woff2') { res.writeHead(200, { 'content-type': 'font/woff2', 'cache-control': 'public, max-age=604800' }); return res.end(fs.readFileSync(path.join(__dirname, 'fonts', 'Moneygraphy-Rounded.woff2'))); }
       if (apps[seg]) {
@@ -165,6 +208,36 @@ http.createServer(async (req, res) => {
       return send(res, 202, { pending: true }); // 승인 전에는 로그인되지 않는다
     }
     if (url === '/api/logout' && req.method === 'POST') return send(res, 200, {}, { 'set-cookie': 'lens=; HttpOnly; Path=/; Max-Age=0' });
+    const secC = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+    const stuCookie = (id, st) => ({ 'set-cookie': `stu=${mkStu(id, st.no, st.sv)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${30 * 86400}${secC}` });
+    if (url === '/api/join/lookup' && req.method === 'POST') { // 반 코드 → 그 반의 명단(이름·학번·가입 여부만)
+      if (throttle('jl|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' });
+      const { code = '' } = JSON.parse(await body(req) || '{}'), j = JOIN.get(String(code));
+      if (!j || j.until < Date.now()) return send(res, 404, { error: 'closed' });
+      const R = readRoster(j.id); return send(res, 200, { cls: R.cls, students: R.students.map(pubStudent) });
+    }
+    if (url === '/api/join' && req.method === 'POST') {
+      if (throttle('jn|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' });
+      const { code = '', no = '', pin = '' } = JSON.parse(await body(req) || '{}'), j = JOIN.get(String(code));
+      if (!j || j.until < Date.now()) return send(res, 404, { error: 'closed' });
+      if (!/^\d{4}$/.test(String(pin))) return send(res, 400, { error: 'pin' });
+      const R = readRoster(j.id), st = R.students.find(x => x.no === String(no));
+      if (!st) return send(res, 404, { error: 'no student' });
+      if (st.ph) return send(res, 409, { error: 'taken' }); // 이미 가입된 이름은 다른 사람이 가입할 수 없다
+      st.ps = crypto.randomBytes(16).toString('hex'); st.ph = hash(String(pin), st.ps); st.sv = crypto.randomBytes(8).toString('hex');
+      atomic(RF(j.id), JSON.stringify(R)); return send(res, 200, { name: st.name }, stuCookie(j.id, st));
+    }
+    if (url === '/api/student/login' && req.method === 'POST') {
+      const { no = '', pin = '' } = JSON.parse(await body(req) || '{}'), n = String(no).trim().slice(0, 10);
+      if (throttle('sl|' + n, 5, 600e3) || throttle('sl|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' }); // 4자리라 학번별·접속지별로 시도 횟수를 막는다
+      for (const f of fs.readdirSync(path.join(DIR, 'data')).filter(x => x.endsWith('.__roster.json'))) {
+        const id = f.slice(0, -'.__roster.json'.length), R = readRoster(id), st = R.students.find(x => x.no === n && x.ph);
+        if (st && hash(String(pin), st.ps) === st.ph) { delete fails['sl|' + n]; return send(res, 200, { name: st.name }, stuCookie(id, st)); }
+      }
+      return send(res, 401, { error: 'bad login' });
+    }
+    if (url === '/api/student/logout' && req.method === 'POST') return send(res, 200, {}, { 'set-cookie': 'stu=; HttpOnly; Path=/; Max-Age=0' });
+    if (url === '/api/student/me') { const w = whoS(req); return w ? send(res, 200, { name: w.st.name, no: w.st.no, cls: w.cls }) : send(res, 401, { error: 'login required' }); }
     if (!url.startsWith('/api/')) return send(res, 404, { error: 'not found' });
     const email = who(req);
     if (!email) return send(res, 401, { error: 'login required' });
@@ -183,15 +256,23 @@ http.createServer(async (req, res) => {
         atomic(UF, JSON.stringify(U, null, 1)); return send(res, 200, { ok: true });
       }
     }
-    if (url === '/api/roster') { // 우리 반 명단: 교사 계정마다 하나, 모든 프로그램이 GET /api/roster 로 같은 명단을 읽는다 → {cls, students:[{no,name}]}
-      const f = path.join(DIR, 'data', users()[email].id + '.__roster.json'); // 밑줄이 있어 프로그램 이름(a-z0-9-)과 겹치지 않는다
-      if (req.method === 'GET') return send(res, 200, (() => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return { cls: '', students: [] }; } })());
-      if (req.method === 'PUT') {
+    if (url.startsWith('/api/roster')) { // 우리 반 명단: 교사 계정마다 하나, 모든 프로그램이 GET /api/roster 로 같은 명단을 읽는다 → {cls, students:[{no,name,joined}], join}
+      const id = users()[email].id, R = readRoster(id);
+      if (url === '/api/roster' && req.method === 'GET') return send(res, 200, { cls: R.cls, students: R.students.map(pubStudent), join: joinOf(id) });
+      if (url === '/api/roster' && req.method === 'PUT') {
         const n = JSON.parse(await body(req) || '{}'), st = Array.isArray(n.students) ? n.students : null;
         if (!st || st.length > 100) return send(res, 400, { error: 'bad roster' });
-        const clean = st.map(x => ({ no: String((x && x.no) || '').trim().slice(0, 10), name: String((x && x.name) || '').trim().slice(0, 20) })).filter(x => x.name);
-        atomic(f, JSON.stringify({ cls: String(n.cls || '').trim().slice(0, 20), students: clean, at: new Date().toISOString() }));
+        const old = new Map(R.students.map(x => [x.name, x])); // 같은 이름은 가입 정보(비밀번호·세션)를 이어 받는다
+        const clean = st.map(x => ({ no: String((x && x.no) || '').trim().slice(0, 10), name: String((x && x.name) || '').trim().slice(0, 20) })).filter(x => x.name).map(x => { const o = old.get(x.name); return o && o.ph ? { ...x, ps: o.ps, ph: o.ph, sv: o.sv } : x; });
+        atomic(RF(id), JSON.stringify({ cls: String(n.cls || '').trim().slice(0, 20), students: clean, at: new Date().toISOString() }));
         return send(res, 200, { ok: true, n: clean.length });
+      }
+      if (url === '/api/roster/open' && req.method === 'POST') { if (!R.students.length) return send(res, 400, { error: 'empty' }); return send(res, 200, openJoin(id)); }
+      if (url === '/api/roster/close' && req.method === 'POST') { for (const [c, j] of JOIN) if (j.id === id) JOIN.delete(c); return send(res, 200, { ok: true }); }
+      if (url === '/api/roster/reset' && req.method === 'POST') { // 이름을 도용당했거나 비밀번호를 잊은 학생: 가입 정보를 지우면 다시 가입할 수 있다
+        const nm = String(JSON.parse(await body(req) || '{}').name || ''), st = R.students.find(x => x.name === nm);
+        if (!st) return send(res, 404, { error: 'no student' });
+        delete st.ph; delete st.ps; delete st.sv; atomic(RF(id), JSON.stringify(R)); return send(res, 200, { ok: true });
       }
     }
     if (url === '/api/state') {

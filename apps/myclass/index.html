@@ -14,7 +14,7 @@ textarea{min-height:260px;resize:vertical;line-height:1.6}
 button{font:inherit;border:0;border-radius:999px;padding:11px 24px;cursor:pointer;background:var(--blue);color:#fff;transition:transform .15s}button:active{transform:scale(.95)}button.g{background:#fff;color:var(--blue);border:1px solid var(--line)}
 .msg{margin-top:12px;min-height:22px;font-size:15px;color:var(--mute)}.msg.ok{color:#1a7f37}.msg.bad{color:#c62828}
 table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;font-weight:400}th{color:var(--mute);font-size:14px}
-.hint{font-size:15px;color:var(--mute);margin-top:8px}
+.big{font-size:56px;letter-spacing:.12em;text-align:center;margin:6px 0 10px}.hint{font-size:15px;color:var(--mute);margin-top:8px}
 </style></head><body>
 <div class="nav"><a href="/">← 처음으로</a></div>
 <main>
@@ -27,7 +27,11 @@ table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1p
 <div class="row"><button id="sv">명단 저장</button><button class="g" id="rs">저장된 명단으로 되돌리기</button></div>
 <div class="msg" id="msg"></div>
 </div>
-<div class="card"><label>저장된 우리 반 <b id="cnt"></b></label><table><thead><tr><th style="width:110px">학번</th><th>이름</th></tr></thead><tbody id="tb"></tbody></table><div class="hint" id="emp">아직 등록한 명단이 없습니다.</div></div>
+<div class="card" id="jc"><label>학생 가입 — 수업 시간에 열고, 끝나면 닫으세요</label>
+<div id="jo" hidden><div class="big" id="code"></div><div class="hint">학생들은 <b id="url"></b> 에서 이 코드를 입력하고, 자기 이름을 골라 4자리 비밀번호를 정해요.<br>남은 시간 <b id="left"></b> · 가입 <b id="jn"></b></div></div>
+<div class="row"><button id="op">가입 열기 (10분)</button><button class="g" id="cl" hidden>가입 닫기</button></div>
+<div class="hint">이미 가입된 이름은 다른 사람이 고를 수 없어요. 이름을 도용당했거나 비밀번호를 잊은 학생은 아래 목록에서 「가입 초기화」를 누르면 다시 가입할 수 있어요.</div></div>
+<div class="card"><label>저장된 우리 반 <b id="cnt"></b></label><table><thead><tr><th style="width:90px">학번</th><th>이름</th><th style="width:90px">가입</th><th style="width:110px"></th></tr></thead><tbody id="tb"></tbody></table><div class="hint" id="emp">아직 등록한 명단이 없습니다.</div></div>
 </main>
 <script>
 var $=function(s){return document.querySelector(s)},saved={cls:'',students:[]};
@@ -36,16 +40,27 @@ function parse(t){var out=[],seen={};t.split(/\r?\n/).forEach(function(l){l=l.tr
   if(p.length>1&&/^\d+$/.test(p[0])){no=p[0];name=p.slice(1).join(' ')}else name=p.join(' ');
   if(name)out.push({no:no,name:name})});
   out.forEach(function(x,i){if(!x.no)x.no=String(i+1)});return out}
-function draw(){$('#tb').textContent='';saved.students.forEach(function(s){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=s.no;b.textContent=s.name;tr.append(a,b);$('#tb').append(tr)});
-  $('#cnt').textContent=saved.students.length?'('+saved.students.length+'명)':'';$('#emp').hidden=!!saved.students.length}
+function draw(){$('#tb').textContent='';saved.students.forEach(function(s){var tr=document.createElement('tr');
+  [s.no,s.name,s.joined?'✓ 완료':'—'].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.append(td)});
+  var td=document.createElement('td');if(s.joined){var b=document.createElement('button');b.className='g';b.style.padding='4px 12px';b.style.fontSize='14px';b.textContent='가입 초기화';
+   b.onclick=function(){if(confirm(s.name+' 학생의 가입을 초기화할까요? 그 학생은 다시 가입해야 해요.'))post('/api/roster/reset',{name:s.name}).then(load)};td.append(b)}tr.append(td);$('#tb').append(tr)});
+  var j=saved.students.filter(function(x){return x.joined}).length;$('#cnt').textContent=saved.students.length?'('+saved.students.length+'명, 가입 '+j+'명)':'';$('#emp').hidden=!!saved.students.length;
+  var o=saved.join&&saved.join.until>Date.now();$('#jo').hidden=!o;$('#cl').hidden=!o;$('#op').hidden=!!o;
+  if(o){$('#code').textContent=saved.join.code;$('#url').textContent=location.host+'/join';$('#jn').textContent=j+'/'+saved.students.length+'명';tick()}}
+function tick(){if(!saved.join)return;var m=Math.max(0,Math.round((saved.join.until-Date.now())/1000));$('#left').textContent=Math.floor(m/60)+':'+String(m%60).padStart(2,'0');if(!m)load()}
+function post(u,b){return fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b||{})})}
+$('#op').onclick=function(){post('/api/roster/open').then(function(r){if(!r.ok)say('먼저 명단을 저장하세요.','bad');else load()})};
+$('#cl').onclick=function(){post('/api/roster/close').then(load)};
+setInterval(function(){if(saved.join&&saved.join.until>Date.now()){tick();load(true)}},5000);
 function fill(){$('#cls').value=saved.cls||'';$('#ta').value=saved.students.map(function(s){return s.no+' '+s.name}).join('\n')}
 function say(t,c){var m=$('#msg');m.textContent=t;m.className='msg '+(c||'')}
-fetch('/api/roster').then(function(r){if(r.status===401)return location.href='/';return r.json()}).then(function(d){if(!d)return;saved=d;fill();draw()}).catch(function(){say('서버에서 명단을 불러오지 못했습니다.','bad')});
+function load(quiet){return fetch('/api/roster').then(function(r){if(r.status===401)return location.href='/';return r.json()}).then(function(d){if(!d)return;var first=!saved.students.length&&!saved.cls;saved=d;if(first||!quiet&&false)fill();draw()}).catch(function(){say('서버에서 명단을 불러오지 못했습니다.','bad')})}
+load().then(fill);
 $('#rs').onclick=function(){fill();say('')};
 $('#sv').onclick=function(){var st=parse($('#ta').value),names={},dup=[];
   st.forEach(function(x){if(names[x.name])dup.push(x.name);names[x.name]=1});
   if(dup.length&&!confirm('같은 이름이 있습니다: '+dup.join(', ')+'\n성적 파일의 이름으로 구분하므로 동명이인이 있으면 서로 섞일 수 있어요. 그래도 저장할까요?'))return;
   fetch('/api/roster',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({cls:$('#cls').value,students:st})})
-   .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(){saved={cls:$('#cls').value.trim(),students:st};draw();say('저장했어요. '+st.length+'명이 모든 도구에 연동됩니다.','ok')})
+   .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(){load();say('저장했어요. '+st.length+'명이 모든 도구에 연동됩니다.','ok')})
    .catch(function(){say('저장하지 못했습니다(100명 이하만 저장돼요). 다시 시도해 주세요.','bad')})};
 </script></body></html>
