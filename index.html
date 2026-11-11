@@ -1368,7 +1368,7 @@ function itemHtml(name){
   if(gap&&gap.g<0)notes.push(`전국 평균보다 가장 많이 낮은 세부영역은 <b>${esc(gap.n)}</b>(${gap.v[2]}/${gap.v[1]}, 전국 평균 ${gap.v[3]})이에요.`);
   return `<div class="itabs">${rounds.map(r=>`<button type="button" class="itb${r===ITR?' on':''}" data-itr="${esc(r)}">${esc(rl(r))}</button>`).join('')}</div>
     ${R.length>1?`<div class="itabs ia">${['전체',...R.map(e=>e.area)].map(a=>`<button type="button" class="itb sm${a===ITA?' on':''}" data-ita="${esc(a)}">${esc(a)}</button>`).join('')}</div>`:''}
-    <div class="itl"><div><span>득점(원점수)</span><b>${scTxt}</b></div><div><span>정답</span><b>${o}</b></div><div><span>오답</span><b class="bd">${x}</b></div><div><span>무표기</span><b class="wn">${n}</b></div><div><span>중복표기</span><b class="wn">${d}</b></div><div><span>쉬운 문항 놓침</span><b class="bd">${hot.length}</b></div></div>
+    <div class="itl"><div><span>득점(원점수)</span><b>${scTxt}</b></div><div><span>정답 문항 수</span><b>${o}</b></div><div><span>오답 문항 수</span><b class="bd">${x}</b></div><div><span>무표기 수</span><b class="wn">${n}</b></div><div><span>중복표기 수</span><b class="wn">${d}</b></div><div><span>쉬운 문항 놓침</span><b class="bd">${hot.length}</b></div></div>
     <div class="isub">정답률 구간별 정오 <span class="mut">(A 쉬움 → E 어려움 · 전체 ${tot}문항)</span></div>${bars}
     <div class="ilg"><span><i class="ok"></i>정답</span><span><i class="ng"></i>오답</span><span><i class="bl"></i>무표기·중복</span></div>
     ${sub?`<div class="isub" style="margin-top:12px">세부영역 득점 <span class="mut">(세로 선 = 전국 평균)</span></div>${sub}`:''}
