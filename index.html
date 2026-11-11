@@ -467,6 +467,21 @@ dialog li{margin:6px 0}
 .tb #tabs{flex:0 1 auto}
 @container tbm (max-width:600px){.tb{flex-wrap:wrap}.tb .sp{display:none}.tb select{flex:1 1 90px;max-width:none}.tb #tabs{order:9;flex:1 1 100%}.tabs button{flex:1}.tb .ib{margin-left:0}}
 #go.need{animation:nd 1.4s ease-in-out infinite}@keyframes nd{50%{box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 28%,transparent)}}
+.cd2.pmo{display:none}
+.mrg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mrc{border:1px solid var(--line);border-radius:10px;padding:8px 10px}.mrc b{font-size:13px;display:flex;justify-content:space-between;align-items:center}.mrc .mg{margin:6px 0}.mrc .mb{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden}.mrc .mb span{display:block;height:100%;background:#2f6fed}.mrc small{display:block;margin-top:4px;font-size:11px;color:var(--ink2)}.tg{font-style:normal;font-size:11px;border-radius:6px;padding:1px 7px}.tg.s{background:#dcfce7;color:#166534}.tg.w{background:#fee2e2;color:#991b1b}
+@media print{
+ body.pm #view>.rep{display:flex;flex-direction:column}
+ body.pm .rh{order:0}body.pm .k1{order:1}body.pm .k2{order:2}body.pm .k3{order:3}body.pm .k4{order:4;break-before:page}body.pm .k5{order:5}body.pm .k6{order:6}
+ body.pm .cd2.pmo,body.pm .cd2.pms{display:block!important}
+ body.pm .cd2.k9{display:none!important}
+ body.pm .cd2{border:1px solid #d9dde3;border-radius:12px;padding:12px 14px;margin:0 0 12px;background:#fff}
+ body.pm .cd2 h3{font-size:14px;margin:0 0 8px}
+ body.pm .mt tbody tr:not(:nth-child(4n)) td{font-size:9.5px;color:#666}body.pm .mt tbody tr:nth-child(4n) td{font-size:13px;padding:4px 5px}
+ body.pm .k1{zoom:1.15}body.pm .k2{zoom:1.4}body.pm .k3{zoom:1.3}body.pm .chc .sp{display:none}body.pm .cg{white-space:nowrap}body.pm .cg strong{font-size:21px}body.pm .cg span{font-size:14px}
+ body.pm .k4{zoom:.7}body.pm .k5{zoom:.94}body.pm .k6{zoom:.95}
+ body.pm .k5 .mt tbody td,body.pm .k5 .mt tbody th{padding-top:1px;padding-bottom:1px}
+ body.pm .k6 .sub2,body.pm .k6 .note,body.pm .k6 tr.cu{display:none!important}body.pm .k6 td,body.pm .k6 th{padding:1px 5px;font-size:10px}body.pm .k6 .tw{margin:0}body.pm .k6 tbody tr:last-child{display:none}
+}
 .tmk .tile small{display:block;line-height:1.3}.tmk .tile b{font-size:clamp(18px,2.2vw,26px)}
 @media screen and (max-width:1000px){.tmk .tile{padding:8px 8px}.tmk .tile small,.tmk .tile em{font-size:10px}.tmk .tile b{font-size:19px}}
 @media screen and (max-width:700px){.tiles.tmk{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:repeat(3,minmax(0,1fr))}.tmk .tile{padding:8px}}
@@ -1424,6 +1439,11 @@ function mockReport(name,pre=''){
     <div class="tile"><small>최고 영역</small><b class="g">${lastM[0].g}<i>등급</i></b><small>${esc(lastM[0].area)}</small></div>
     <div class="tile"><small>최저 영역</small><b class="r">${lastM[lastM.length-1].g}<i>등급</i></b><small>${esc(lastM[lastM.length-1].area)}</small></div>
     <div class="tile"><small>상위 3개 등급합</small><b class="r">${lg.length>=3?top3:'-'}</b><small>${lg.length>=3?(top3<=9?'수능 최저 충족 가능권':top3<=15?'최저 충족 여부 확인 필요':'최저 없는 전형 권장'):''}</small></div></div>`;
+  {const bst=lastM[0].g,wst=lastM[lastM.length-1].g;
+    h+=`<h3>최근 회차 영역별 등급 <span class="hs">${esc(rtl(last))}</span></h3><div class="mrg">${areas.map(a=>cell(last,a)).filter(Boolean).map(m=>{
+      const gs=ms.filter(x=>x.area===m.area).sort((x,y)=>rsort(x.round,y.round)),p=gs[gs.length-2],d=p?p.g-m.g:0,pc=isFinite(m.pct)?m.pct:null,
+      tag=bst!==wst?(m.g===bst?'<i class="tg s">강점</i>':m.g===wst?'<i class="tg w">보완</i>':''):'';
+      return `<div class="mrc"><b>${esc(m.area)}${tag}</b><div class="mg">${chip(m.g,9)}</div><div class="mb"><span style="width:${pc==null?0:Math.max(2,pc)}%"></span></div><small>${pc==null?'백분위 없음':'백분위 '+pc}${p?' · 직전 '+(d>0?'↑'+d:d<0?'↓'+(-d):'–'):''}</small></div>`}).join('')}</div>`}
   if(rounds.length>=2){
     const rows2=areas.map(a=>{const f=cell(first,a),l=cell(last,a);return f&&l?{a,f:f.g,l:l.g,d:f.g-l.g,pd:isFinite(f.pct)&&isFinite(l.pct)?l.pct-f.pct:NaN,gs:rounds.map(r=>cell(r,a)?.g)}:null}).filter(Boolean);
     const bestD=Math.max(0,...rows2.map(x=>x.d)),bestA=bestD>0?rows2.find(x=>x.d===bestD):null,nUp=rows2.filter(x=>x.d>0).length,nDn=rows2.filter(x=>x.d<0).length;
@@ -1642,7 +1662,7 @@ function cardify(rep,order,plan){
       const ic=(CI.find(([re])=>re.test(t.textContent))||[0,'file'])[1];t.insertAdjacentHTML('afterbegin',`<span class="ci">${svg(ic,16)}</span>`);secs.push(cur);rep.insertBefore(cur,e)}
     if(cur)cur.appendChild(e);
   }
-  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저|문항별 분석|상담 메모)/.test(c.title))c.classList.add('nop');if(/^가상/.test(c.title))c.classList.add('vsec');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
+  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저|문항별 분석|상담 메모)/.test(c.title))c.classList.add('nop');if(/^가상/.test(c.title))c.classList.add('vsec');[[/모의고사 요약/,'k1'],[/^최근 회차 영역별/,'k2 pmo'],[/^첫 회차/,'k3 pms'],[/^추이와/,'k4'],[/^회차별 성적표/,'k5'],[/^수능 최저/,'k6 pms'],[/^영역별 강약/,'k9']].forEach(([re,k])=>{if(re.test(c.title))c.classList.add(...k.split(' '))});if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
     secs.forEach(c=>{if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
@@ -1718,7 +1738,7 @@ function doPrint(all){
   if(!all&&!cur)return toast('학생을 먼저 선택하세요.');
   const prevT=THEME;if(prevT!=='light')setTheme('light',false); // 종이에는 항상 흰 바탕
   const el=$('#printArea'),pc=[];el.innerHTML='';
-  const pn=!all&&tab==='n';document.body.classList.toggle('pn',pn);
+  const pn=!all&&tab==='n';document.body.classList.toggle('pn',pn);document.body.classList.toggle('pm',!all&&tab==='m');const k5=document.querySelector('#view .k5');if(!all&&tab==='m'&&k5){const N=new Set(mock.filter(m=>m.name===cur).map(m=>m.round)).size;k5.style.zoom=(.94*Math.min(1,4.2/Math.max(N,1))).toFixed(3)}
   if(all){
     ANIM=false;
     students.forEach((s,i)=>{
@@ -1728,7 +1748,7 @@ function doPrint(all){
     });
     document.body.classList.add('pa');
   }
-  const done=()=>{ANIM=true;document.body.classList.remove('pa','pn');destroy(pc);el.innerHTML='';if(prevT!=='light')setTheme(prevT,false);removeEventListener('afterprint',done)};
+  const done=()=>{ANIM=true;const k5=document.querySelector('#view .k5');if(k5)k5.style.zoom='';document.body.classList.remove('pa','pn','pm');destroy(pc);el.innerHTML='';if(prevT!=='light')setTheme(prevT,false);removeEventListener('afterprint',done)};
   addEventListener('afterprint',done);
   setTimeout(()=>print(),150);
 }
