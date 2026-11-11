@@ -187,7 +187,12 @@ http.createServer(async (req, res) => {
       if (!/^[a-z0-9-]{1,30}$/.test(app)) return send(res, 400, { error: 'bad app' });
       const f = path.join(DIR, 'data', users()[email].id + (app === 'lens' ? '' : '.' + app) + '.json');
       if (req.method === 'GET') return send(res, 200, (() => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return {}; } })());
-      if (req.method === 'PUT') { const s = await body(req); JSON.parse(s); atomic(f, s); return send(res, 200, { ok: true }); }
+      if (req.method === 'PUT') {
+        const s = await body(req), n = JSON.parse(s);
+        // 문항별 자료(itm)를 모르는 예전 화면이 저장해도 기존 itm을 지우지 않는다
+        if (n && typeof n === 'object' && !('itm' in n)) { try { const o = JSON.parse(fs.readFileSync(f, 'utf8')); if (o.itm) n.itm = o.itm; } catch {} }
+        atomic(f, JSON.stringify(n)); return send(res, 200, { ok: true });
+      }
     }
     send(res, 404, { error: 'not found' });
   } catch (e) { send(res, typeof e === 'number' ? e : 500, { error: 'error' }); }
