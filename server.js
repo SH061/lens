@@ -112,20 +112,20 @@ const studentHome = (name, cls) => page(`<div class="nav"><span>${esc(cls)} ${es
 `document.getElementById('out').onclick=async function(){await fetch('/api/student/logout',{method:'POST'});location.reload()}`);
 const joinPage = () => page(`<main class="login"><div class="box" id="bx"><h1>우리 반 가입</h1><p class="sub" id="sub">선생님이 알려 준 6자리 반 코드를 입력하세요.</p>
 <div id="s1"><input id="code" inputmode="numeric" maxlength="6" placeholder="반 코드 6자리" autocomplete="off"><button class="pill" id="b1">다음</button></div>
-<div id="s2" hidden><select id="who" style="width:100%;padding:12px 18px;border:1px solid var(--line);border-radius:999px;font:inherit;background:#fff;margin-bottom:10px"></select><input id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="비밀번호 숫자 4자리" autocomplete="new-password"><button class="pill" id="b2">가입하기</button></div>
+<div id="s2" hidden><select id="who" style="width:100%;padding:12px 18px;border:1px solid var(--line);border-radius:999px;font:inherit;background:#fff;margin-bottom:10px"></select><input id="pin" type="password" inputmode="latin" maxlength="30" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="비밀번호 (영문·숫자 6자 이상)" autocomplete="new-password"><button class="pill" id="b2">가입하기</button></div>
 <div class="msg" id="msg"></div><a class="sw" id="sw" href="#">이미 가입했어요 · 로그인</a><br><a class="sw" href="/">선생님 로그인</a></div></main>
 <style>select{-webkit-appearance:none}</style>`,
 `var $=function(s){return document.querySelector(s)},code='',login=false;
 function say(t){$('#msg').textContent=t}
 function show(i){$('#s1').hidden=i!==1;$('#s2').hidden=i!==2}
 $('#sw').onclick=function(e){e.preventDefault();login=!login;
- if(login){$('#sub').textContent='학번과 비밀번호 4자리를 입력하세요.';$('#s1').hidden=true;$('#s2').hidden=false;$('#who').outerHTML='<input id="who" inputmode="numeric" maxlength="10" placeholder="학번">';$('#b2').textContent='로그인';$('#sw').textContent='처음이에요 · 가입하기'}
+ if(login){$('#sub').textContent='학번과 비밀번호를 입력하세요.';$('#s1').hidden=true;$('#s2').hidden=false;$('#who').outerHTML='<input id="who" inputmode="numeric" maxlength="10" placeholder="학번">';$('#b2').textContent='로그인';$('#sw').textContent='처음이에요 · 가입하기'}
  else location.reload()};
 $('#b1').onclick=async function(){code=$('#code').value.trim();var r=await fetch('/api/join/lookup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({code:code})});
  if(!r.ok)return say(r.status==429?'시도가 많아 잠시 막혔습니다.':'가입창이 닫혀 있거나 코드가 틀렸어요. 선생님께 확인하세요.');
- var d=await r.json(),w=$('#who');$('#sub').textContent=(d.cls||'우리 반')+' · 내 이름을 고르고 비밀번호를 정하세요.';w.textContent='';
+ var d=await r.json(),w=$('#who');$('#sub').textContent=(d.cls||'우리 반')+' · 내 이름을 고르고 비밀번호(6자 이상)를 정하세요.';w.textContent='';
  d.students.forEach(function(s){var o=document.createElement('option');o.value=s.no;o.textContent=s.no+' '+s.name+(s.joined?' (가입 완료)':'');o.disabled=s.joined;w.appendChild(o)});show(2);say('')};
-$('#b2').onclick=async function(){var pin=$('#pin').value.trim();if(!/^[0-9]{4}$/.test(pin))return say('비밀번호는 숫자 4자리예요.');
+$('#b2').onclick=async function(){var pin=$('#pin').value;if(!/^[\u0021-\u007e]{6,30}$/.test(pin))return say('비밀번호는 영문·숫자·기호 6자 이상이에요. 한글 자판이면 영문으로 바꿔 주세요.');
  var r=await fetch(login?'/api/student/login':'/api/join',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(login?{no:$('#who').value,pin:pin}:{code:code,no:$('#who').value,pin:pin})});
  if(r.ok)return location.href='/';
  say(({401:'학번 또는 비밀번호가 맞지 않아요.',409:'이미 가입된 이름이에요. 본인이 아니라면 선생님께 알려 주세요.',404:'가입창이 닫혔어요. 선생님께 다시 열어 달라고 하세요.',429:'시도가 많아 잠시 막혔습니다. 10분 뒤에 해 보세요.'})[r.status]||'다시 시도해 주세요.')};`);
@@ -143,7 +143,7 @@ P.forEach(function(u){$('#pend').appendChild(row(u,[['거절','reject',0,u.name+
 L.filter(function(u){return u.status!=='pending'}).forEach(function(u){$('#all').appendChild(row(u,u.admin?[]:[['삭제','delete',0,u.name+' 계정을 삭제할까요? 저장된 성적 파일은 남지만 로그인할 수 없게 됩니다.']]))})}
 load();`);
 const fails = {}; // shortcut: 메모리 기록이라 서버를 다시 켜면 초기화됨, 외부에 노출할 때는 충분
-// ── 우리 반 명단 · 학생 가입(수업 시간에 교사가 가입창을 열면 학생이 이름을 고르고 4자리 비밀번호를 정한다)
+// ── 우리 반 명단 · 학생 가입(수업 시간에 교사가 가입창을 열면 학생이 이름을 고르고 6자 이상 비밀번호를 정한다)
 const RF = id => path.join(DIR, 'data', id + '.__roster.json'); // 밑줄이 있어 프로그램 이름(a-z0-9-)과 겹치지 않는다
 const readRoster = id => { try { return JSON.parse(fs.readFileSync(RF(id), 'utf8')); } catch { return { cls: '', students: [] }; } };
 const JOIN = new Map(); // 가입 코드 → { id, until }  (메모리, 서버를 다시 켜면 사라지고 10분 뒤 자동으로 닫힌다)
@@ -220,7 +220,7 @@ http.createServer(async (req, res) => {
       if (throttle('jn|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' });
       const { code = '', no = '', pin = '' } = JSON.parse(await body(req) || '{}'), j = JOIN.get(String(code));
       if (!j || j.until < Date.now()) return send(res, 404, { error: 'closed' });
-      if (!/^\d{4}$/.test(String(pin))) return send(res, 400, { error: 'pin' });
+      if (!/^[\x21-\x7e]{6,30}$/.test(String(pin))) return send(res, 400, { error: 'pin' }); // 영문·숫자·기호 6자 이상
       const R = readRoster(j.id), st = R.students.find(x => x.no === String(no));
       if (!st) return send(res, 404, { error: 'no student' });
       if (st.ph) return send(res, 409, { error: 'taken' }); // 이미 가입된 이름은 다른 사람이 가입할 수 없다
@@ -229,7 +229,7 @@ http.createServer(async (req, res) => {
     }
     if (url === '/api/student/login' && req.method === 'POST') {
       const { no = '', pin = '' } = JSON.parse(await body(req) || '{}'), n = String(no).trim().slice(0, 10);
-      if (throttle('sl|' + n, 5, 600e3) || throttle('sl|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' }); // 4자리라 학번별·접속지별로 시도 횟수를 막는다
+      if (throttle('sl|' + n, 5, 600e3) || throttle('sl|' + req.socket.remoteAddress, 30, 600e3)) return send(res, 429, { error: 'too many' }); // 학번별·접속지별로 시도 횟수를 막는다
       for (const f of fs.readdirSync(path.join(DIR, 'data')).filter(x => x.endsWith('.__roster.json'))) {
         const id = f.slice(0, -'.__roster.json'.length), R = readRoster(id), st = R.students.find(x => x.no === n && x.ph);
         if (st && hash(String(pin), st.ps) === st.ph) { delete fails['sl|' + n]; return send(res, 200, { name: st.name }, stuCookie(id, st)); }
