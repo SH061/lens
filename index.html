@@ -182,9 +182,9 @@ body.sbc #rail{display:flex;flex-direction:column;gap:6px;padding:10px 5px;borde
  .sgoal{margin-top:10px;font-weight:700}.sgoal input{width:84px}.sgoal select{margin:0 4px}
  .tw{overflow-x:auto}
  .rt{width:max-content;min-width:100%;border-collapse:collapse}.rt th,.rt td{min-width:60px;padding:6px 8px;text-align:center;white-space:nowrap}
- .rt .g0{border-left:2px solid var(--line)}.rt .rn{width:46px;min-width:46px;color:var(--ink2);font-weight:700}.rt .rname{min-width:140px;text-align:left}
+ .rt .g0{border-left:2px solid var(--line)}.rt .rn{width:64px;min-width:64px;color:var(--ink2);font-weight:700}.rt .rname{min-width:0;width:1%;text-align:left}
  .rt .rname button{font-size:24px;font-weight:700;line-height:1.2;padding:2px 14px;border-radius:10px}
- .rt .stk{position:sticky;left:0;z-index:1;background:var(--card)}.rt .stk2{left:46px}.rt thead .stk{background:var(--soft)}
+ .rt .stk{position:sticky;left:0;z-index:1;background:var(--card)}.rt .stk2{left:64px}.rt thead .stk{background:var(--soft)}
  .rt thead .gh{border-bottom:1px solid var(--line)}.rt .cavg td,.rt .cavg th{background:var(--soft)}
  .cst{display:inline-block;padding:2px 9px;border-radius:6px;font-size:12px;font-weight:700;white-space:nowrap}.cst.ok{background:var(--good);color:#fff}.cst.near{background:#fff3cd;color:#8a5a00;border:1px solid #f0b429}.cst.nr{background:#fde2e4;color:#b42318}
  html[data-theme=dark] .cst.near{background:#3a321a;color:#fcd34d}html[data-theme=dark] .cst.nr{background:#3a1f27;color:#fca5a5}
@@ -459,7 +459,7 @@ dialog li{margin:6px 0}
 .rep .cd2>h3:first-child{margin-top:0}
 .tb .ib[hidden]{display:inline-flex;visibility:hidden}
 .jlock{margin:0 0 14px;padding:12px 14px;align-items:center}.jlock b{margin:0}.jlock svg{margin:0}
-.rt .rn{font-size:16px}.rt .rname{text-align:center}.rt .rname button{font-size:16px;font-weight:700;line-height:1.2;padding:2px 12px}.rt thead .stk{text-align:center;vertical-align:middle}
+.rt .rn{font-size:15px}.rt .rname{text-align:center}.rt .rname button{font-size:16px;font-weight:700;line-height:1.2;padding:2px 10px}.rt .rn,.rt .rname{padding-left:4px;padding-right:4px}.rt thead .stk{text-align:center;vertical-align:middle}
 .tb select,.tb #go,.tb #tg,.tb .ib{height:38px;box-sizing:border-box}.tb .ib{width:38px}.tb #tg{width:38px;padding:0;justify-content:center}
 .tb .lg{display:none}
 @container tbm (min-width:1350px){.tb .lg{display:inline}.tb .ib{width:auto;padding:0 14px}.tabs button{padding:6px 16px}}
@@ -877,6 +877,7 @@ function rosterFilter(list){
   else toast(`우리 반이 아닌 ${bad.length}명(${bad.slice(0,4).join(', ')}${bad.length>4?' 외':''})은 제외하고 우리 반 ${names.length-bad.length}명만 불러왔어요.`);
   return keep;
 }
+const snoOf=(n,i)=>{const r=rosterNo(n);return r!==null?r:i},noHead=()=>ROSTER?'학번':'번호';
 async function loadRoster(){try{const r=await api('GET','/api/roster');ROSTER=r&&r.students&&r.students.length?r:null}catch{ROSTER=null}fillStu()}
 function fillStu(){
   const rk=n=>{const i=ROSTER?ROSTER.students.findIndex(x=>x.name===baseName(n)):-1;return i<0?1e6:i};
@@ -1929,10 +1930,10 @@ function prioHtml(){
   <div class="crh">${svg('right',13)} 학생 이름을 누르면 그 학생의 내신·모의고사 분석 화면으로 바로 넘어갑니다.</div>
   <div class="gchips">${chip('all','살펴볼 학생',R.length)}${CKIND.map(([k,l])=>chip(k,l,cnt(k))).join('')}</div>`;
   if(!R.length)h+='<div class="note">눈에 띄는 신호가 있는 학생이 없습니다. 아래 기준을 넘는 변화가 없다는 뜻입니다.</div>';
-  else h+=`<div class="tw"><table class="crt"><thead><tr><th style="width:52px">번호</th><th class="l" style="width:130px">학생</th><th style="width:54px">점수</th><th class="l">신호</th></tr></thead>${CTIER.map((t,i)=>{
+  else h+=`<div class="tw"><table class="crt"><thead><tr><th style="width:${ROSTER?72:52}px">${noHead()}</th><th class="l" style="width:130px">학생</th><th style="width:54px">점수</th><th class="l">신호</th></tr></thead>${CTIER.map((t,i)=>{
     const L=sh.filter(x=>x.score>=t.min&&(i?x.score<CTIER[i-1].min:true));if(!L.length)return '';const hi=i?CTIER[i-1].min-1:null;
-    return `<tbody style="--tc:var(--${t.c})"><tr class="crth"><td colspan="4"><b>${t.label}</b><span class="n">${L.length}명</span><span class="hint">점수 ${t.min}${hi===null?' 이상':hi>t.min?'~'+hi:''} · ${t.hint}</span></td></tr>${L.map(x=>`<tr><td><span class="crno">${x.no}</span></td><td class="l">${nb(x.name)}</td><td><span class="crsc">${x.score}</span></td><td class="l">${x.fl.map(f=>{const kk=CKIND.find(c=>c[0]===f.k);return `<div class="crf"><span class="crtag" style="color:var(--${kk[3]})">${svg(kk[2],13)} ${kk[1]}</span><span class="crlv">${[1,2,3].map(i=>`<i style="${i<=f.l?`background:var(--${kk[3]})`:''}"></i>`).join('')}</span><span class="crd">${esc(f.tx)}</span></div>`}).join('')}</td></tr>`).join('')}</tbody>`}).join('')}</table></div>`;
-  if(C.length)h+=`<h3>신호가 없는 학생 ${C.length}명</h3><div class="crcalm">${C.map(x=>`<span><em>${x.no}</em>${nb(x.name,1)}</span>`).join('')}</div>`;
+    return `<tbody style="--tc:var(--${t.c})"><tr class="crth"><td colspan="4"><b>${t.label}</b><span class="n">${L.length}명</span><span class="hint">점수 ${t.min}${hi===null?' 이상':hi>t.min?'~'+hi:''} · ${t.hint}</span></td></tr>${L.map(x=>`<tr><td><span class="crno">${snoOf(x.name,x.no)}</span></td><td class="l">${nb(x.name)}</td><td><span class="crsc">${x.score}</span></td><td class="l">${x.fl.map(f=>{const kk=CKIND.find(c=>c[0]===f.k);return `<div class="crf"><span class="crtag" style="color:var(--${kk[3]})">${svg(kk[2],13)} ${kk[1]}</span><span class="crlv">${[1,2,3].map(i=>`<i style="${i<=f.l?`background:var(--${kk[3]})`:''}"></i>`).join('')}</span><span class="crd">${esc(f.tx)}</span></div>`}).join('')}</td></tr>`).join('')}</tbody>`}).join('')}</table></div>`;
+  if(C.length)h+=`<h3>신호가 없는 학생 ${C.length}명</h3><div class="crcalm">${C.map(x=>`<span><em>${snoOf(x.name,x.no)}</em>${nb(x.name,1)}</span>`).join('')}</div>`;
   return h+`<div class="crfoot"><b>세기 기준</b> (1 · 2 · 3) — 내신 하락: 직전 학기 대비 학기 평균 ${CL.drop.join(' · ')}등급 이상 · 등급 경계: 최근 학기에 자기 등급 구간의 위쪽 20% 안에 있는 과목 ${CL.near.join(' · ')}개 이상 · 내신·모의 격차: 9등급 기준 ${CL.gap.map(v=>v.toFixed(1)).join(' · ')}등급 이상 (방향 무관) · 모의 하락: 직전 회차 대비 반영 과목 평균 ${CL.mockDrop.join(' · ')}등급 이상.<br>교과학습발달상황에는 석차가 없어 위치와 앞 인원은 <b>추정</b>입니다(「약」 표시). 일람표를 올리면 실제 석차로 계산합니다.</div></div>`;
 }
 function pickT(name){cur=name;$('#stu').value=name;memoUI();render()}
@@ -1967,9 +1968,9 @@ function ourHtml(){
     return {n,no:students.indexOf(n)+1,v:COMBOS.map(([,set])=>ks.map(k=>{const w=wavg(mine.filter(r=>inC(r,set)&&(RM==='cum'?sk(r)<=k:sk(r)===k)));return w.cr?w.avg:NaN})),t:COMBOS.map(([,set])=>wavg(mine.filter(r=>inC(r,set))).avg)}}).filter(x=>isFinite(x.t[0])).sort((a,b)=>RS==='n'?a.no-b.no:a.t[0]-b.t[0]);
   const cl=(v,sc,first)=>isFinite(v)?`<td class="hm c${toneOf(v,sc)}${first?' g0':''}">${f2(v)}</td>`:`<td class="mut${first?' g0':''}">-</td>`;
   h+=`<div class="sub2">${RM==='cum'?'그 학기까지 들은 모든 과목의 학점 가중 평균입니다. 대학이 보는 값에 가깝습니다.':'그 학기 과목만의 학점 가중 평균입니다. 오르내림을 보기에 좋습니다.'} 위쪽일수록 좋은 등급이고, 이름을 누르면 그 학생의 내신 분석으로 이동합니다.</div><div class="gchips sm"><span class="mut" style="align-self:center;font-size:12px">정렬</span>${[['g','성적순'],['n','번호순']].map(([k,l])=>`<button class="${RS===k?'on':''}" onclick="RS='${k}';render()">${l}</button>`).join('')}</div>`;
-  h+=`<div class="tw"><table class="rt"><thead><tr><th class="stk" rowspan="2">번호</th><th class="stk stk2 l" rowspan="2">이름</th>${ks.map(k=>`<th class="gh g0" colspan="4">${kl(k)}${pv(k)?'<span class="tpb">예상</span>':''}</th>`).join('')}<th class="gh g0" colspan="4">${RM==='cum'?'현재 누적':'전체 평균'}</th></tr><tr>${[...ks,0].map(()=>CN.map((n,j)=>`<th class="${j?'':'g0'}">${n}</th>`).join('')).join('')}</tr></thead><tbody>
+  h+=`<div class="tw"><table class="rt"><thead><tr><th class="stk" rowspan="2">${noHead()}</th><th class="stk stk2 l" rowspan="2">이름</th>${ks.map(k=>`<th class="gh g0" colspan="4">${kl(k)}${pv(k)?'<span class="tpb">예상</span>':''}</th>`).join('')}<th class="gh g0" colspan="4">${RM==='cum'?'현재 누적':'전체 평균'}</th></tr><tr>${[...ks,0].map(()=>CN.map((n,j)=>`<th class="${j?'':'g0'}">${n}</th>`).join('')).join('')}</tr></thead><tbody>
     <tr class="cavg"><th class="stk" colspan="2" style="left:0">학급 평균</th>${ks.map((k,i)=>CN.map((n,j)=>`<td class="${j?'':'g0'}"><b>${f2(avg(L.map(x=>x.v[j][i]).filter(isFinite)))}</b></td>`).join('')).join('')}${CN.map((n,j)=>`<td class="${j?'':'g0'}"><b>${f2(avg(L.map(x=>x.t[j]).filter(isFinite)))}</b></td>`).join('')}</tr>
-    ${L.map(x=>`<tr><td class="rn stk">${x.no}</td><td class="rname stk stk2"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td>${ks.map((k,i)=>CN.map((n,j)=>cl(x.v[j][i],sc(k),!j)).join('')).join('')}${CN.map((n,j)=>cl(x.t[j],S,!j)).join('')}</tr>`).join('')}</tbody></table></div></div>`;
+    ${L.map(x=>`<tr><td class="rn stk">${snoOf(x.n,x.no)}</td><td class="rname stk stk2"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td>${ks.map((k,i)=>CN.map((n,j)=>cl(x.v[j][i],sc(k),!j)).join('')).join('')}${CN.map((n,j)=>cl(x.t[j],S,!j)).join('')}</tr>`).join('')}</tbody></table></div></div>`;
   return h}
 function mockHeat(){
   if(!mock.length)return '';
@@ -1981,12 +1982,12 @@ function mockHeat(){
   let h=`<h3>모의고사 히트맵 — 영역 × 회차 (학급 평균 등급)</h3><div class="tw"><table class="rt"><thead><tr><th class="l">영역</th>${rounds.map(r=>`<th>${esc(r)}</th>`).join('')}</tr></thead><tbody>${areas.map(a=>`<tr><td class="l">${esc(a)}</td>${rounds.map(r=>cl(avg(mock.filter(m=>m.round===r&&m.area===a).map(m=>m.g))) ).join('')}</tr>`).join('')}</tbody></table></div>
     <h3>학생 × 영역 <select id="hmr">${rounds.map(r=>`<option ${r===HMR?'selected':''}>${esc(r)}</option>`).join('')}</select></h3>`;
   const names=[...new Set(mock.filter(m=>m.round===HMR).map(m=>m.name))].map(n=>({n,v:avg(mock.filter(m=>m.round===HMR&&m.name===n).map(m=>m.g))})).sort((a,b)=>a.v-b.v);
-  h+=`<div class="tw"><table class="rt"><thead><tr><th class="stk">번호</th><th class="stk stk2 l">이름</th>${areas.map(a=>`<th>${esc(a)}</th>`).join('')}<th>평균</th></tr></thead><tbody>${names.map(x=>`<tr><td class="rn stk">${students.indexOf(x.n)+1}</td><td class="rname stk stk2"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td>${areas.map(a=>{const m=mock.find(m=>m.round===HMR&&m.name===x.n&&m.area===a);return m?`<td class="hm c${toneOf(m.g,9)}">${m.g}</td>`:'<td class="mut">-</td>'}).join('')}<td><b>${f2(x.v)}</b></td></tr>`).join('')}</tbody></table></div>`;
+  h+=`<div class="tw"><table class="rt"><thead><tr><th class="stk">${noHead()}</th><th class="stk stk2 l">이름</th>${areas.map(a=>`<th>${esc(a)}</th>`).join('')}<th>평균</th></tr></thead><tbody>${names.map(x=>`<tr><td class="rn stk">${snoOf(x.n,students.indexOf(x.n)+1)}</td><td class="rname stk stk2"><button data-pick="${esc(x.n)}">${esc(x.n)}</button></td>${areas.map(a=>{const m=mock.find(m=>m.round===HMR&&m.name===x.n&&m.area===a);return m?`<td class="hm c${toneOf(m.g,9)}">${m.g}</td>`:'<td class="mut">-</td>'}).join('')}<td><b>${f2(x.v)}</b></td></tr>`).join('')}</tbody></table></div>`;
   return h;
 }
 function prioXlsx(){
   const {R,C}=prioAll(),K=CKIND.map(k=>k[1]);
-  const aoa=[['구분','번호','학생','점수',...K.map(k=>k+' 세기'),'설명'],...R.map(x=>[CTIER.find(t=>x.score>=t.min).label,x.no,x.name,x.score,...CKIND.map(k=>(x.fl.find(f=>f.k===k[0])||{l:0}).l),x.fl.map(f=>`${CKIND.find(c=>c[0]===f.k)[1]}: ${f.tx}`).join(' / ')]),...C.map(x=>['신호 없음',x.no,x.name,0,0,0,0,0,''])];
+  const aoa=[['구분',noHead(),'학생','점수',...K.map(k=>k+' 세기'),'설명'],...R.map(x=>[CTIER.find(t=>x.score>=t.min).label,snoOf(x.name,x.no),x.name,x.score,...CKIND.map(k=>(x.fl.find(f=>f.k===k[0])||{l:0}).l),x.fl.map(f=>`${CKIND.find(c=>c[0]===f.k)[1]}: ${f.tx}`).join(' / ')]),...C.map(x=>['신호 없음',x.no,x.name,0,0,0,0,0,''])];
   const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=[{wch:10},{wch:6},{wch:12},{wch:6},{wch:12},{wch:12},{wch:14},{wch:12},{wch:80}];
   XLSX.utils.book_append_sheet(wb,ws,'상담 우선순위');XLSX.writeFile(wb,'상담우선순위.xlsx');
 }
