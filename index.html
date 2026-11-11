@@ -509,6 +509,8 @@ dialog li{margin:6px 0}
 .isr{display:grid;grid-template-columns:92px 1fr 72px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
 .itr{position:relative;height:10px;background:var(--soft);border-radius:5px}.itr i{position:absolute;left:0;top:0;height:10px;border-radius:5px;background:var(--ac)}.itr u{position:absolute;top:-3px;width:2px;height:16px;background:var(--ink);text-decoration:none}
 @media(max-width:900px){.itl{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:560px){.itl{grid-template-columns:repeat(2,minmax(0,1fr))}.ibr{grid-template-columns:52px 1fr 64px}.isr{grid-template-columns:76px 1fr 60px}}
+/* 엑셀 버튼 숨김(기능은 그대로): 다시 쓰려면 이 줄을 지우세요 */
+.xl-off{display:none!important}
 </style>
 </head>
 <body>
@@ -576,7 +578,7 @@ dialog li{margin:6px 0}
     <h2><span><i data-ic="users"></i>학급 일괄 처리</span><b class="n" id="cnt">0명</b></h2>
     <small>올린 <b>모든 학생</b>을 한 번에 만듭니다. 내신과 모의고사가 함께 들어갑니다. 모의고사만 올린 학생도 빠지지 않습니다.</small>
     <button id="prA"><i data-ic="print"></i>전체 인쇄 · PDF<em>학생별 페이지 구분</em></button>
-    <button id="xlA"><i data-ic="table"></i>전체 엑셀<em>학생별 시트</em></button>
+    <button id="xlA" class="xl-off"><i data-ic="table"></i>전체 엑셀<em>학생별 시트</em></button>
     <button id="pmA"><i data-ic="clip"></i>전체 프롬프트<em>.txt</em></button>
   </div>
 </aside>
@@ -590,7 +592,7 @@ dialog li{margin:6px 0}
     <span class="tabs" id="tabs" hidden><button data-t="n" class="on"><i data-ic="file"></i>내신<span class="lg"> 분석</span></button><button data-t="m"><i data-ic="trend"></i>모의<span class="lg"> 고사</span><em id="mbd"></em></button><button data-t="r"><i data-ic="grid"></i>우리반<span class="lg"> 성적</span></button><button data-t="j"><i data-ic="layers"></i>수시·정시<span class="lg"> 통합</span></button><button data-t="p"><i data-ic="users"></i>상담<span class="lg"> 우선순위</span></button></span>
     <span class="sp"></span>
     <button id="pr1" class="ib" hidden title="인쇄" aria-label="인쇄"><i data-ic="print"></i><span class="lg">인쇄</span></button>
-    <button id="xl1" class="ib" hidden title="엑셀로 저장" aria-label="엑셀로 저장"><i data-ic="table"></i><span class="lg">엑셀</span></button>
+    <button id="xl1" class="ib xl-off" hidden title="엑셀로 저장" aria-label="엑셀로 저장"><i data-ic="table"></i><span class="lg">엑셀</span></button>
     <button id="pm1" class="ib" hidden title="프롬프트 위치로 이동" aria-label="프롬프트 위치로 이동"><i data-ic="clip"></i><span class="lg">프롬프트</span></button>
   </div>
   <div id="view"></div>
