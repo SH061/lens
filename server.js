@@ -78,9 +78,9 @@ h1,h2,h3,p{margin:0;font-weight:400}button,input{font-family:inherit;font-size:1
 .tile{padding:80px 22px;text-align:center}.tile.parch{background:var(--parch)}.tile.dark{background:var(--tile);color:var(--on-tile)}
 .hero h1{font-size:56px;line-height:1.07;letter-spacing:-.03em;margin-bottom:12px}.hero p{font-size:24px;line-height:1.2;color:var(--mute);letter-spacing:-.015em}
 h2{font-size:34px;line-height:1.12;letter-spacing:-.025em;margin-bottom:36px}
-.grid{max-width:980px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,230px));justify-content:center;gap:14px;text-align:left}
-.card{display:block;padding:20px 20px 18px;border:1px solid var(--line);border-radius:18px;background:var(--canvas);color:inherit;text-decoration:none;transition:transform .15s}.card:active{transform:scale(.98)}
-.card h3{font-size:19px;line-height:1.2;letter-spacing:-.02em;margin-bottom:6px}.card p{color:var(--mute);font-size:14px;line-height:1.4;min-height:40px}.card span{display:block;margin-top:12px;font-size:14px;color:var(--primary)}
+.grid{max-width:980px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,276px));justify-content:center;gap:17px;text-align:left}
+.card{display:block;padding:24px 24px 22px;border:1px solid var(--line);border-radius:18px;background:var(--canvas);color:inherit;text-decoration:none;transition:transform .15s}.card:active{transform:scale(.98)}
+.card h3{font-size:23px;line-height:1.2;letter-spacing:-.02em;margin-bottom:7px}.card p{color:var(--mute);font-size:17px;line-height:1.4;min-height:48px}.card span{display:block;margin-top:14px;font-size:17px;color:var(--primary)}
 .dark h2{margin-bottom:12px}.dark p{color:var(--on-tile-mute);margin:0 auto}@media(min-width:834px){.dark p{white-space:nowrap}}
 @media(max-width:833px){.hero h1{font-size:40px}.hero p{font-size:19px}h2{font-size:28px}.tile{padding:56px 16px}}`;
 const page = (body, script = '') => `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학교 업무 도구</title><style>${CSS}</style></head><body>${body}${script ? '<script>' + script + '</script>' : ''}</body></html>`;
