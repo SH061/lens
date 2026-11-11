@@ -189,9 +189,13 @@ http.createServer(async (req, res) => {
       if (req.method === 'GET') return send(res, 200, (() => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return {}; } })());
       if (req.method === 'PUT') {
         const s = await body(req), n = JSON.parse(s);
-        // 문항별 자료(itm)를 모르는 예전 화면이 저장해도 기존 itm을 지우지 않는다
-        if (n && typeof n === 'object' && !('itm' in n)) { try { const o = JSON.parse(fs.readFileSync(f, 'utf8')); if (o.itm) n.itm = o.itm; } catch {} }
-        atomic(f, JSON.stringify(n)); return send(res, 200, { ok: true });
+        // 문항별 자료(itm)가 비었거나 없는 채로 저장되면(오래 열려 있던 화면 등) 기존 itm을 지키고 화면에 돌려준다. 일부러 지운 경우만 itmReset으로 비운다
+        let keep = null;
+        if (n && typeof n === 'object') {
+          if (!n.itmReset && !(Array.isArray(n.itm) && n.itm.length)) { try { const o = JSON.parse(fs.readFileSync(f, 'utf8')); if (Array.isArray(o.itm) && o.itm.length) n.itm = keep = o.itm; } catch {} }
+          delete n.itmReset;
+        }
+        atomic(f, JSON.stringify(n)); return send(res, 200, keep ? { ok: true, itm: keep } : { ok: true });
       }
     }
     send(res, 404, { error: 'not found' });

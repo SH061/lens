@@ -682,7 +682,7 @@ const DEF_UNIV='의약계열 · 최상위권,98\n최상위권,95.5\n상위권,92
 const KN={a:'석차등급(1~9)을 그대로 읽습니다. 5등급제·9등급제는 학기별로 자동 판별합니다.',b:'원점수와 석차로 <b>가상 등급</b>을 만듭니다. 수강자수는 파일에서 읽고, 5등급·9등급은 학년으로 판별합니다. 등급이 이미 적힌 파일이라면 위의 「교과학습발달상황」을 고르세요.'};
 
 /* ───── 상태 ───── */
-let rows=[], mock=[], ITM=[], ITR='', ITA='전체', students=[], cur='', tab='n', shown=false, charts=[], ctx=null, map={}, SIM={};
+let IRS=false, rows=[], mock=[], ITM=[], ITR='', ITA='전체', students=[], cur='', tab='n', shown=false, charts=[], ctx=null, map={}, SIM={};
 let EX=new Set(), MEMO={}, UNIV=DEF_UNIV, THEME='light', NFILES=[], AT='', KIND='a';
 const knUI=k=>{KIND=k;const e=$('#kn');e.className=k==='a'?'okbox':'infobox';e.innerHTML=KN[k];drop1UI()};
 const KNAME={a:'교과학습발달상황',b:'전과목 성적일람표'};
@@ -691,7 +691,7 @@ function drop1UI(){const d=$('#drop1');if(!d)return;
   else{d.className='drop';d.innerHTML=`<span>${svg('up',26)}</span><b>NEIS ${KNAME[KIND]} 파일을 올리세요</b><small>클릭하거나 파일을 끌어다 놓으세요 · .xlsx .xls .csv</small>`}}
 const KEY='lens-school-v1';
 const revive=o=>{for(const k in o)if(o[k]===null)o[k]=NaN;return o};
-const snap=()=>({rows,mock,itm:ITM,school:$('#school').value,memo:MEMO,univ:UNIV,ex:[...EX],theme:THEME,dg:$('#dg').value,ds:$('#ds').value,nf:NFILES,at:(AT=new Date().toISOString())});
+const snap=()=>({rows,mock,itm:ITM,itmReset:IRS&&!ITM.length,school:$('#school').value,memo:MEMO,univ:UNIV,ex:[...EX],theme:THEME,dg:$('#dg').value,ds:$('#ds').value,nf:NFILES,at:(AT=new Date().toISOString())});
 function apply(d){
   rows=(d.rows||[]).map(revive);mock=(d.mock||[]).map(revive);ITM=d.itm||[];MEMO=d.memo||{};UNIV=(d.univ&&d.univ!==OLD_UNIV)?d.univ:DEF_UNIV;EX=new Set(d.ex||[]);THEME=d.theme||'light';
   NFILES=d.nf||[];AT=d.at||'';$('#school').value=d.school||'';$('#dg').value=d.dg||1;$('#ds').value=d.ds||1;
@@ -709,7 +709,7 @@ function cloudPush(){
   if(!(sb||srv)||!uid||!pulled)return; // 내려받기 전에 올리면 저장된 데이터를 덮어쓴다
   clearTimeout(pushT);acctUi('저장 중…');
   pushT=setTimeout(async()=>{
-    const {error}=srv?await api('PUT','/api/state',snap()).then(()=>({}),e=>({error:{message:'서버 오류 '+e}})):await sb.from('lens_state').upsert({user_id:uid,data:snap(),updated_at:new Date().toISOString()});
+    const {error}=srv?await api('PUT','/api/state',snap()).then(r=>{if(r.itm&&!ITM.length){ITM=r.itm;const x=$('#itmbox');if(x)x.innerHTML=itemHtml(cur)}return {}},e=>({error:{message:'서버 오류 '+e}})):await sb.from('lens_state').upsert({user_id:uid,data:snap(),updated_at:new Date().toISOString()});
     acctUi(error?'저장 실패':'동기화됨');if(error)toast('클라우드 저장 실패: '+error.message);
   },1200);
 }
@@ -1127,7 +1127,7 @@ function parseItems(R,H){
 function addItems(L){
   if(!L.length)return;
   const k=x=>[x.name,x.round,x.area].join('|'),keys=new Set(L.map(k));
-  ITM=ITM.filter(x=>!keys.has(k(x))).concat(L);
+  ITM=ITM.filter(x=>!keys.has(k(x))).concat(L);IRS=false;
 }
 async function loadMockPdf(file){
   await needPdf();
@@ -1975,12 +1975,12 @@ $('#delGo').onclick=()=>{
   const n=[...document.querySelectorAll('#delList [data-n]:checked')].map(e=>+e.dataset.n),m=[...document.querySelectorAll('#delList [data-m]:checked')].map(e=>e.dataset.m);
   if(!n.length&&!m.length)return toast('지울 항목을 고르세요.');
   if(!confirm(`내신 ${n.length}개 학기, 모의고사 ${m.length}개 회차를 지울까요? 되돌릴 수 없습니다.`))return;
-  rows=rows.filter(r=>!n.includes(sk(r)));mock=mock.filter(x=>!m.includes(x.round));ITM=ITM.filter(x=>!m.includes(x.round));$('#del').close();refresh();toast('선택한 저장분을 지웠습니다.');
+  rows=rows.filter(r=>!n.includes(sk(r)));mock=mock.filter(x=>!m.includes(x.round));ITM=ITM.filter(x=>!m.includes(x.round));IRS=true;$('#del').close();refresh();toast('선택한 저장분을 지웠습니다.');
 };
 $('#bTheme').onclick=()=>setTheme(THEME==='light'?'cream':THEME==='cream'?'dark':'light');
 $('#bReset').onclick=()=>{
   if(!confirm('저장된 성적과 메모, 대학군 표를 모두 지울까요? 되돌릴 수 없습니다.'))return;
-  rows=[];mock=[];ITM=[];MEMO={};EX=new Set();UNIV=DEF_UNIV;cur='';shown=false;NFILES=[];
+  rows=[];mock=[];ITM=[];IRS=true;MEMO={};EX=new Set();UNIV=DEF_UNIV;cur='';shown=false;NFILES=[];
   try{localStorage.removeItem(KEY)}catch{}
   refresh();cloudPush(); // 로그인 상태면 계정의 데이터도 비운다
 };
