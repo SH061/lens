@@ -429,7 +429,7 @@ dialog li{margin:6px 0}
  body.pn .tile b{font-size:18px}body.pn .cd2.cls{display:none!important}
 }
 @media print{
- .simw{display:none}body.pn .simw{display:block}body.pn .simw .gchips,body.pn .simw button,body.pn .simw .sin+*{display:none}
+ .simw{display:none}body.pn .simw{display:block}body.pn .simw .srst{display:none}body.pn .simw .gchips{display:flex!important}body.pn .simw .sgrid{flex-wrap:nowrap}body.pn .simw .sin{flex:1;min-width:0}
  body.pn .ups{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
  body.pn .up1{display:block;background:#f1efff;border:1px solid #ddd8ff;border-radius:12px;padding:8px 12px;margin:0}
  body.pn .u1{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}body.pn .u1 .uh{display:inline}body.pn .ub{display:flex}
@@ -438,7 +438,7 @@ dialog li{margin:6px 0}
  body.pn .ups .up1:nth-child(n+4) .ub,body.pn .ups .up1:nth-child(n+4) .u2{display:inline;margin:0}
  body.pn .ups .up1:nth-child(-n+3) .u1 b{font-size:15px}
  body.pn .ups .up1:nth-child(-n+3) .u2{font-size:12px}
- body.pn .dualrow.dd .pos{grid-template-columns:84px 1fr 168px!important;font-size:11px}
+ body.pn .dualrow.dd .pos{grid-template-columns:110px 1fr 200px!important;font-size:11.5px}
 }
 
 .plan h3{margin-bottom:4px}.plan .sub2{display:block;font-size:12px;color:#666;margin:0 0 10px}
@@ -450,8 +450,8 @@ dialog li{margin:6px 0}
 .plan .hint{font-size:12px;color:#555;margin:2px 0 8px}.plan .hint span{background:#f1efff;border-radius:999px;padding:3px 10px;margin-right:6px;display:inline-block}
 .plan textarea{min-height:88px;resize:vertical}.plan .psv{font-size:12px;color:#2b8a3e;min-height:16px;margin-top:4px}
 @media(max-width:560px){.plan .pg{grid-template-columns:1fr}}
-@media print{body.pn .plan input,body.pn .plan textarea{border:0;border-bottom:1px solid #666;border-radius:0;background:transparent;padding:6px 2px;min-height:50px;font-size:14px}body.pn .plan .act{margin-bottom:12px}body.pn .plan .psv{display:none}body.pn .plan .act b{width:22px;height:22px;font-size:12px}body.pn .plan input[type=date]::-webkit-calendar-picker-indicator{display:none}body.pn .plan .no-print{display:none}}
-.foot{display:none!important}@media print{body.pn .dualrow.pg2,body.pn .cd2.z2,body.pn .dualrow.dd,body.pn .plan{zoom:1.1}body.pn .dualrow.dd{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}body.pn .simw{overflow:hidden}body.pn .simw table{width:100%;table-layout:fixed}}.ptn{display:none}@media print{body.pn .ptn{display:inline}}
+@media print{body.pn .plan input,body.pn .plan textarea{border:0;border-bottom:1px solid #666;border-radius:0;background:transparent;padding:4px 2px;min-height:40px;font-size:14px}body.pn .plan .act{margin-bottom:8px}body.pn .plan .psv{display:none}body.pn .plan .act b{width:22px;height:22px;font-size:12px}body.pn .plan input[type=date]::-webkit-calendar-picker-indicator{display:none}body.pn .plan .no-print{display:none}}
+.foot{display:none!important}@media print{body.pn .dualrow.pg2{zoom:.8}body.pn .cd2.z2{zoom:.95}body.pn .dualrow.dd,body.pn .plan{zoom:.95}body.pn .plan .sub2{display:none}body.pn .simw .sin{display:flex;flex-direction:column;gap:3px;border:1px solid #cfd5dd;border-radius:10px;padding:6px 8px;background:#fff}body.pn .simw .sin span{font-size:12px;font-weight:700}body.pn .simw .sin small{display:block;font-size:11px;color:#555}body.pn .simw .sin select{width:100%}body.pn .simw .sgrid{display:flex;gap:8px;margin:8px 0}body.pn .dualrow.dd{grid-template-columns:minmax(0,1fr)}body.pn .simw{overflow:hidden}body.pn .simw table{width:100%;table-layout:fixed}}.ptn{display:none}@media print{body.pn .ptn{display:inline}}
 @media print{
  body.pa .rep.bn{zoom:.56}body.pa .rep.bn .dualrow .cw{width:56%}body.pa .rep.bn .cbx .cw{width:100%}
  body.pa .rep.bn .foot{display:none}body.pa .rep.bm{zoom:.57}body.pa .rep.bm .cw{width:62%;margin:0 auto}
