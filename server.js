@@ -3,6 +3,7 @@
 //   계정 추가: node server.js adduser 이름 비밀번호        (같은 이름으로 다시 하면 비밀번호 변경, 바로 승인됨)
 //   관리자:    node server.js adduser 이름 비밀번호 admin   (관리자 화면 /admin 사용 가능)
 //   계정 삭제: node server.js deluser 이름
+// 우리 반 명단: GET/PUT /api/roster (apps/myclass 에서 등록, 다른 프로그램은 GET으로 읽기만 한다).
 // 가입 신청은 승인 대기 상태로 들어오고, 관리자 화면에서 승인해야 로그인할 수 있습니다.
 // 환경변수: DATA_DIR(저장 폴더, 기본 외장하드), PORT(기본 3000)
 const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto');
@@ -180,6 +181,17 @@ http.createServer(async (req, res) => {
         else if (url === '/api/admin/reject' || url === '/api/admin/delete') { if (u.admin) return send(res, 400, { error: 'admin' }); delete U[name]; } // 성적 파일은 data 폴더에 남는다
         else return send(res, 404, { error: 'not found' });
         atomic(UF, JSON.stringify(U, null, 1)); return send(res, 200, { ok: true });
+      }
+    }
+    if (url === '/api/roster') { // 우리 반 명단: 교사 계정마다 하나, 모든 프로그램이 GET /api/roster 로 같은 명단을 읽는다 → {cls, students:[{no,name}]}
+      const f = path.join(DIR, 'data', users()[email].id + '.__roster.json'); // 밑줄이 있어 프로그램 이름(a-z0-9-)과 겹치지 않는다
+      if (req.method === 'GET') return send(res, 200, (() => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return { cls: '', students: [] }; } })());
+      if (req.method === 'PUT') {
+        const n = JSON.parse(await body(req) || '{}'), st = Array.isArray(n.students) ? n.students : null;
+        if (!st || st.length > 100) return send(res, 400, { error: 'bad roster' });
+        const clean = st.map(x => ({ no: String((x && x.no) || '').trim().slice(0, 10), name: String((x && x.name) || '').trim().slice(0, 20) })).filter(x => x.name);
+        atomic(f, JSON.stringify({ cls: String(n.cls || '').trim().slice(0, 20), students: clean, at: new Date().toISOString() }));
+        return send(res, 200, { ok: true, n: clean.length });
       }
     }
     if (url === '/api/state') {

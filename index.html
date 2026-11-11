@@ -759,7 +759,7 @@ async function cloudPull(){
   pulled=true;acctUi();
 }
 async function cloudInit(){
-  try{const u=await api('GET','/api/me');srv=true;uid=u.email;$('#bHome').hidden=false;acctUi();return cloudPull()}
+  try{const u=await api('GET','/api/me');srv=true;uid=u.email;$('#bHome').hidden=false;acctUi();await loadRoster();return cloudPull()}
   catch(e){if(e===401){srv=true;return acctUi()}} // 401=서버는 있는데 로그인 전, 그 외(404 등)=정적 호스팅이라 Supabase 사용
   if(!window.supabase)return acctUi();
   sb=supabase.createClient(SB_URL,SB_KEY);
@@ -864,7 +864,27 @@ function parseWide(data,dg,ds){
   }
   return out;
 }
-function addRows(list){ // 같은 학생·학기·과목은 덮어쓰되, 확정 등급을 예상 등급(≈)으로 덮지는 않는다
+/* 우리 반 명단(서버 /api/roster): 등록돼 있으면 그 명단의 학생만 불러온다 */
+let ROSTER=null;
+const baseName=n=>String(n).replace(/\s*\(.*\)$/,'').trim();
+const rosterNo=n=>{const r=ROSTER&&ROSTER.students.find(x=>x.name===baseName(n));return r?r.no:null};
+function rosterFilter(list){
+  if(!ROSTER)return list;
+  const names=[...new Set(list.map(r=>baseName(r.name)))],bad=names.filter(n=>rosterNo(n)===null);
+  if(!bad.length)return list;
+  const keep=list.filter(r=>rosterNo(r.name)!==null);
+  if(!keep.length)alert(`우리 반이 아니에요!\n올린 자료의 학생(${bad.slice(0,6).join(', ')}${bad.length>6?' 외':''})이 등록한 우리 반 명단에 없어서 불러오지 않았어요.\n자료를 다시 확인해 주세요.`);
+  else toast(`우리 반이 아닌 ${bad.length}명(${bad.slice(0,4).join(', ')}${bad.length>4?' 외':''})은 제외하고 우리 반 ${names.length-bad.length}명만 불러왔어요.`);
+  return keep;
+}
+async function loadRoster(){try{const r=await api('GET','/api/roster');ROSTER=r&&r.students&&r.students.length?r:null}catch{ROSTER=null}fillStu()}
+function fillStu(){
+  const rk=n=>{const i=ROSTER?ROSTER.students.findIndex(x=>x.name===baseName(n)):-1;return i<0?1e6:i};
+  students.sort((a,b)=>ROSTER?(rk(a)-rk(b)||a.localeCompare(b,'ko')):a.localeCompare(b,'ko'));
+  $('#stu').innerHTML='<option value="">학생 선택</option>'+students.map((s,i)=>`<option value="${esc(s)}">${rosterNo(s)!==null?esc(rosterNo(s)):i+1+'.'} ${esc(s)}</option>`).join('');
+  $('#stu').value=cur;
+}
+function addRows(list){list=rosterFilter(list);if(!list.length)return; // 같은 학생·학기·과목은 덮어쓰되, 확정 등급을 예상 등급(≈)으로 덮지는 않는다
   const key=r=>[r.name,r.grade,r.sem,r.subject].join('|'),m=new Map(rows.map(r=>[key(r),r]));
   for(const r of list){const o=m.get(key(r));if(o&&!o.vir&&r.vir)continue;m.set(key(r),r)}
   rows=[...m.values()];
@@ -872,7 +892,7 @@ function addRows(list){ // 같은 학생·학기·과목은 덮어쓰되, 확정
 async function loadNaesin(file){
   const sheets=await readSheets(file);
   const wide=sheets.flatMap(s=>parseWide(s.data,+$('#dg').value,+$('#ds').value));
-  if(wide.length){$('#mapbox').open=false;addRows(wide);refresh();toast(`성적일람표 ${wide.length}건을 불러왔습니다. 석차로 계산한 예상 등급(≈)입니다.`);return}
+  if(wide.length){$('#mapbox').open=false;const wf=rosterFilter(wide);if(!wf.length)return;addRows(wf);refresh();toast(`성적일람표 ${wf.length}건을 불러왔습니다. 석차로 계산한 예상 등급(≈)입니다.`);return}
   let pick=null;
   for(const s of sheets){const hi=findHeader(s.data,NF[0][2],NF[3][2]);if(hi>=0){pick={hi,data:s.data};break}}
   if(!pick)pick={hi:0,data:sheets[0].data};
@@ -909,8 +929,8 @@ function buildNaesin(){
     out.set([name,row.grade,row.sem,subject].join('|'),row);
   }
   if(!out.size){toast('읽은 행이 없습니다. 열 지정을 확인해 주세요.');return}
-  addRows([...out.values()]);
-  refresh();toast(`내신 ${out.size}행을 불러왔습니다. 학생을 고르고 분석을 누르세요.`);
+  const L=rosterFilter([...out.values()]);if(!L.length)return;addRows(L);
+  refresh();toast(`내신 ${L.length}행을 불러왔습니다. 학생을 고르고 분석을 누르세요.`);
 }
 
 
@@ -1063,6 +1083,7 @@ function mockFromText(text){
   mockFromData(data);
 }
 function addMock(out,pre=''){
+  out=rosterFilter(out);if(!out.length)return;
   out.forEach(x=>x.g=mockGrade(x));
   const ok=out.filter(x=>isFinite(x.g));
   if(!ok.length){toast('등급을 계산할 수 있는 영역이 없습니다.');return}
@@ -1180,7 +1201,7 @@ async function loadMockPdf(file){
   const its=[];
   for(let i=0;i<pgs.length;i++){const L=await pdfLines(pgs[i]);out.push(...parseTongji(L));const H=tjHead(L);if(H)its.push(...parseItems(pages[i],H))}
   if(!out.length){toast('성적통지표 형식을 찾지 못했습니다. 학생용 성적통지표 PDF인지 확인해 주세요.');return}
-  addItems(its);
+  addItems(ROSTER?its.filter(x=>rosterNo(x.name)!==null):its);
   addMock(out);
   if(its.length)toast(`모의고사 ${out.length}건과 문항별 정오표 ${its.length}과목을 읽었습니다.`)
 }
@@ -1715,9 +1736,8 @@ function memoUI(){
 }
 function refresh(){
   students=[...new Set([...rows.map(r=>r.name),...mock.map(m=>m.name)])].sort((a,b)=>a.localeCompare(b,'ko'));
-  $('#stu').innerHTML='<option value="">학생 선택</option>'+students.map((s,i)=>`<option value="${esc(s)}">${i+1}. ${esc(s)}</option>`).join('');
   if(!students.includes(cur))cur='';
-  $('#stu').value=cur;
+  fillStu();
   const sems=[...new Set(rows.map(sk))].sort((a,b)=>a-b).map(k=>`${k/10|0}-${k%10}`).join(', ');
   $('#ld1').className='ldx';$('#ld1').textContent=rows.length?`${new Set(rows.map(r=>r.name)).size}명 학생 데이터 로드 완료`:'';drop1UI();
   $('#ld2').textContent=mock.length?`모의고사 ${new Set(mock.map(m=>m.round)).size}회차 · 학생 ${new Set(mock.map(m=>m.name)).size}명`:'';

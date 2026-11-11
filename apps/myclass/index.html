@@ -1,0 +1,51 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>우리 반 관리</title>
+<style>
+@font-face{font-family:Moneygraphy;src:url(/fonts/Moneygraphy-Rounded.woff2) format("woff2");font-display:swap}
+:root{--ink:#1d1d1f;--mute:#6e6e73;--line:#d2d2d7;--parch:#f5f5f7;--blue:#0066cc}
+*{box-sizing:border-box}body{margin:0;font-family:Moneygraphy,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:17px;line-height:1.47;color:var(--ink);background:var(--parch)}
+.nav{height:48px;display:flex;align-items:center;padding:0 22px;background:#000c;color:#f5f5f7}.nav a{color:#2997ff;text-decoration:none;font-size:14px}
+main{max-width:760px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:34px;letter-spacing:-.025em;font-weight:400;margin:0 0 6px}.sub{color:var(--mute);margin:0 0 28px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:18px}
+label{display:block;font-size:15px;color:var(--mute);margin:0 0 6px}
+input,textarea{width:100%;font:inherit;padding:12px 16px;border:1px solid var(--line);border-radius:14px;outline:0;background:#fff;color:var(--ink)}input:focus,textarea:focus{border-color:var(--blue)}
+textarea{min-height:260px;resize:vertical;line-height:1.6}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{font:inherit;border:0;border-radius:999px;padding:11px 24px;cursor:pointer;background:var(--blue);color:#fff;transition:transform .15s}button:active{transform:scale(.95)}button.g{background:#fff;color:var(--blue);border:1px solid var(--line)}
+.msg{margin-top:12px;min-height:22px;font-size:15px;color:var(--mute)}.msg.ok{color:#1a7f37}.msg.bad{color:#c62828}
+table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;font-weight:400}th{color:var(--mute);font-size:14px}
+.hint{font-size:15px;color:var(--mute);margin-top:8px}
+</style></head><body>
+<div class="nav"><a href="/">← 처음으로</a></div>
+<main>
+<h1>우리 반 관리</h1><p class="sub">한 번 등록하면 성적 돋보기를 비롯한 모든 도구가 같은 명단을 씁니다.</p>
+<div class="card">
+<label for="cls">학급 이름 (예: 2학년 3반)</label><input id="cls" maxlength="20" placeholder="2학년 3반">
+<label for="ta" style="margin-top:18px">학생 명단 — 한 줄에 한 명, 「학번 이름」</label>
+<textarea id="ta" placeholder="20301 강건우&#10;20302 김하늘&#10;20303 이서준"></textarea>
+<div class="hint">엑셀에서 학번·이름 두 열을 복사해 붙여 넣어도 됩니다. 이름만 적으면 위에서부터 1, 2, 3번으로 매겨요.</div>
+<div class="row"><button id="sv">명단 저장</button><button class="g" id="rs">저장된 명단으로 되돌리기</button></div>
+<div class="msg" id="msg"></div>
+</div>
+<div class="card"><label>저장된 우리 반 <b id="cnt"></b></label><table><thead><tr><th style="width:110px">학번</th><th>이름</th></tr></thead><tbody id="tb"></tbody></table><div class="hint" id="emp">아직 등록한 명단이 없습니다.</div></div>
+</main>
+<script>
+var $=function(s){return document.querySelector(s)},saved={cls:'',students:[]};
+function parse(t){var out=[],seen={};t.split(/\r?\n/).forEach(function(l){l=l.trim();if(!l)return;
+  var p=l.split(/[\t,\s]+/).filter(Boolean),no='',name;
+  if(p.length>1&&/^\d+$/.test(p[0])){no=p[0];name=p.slice(1).join(' ')}else name=p.join(' ');
+  if(name)out.push({no:no,name:name})});
+  out.forEach(function(x,i){if(!x.no)x.no=String(i+1)});return out}
+function draw(){$('#tb').textContent='';saved.students.forEach(function(s){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=s.no;b.textContent=s.name;tr.append(a,b);$('#tb').append(tr)});
+  $('#cnt').textContent=saved.students.length?'('+saved.students.length+'명)':'';$('#emp').hidden=!!saved.students.length}
+function fill(){$('#cls').value=saved.cls||'';$('#ta').value=saved.students.map(function(s){return s.no+' '+s.name}).join('\n')}
+function say(t,c){var m=$('#msg');m.textContent=t;m.className='msg '+(c||'')}
+fetch('/api/roster').then(function(r){if(r.status===401)return location.href='/';return r.json()}).then(function(d){if(!d)return;saved=d;fill();draw()}).catch(function(){say('서버에서 명단을 불러오지 못했습니다.','bad')});
+$('#rs').onclick=function(){fill();say('')};
+$('#sv').onclick=function(){var st=parse($('#ta').value),names={},dup=[];
+  st.forEach(function(x){if(names[x.name])dup.push(x.name);names[x.name]=1});
+  if(dup.length&&!confirm('같은 이름이 있습니다: '+dup.join(', ')+'\n성적 파일의 이름으로 구분하므로 동명이인이 있으면 서로 섞일 수 있어요. 그래도 저장할까요?'))return;
+  fetch('/api/roster',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({cls:$('#cls').value,students:st})})
+   .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(){saved={cls:$('#cls').value.trim(),students:st};draw();say('저장했어요. '+st.length+'명이 모든 도구에 연동됩니다.','ok')})
+   .catch(function(){say('저장하지 못했습니다(100명 이하만 저장돼요). 다시 시도해 주세요.','bad')})};
+</script></body></html>
