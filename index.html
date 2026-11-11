@@ -418,14 +418,14 @@ dialog li{margin:6px 0}
 
 /* 내신 한 명 인쇄 — 화면의 카드 모양 그대로 줄여서 2쪽에 담는다 (원본과 같은 방식) */
 @media print{
- body.pn #view>.rep{zoom:.56}
+ body.pn #view>.rep{zoom:.70}
  body.pn .cd2{border:1px solid #d9dde3;border-radius:12px;padding:12px 14px;margin:0 0 10px;break-inside:auto;background:#fff}
- body.pn .cd2.vsec{display:block!important}body.pn .so.eff{display:block!important}
+ body.pn .cd2.vsec{display:block!important}body.pn .so.eff{display:none!important}body.pn .dualrow.pg2{break-before:page}
  body.pn .sub2{display:block;font-size:10px;color:#555}
  body.pn .cd2 h3,body.pn .rep h3{font-size:14px;margin:0 0 8px}body.pn .cd2 h3 .ci{display:inline-block}
  body.pn .ups .up1:nth-child(n+7){display:flex}
  body.pn .dualrow{gap:12px;break-inside:avoid}body.pn .dualrow .cw{width:64%;margin:0 auto}body.pn .cbx .cw{width:100%}body.pn .cd2{break-inside:avoid}
- body.pn table{font-size:11px}body.pn th,body.pn td{padding:5px 8px}
+ body.pn table{font-size:12.5px}body.pn th,body.pn td{padding:9px 10px}body.pn .cd2.stb td,body.pn .cd2.stb th{padding:8px 10px}
  body.pn .tile b{font-size:18px}body.pn .cd2.cls{display:none!important}
 }
 @media print{
@@ -434,9 +434,24 @@ dialog li{margin:6px 0}
  body.pn .up1{display:block;background:#f1efff;border:1px solid #ddd8ff;border-radius:12px;padding:8px 12px;margin:0}
  body.pn .u1{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}body.pn .u1 .uh{display:inline}body.pn .ub{display:flex}
  body.pn .u2,body.pn .up1 small{display:block;font-size:11px;margin-top:2px}
- body.pn .dualrow.dd .pos{grid-template-columns:90px 1fr 120px!important}
+ body.pn .ups .up1:nth-child(n+4){grid-column:1/-1;display:flex;gap:10px;align-items:baseline;padding:5px 12px;border-radius:8px}
+ body.pn .ups .up1:nth-child(n+4) .ub,body.pn .ups .up1:nth-child(n+4) .u2{display:inline;margin:0}
+ body.pn .ups .up1:nth-child(-n+3) .u1 b{font-size:15px}
+ body.pn .ups .up1:nth-child(-n+3) .u2{font-size:12px}
+ body.pn .dualrow.dd .pos{grid-template-columns:84px 1fr 168px!important;font-size:11px}
 }
-.ptn{display:none}@media print{body.pn .ptn{display:inline}}
+
+.plan h3{margin-bottom:4px}.plan .sub2{display:block;font-size:12px;color:#666;margin:0 0 10px}
+.plan .pg{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px}
+.plan label{display:block;font-size:12px;font-weight:700;color:#444;margin:0 0 4px}
+.plan input,.plan textarea{width:100%;box-sizing:border-box;font:inherit;font-size:16px;min-height:44px;padding:10px 12px;border:1px solid #ccd2da;border-radius:10px;background:#fff;color:#111}
+.plan input:focus,.plan textarea:focus{outline:2px solid #1c5bd6;border-color:#1c5bd6}
+.plan .act{display:flex;gap:8px;align-items:center;margin-bottom:8px}.plan .act b{flex:none;width:28px;height:28px;border-radius:50%;background:#1c5bd6;color:#fff;display:grid;place-items:center;font-size:14px}
+.plan .hint{font-size:12px;color:#555;margin:2px 0 8px}.plan .hint span{background:#f1efff;border-radius:999px;padding:3px 10px;margin-right:6px;display:inline-block}
+.plan textarea{min-height:88px;resize:vertical}.plan .psv{font-size:12px;color:#2b8a3e;min-height:16px;margin-top:4px}
+@media(max-width:560px){.plan .pg{grid-template-columns:1fr}}
+@media print{body.pn .plan input,body.pn .plan textarea{border:0;border-bottom:1px solid #666;border-radius:0;background:transparent;padding:6px 2px;min-height:50px;font-size:14px}body.pn .plan .act{margin-bottom:12px}body.pn .plan .psv{display:none}body.pn .plan .act b{width:22px;height:22px;font-size:12px}body.pn .plan input[type=date]::-webkit-calendar-picker-indicator{display:none}body.pn .plan .no-print{display:none}}
+.foot{display:none!important}@media print{body.pn .dualrow.pg2,body.pn .cd2.z2,body.pn .dualrow.dd,body.pn .plan{zoom:1.1}body.pn .dualrow.dd{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}body.pn .simw{overflow:hidden}body.pn .simw table{width:100%;table-layout:fixed}}.ptn{display:none}@media print{body.pn .ptn{display:inline}}
 @media print{
  body.pa .rep.bn{zoom:.56}body.pa .rep.bn .dualrow .cw{width:56%}body.pa .rep.bn .cbx .cw{width:100%}
  body.pa .rep.bn .foot{display:none}body.pa .rep.bm{zoom:.57}body.pa .rep.bm .cw{width:62%;margin:0 auto}
@@ -562,7 +577,7 @@ dialog li{margin:6px 0}
 </main>
 </div>
 <div id="printArea"></div>
-<footer class="ft no-print">성적 돋보기 · 교내 상담 목적으로만 사용해 주세요 · 올린 성적은 내 계정(또는 이 브라우저)에만 저장됩니다</footer>
+<footer class="ft no-print">올린 성적은 내 계정(또는 이 브라우저)에만 저장됩니다</footer>
 <div id="toast"></div>
 <dialog id="auth"><h2 style="font-size:18px">교사 로그인</h2><small>로그인하면 성적이 내 계정에 저장되어 다른 기기에서도 이어서 볼 수 있습니다. 내 계정의 데이터는 본인만 볼 수 있습니다.</small>
 <div style="display:grid;gap:8px;margin:12px 0"><input id="aEmail" type="email" placeholder="이메일" autocomplete="username"><input id="aPw" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="current-password"></div>
@@ -1291,7 +1306,7 @@ function report(name,pre=''){
     h+=`<div class="simw"><h3>목표 시뮬레이션</h3><div class="sub2">남은 학기에 이 정도 받으면 최종 평균이 어떻게 되는지, 목표 평균에 필요한 등급은 몇인지 계산합니다.</div><div id="sim_o"></div></div>`;
   }
   if(str(MEMO[name]))h+=`<h3>상담 메모</h3><div class="memo">${esc(MEMO[name])}</div>`;
-  h+=`<div class="foot">성적 돋보기 · 상담 자료 · 교내 상담 목적으로만 사용해 주세요.</div></div>`;
+  h+=`<div class="foot"></div></div>`;
   return {html:h,charts};
 }
 function upSel(b,g){chipOn(b);document.querySelectorAll('.ups .up1').forEach(e=>e.hidden=g!=='*'&&e.dataset.g!==g)}
@@ -1437,7 +1452,7 @@ function mockReport(name,pre=''){
     return `<tr><td class="l">${esc(m.area)}${tag}</td><td>${chip(m.g,9)}</td><td>${isFinite(m.pct)?m.pct:'-'}</td><td>${Math.min(...g)}등급 / ${Math.max(...g)}등급</td><td>${tr}</td></tr>`}).join('')}</tbody></table>`;
   if(!pre)h+=`<h3>문항별 분석 <span class="hs">회차를 눌러 보세요</span></h3><div id="itmbox">${itemHtml(name)}</div>`;
   if(!pre)h+=csatHtml(name);
-  h+=`<div class="foot">성적 돋보기 · 상담 자료 · 교내 상담 목적으로만 사용해 주세요.</div></div>`;
+  h+=`<div class="foot"></div></div>`;
   return {html:h,charts};
 }
 
@@ -1606,7 +1621,19 @@ function jeongsi(name,pre=''){
 function destroy(list=charts){list.forEach(c=>c.destroy());list.length=0}
 const CI=[[/수능 최저/,'target'],[/반영 조합/,'layers'],[/강점/,'radar'],[/과목군별/,'grid'],[/원점수/,'pulse'],[/목표 시뮬/,'sliders'],[/요약/,'user'],[/가상|한 등급|목표/,'target'],[/과목별 성적|회차별/,'table'],[/변화|추이|원점수/,'trend'],[/강점|성향|정시|조합/,'layers']];
 const CORD=[/^학생 요약/,/^가상/,/^과목별 성적/,/^등급 변화/,/^반영 조합별 평균 추이/,/^강점/,/^과목군별/,/^한 등급/,/^원점수/,/^목표/];
-function cardify(rep,order){
+function planCard(rep){
+  const foot=rep.querySelector('.foot'),k='lens-plan-'+cur;let v={};try{v=JSON.parse(localStorage.getItem(k)||'{}')}catch{}
+  const top=[...rep.querySelectorAll('.ups .up1:nth-child(-n+3)')].map(e=>{const b=e.querySelector('b'),g=e.querySelector('i');return b?`${b.textContent} ${g?g.textContent:''}`:''}).filter(Boolean);
+  const d=document.createElement('section');d.className='cd2 plan';
+  d.innerHTML=`<h3>나의 목표와 실천 계획</h3><div class="sub2">상담을 마치고 학생이 직접 적습니다. 휴대폰과 태블릿에서 입력하면 자동으로 저장되고, 인쇄하면 적은 내용이 그대로 나옵니다.</div>
+  ${top.length?`<div class="hint">먼저 올릴 과목: ${top.map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}
+  <div class="pg"><div><label for="pl_g">내가 정한 목표 (등급 또는 평균)</label><input id="pl_g" data-f="g" placeholder="예: 공통수학2 4등급 → 3등급" value="${esc(v.g||'')}"></div></div>
+  <label>이번 학기 실천 3가지</label>
+  ${[1,2,3].map(i=>`<div class="act"><b>${i}</b><input data-f="a${i}" aria-label="실천 ${i}" placeholder="${['예: 틀린 문제를 오답 노트에 다시 풀기','예: 수업 전에 개념 5분 훑어보기','예: 주 2회 30분 자기 주도 학습'][i-1]}" value="${esc(v['a'+i]||'')}"></div>`).join('')}<div class="psv no-print" aria-live="polite"></div>`;
+  d.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;v[f]=e.target.value;try{localStorage.setItem(k,JSON.stringify(v))}catch{}const s=d.querySelector('.psv');s.textContent='저장했습니다';clearTimeout(d._t);d._t=setTimeout(()=>s.textContent='',1500)});
+  foot?rep.insertBefore(d,foot):rep.appendChild(d);
+}
+function cardify(rep,order,plan){
   const secs=[];let cur=null;
   for(const e of [...rep.children]){
     if(e.classList.contains('rh')||e.classList.contains('foot'))continue;
@@ -1615,12 +1642,13 @@ function cardify(rep,order){
       const ic=(CI.find(([re])=>re.test(t.textContent))||[0,'file'])[1];t.insertAdjacentHTML('afterbegin',`<span class="ci">${svg(ic,16)}</span>`);secs.push(cur);rep.insertBefore(cur,e)}
     if(cur)cur.appendChild(e);
   }
-  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저|문항별 분석)/.test(c.title))c.classList.add('nop');if(/^가상/.test(c.title))c.classList.add('vsec');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
+  secs.forEach(c=>{if(/^(등급 변화|가상|첫 회차|평균등급 반영|수능 최저|문항별 분석|상담 메모)/.test(c.title))c.classList.add('nop');if(/^가상/.test(c.title))c.classList.add('vsec');if(/^과목별 성적/.test(c.title))c.classList.add('stb')});
   if(order){const rk=c=>{const i=CORD.findIndex(re=>re.test(c.title));return i<0?99:i};
     const foot=rep.querySelector('.foot');[...secs].sort((x,y)=>rk(x)-rk(y)).forEach(c=>foot?rep.insertBefore(c,foot):rep.appendChild(c));
     secs.forEach(c=>{if(/^반영 조합별 평균 추이/.test(c.title))c.classList.add('cbx')});
+    secs.forEach(c=>{if(/^한 등급/.test(c.title))c.classList.add('z2')});if(plan)planCard(rep);
     const A=secs.find(c=>/^강점/.test(c.title)),B=secs.find(c=>/^과목군별/.test(c.title));
-    if(A&&B){const d=document.createElement('div');d.className='dualrow';rep.insertBefore(d,A);d.append(A,B)}
+    if(A&&B){const d=document.createElement('div');d.className='dualrow pg2';rep.insertBefore(d,A);d.append(A,B)}
     const P=secs.find(c=>/^원점수 위치/.test(c.title)),G=secs.find(c=>/^목표 시뮬/.test(c.title));
     if(P&&G){const d=document.createElement('div');d.className='dualrow dd';rep.insertBefore(d,P);d.append(P,G)}}
 }
@@ -1643,7 +1671,7 @@ function render(){
   if(!students.length){v.innerHTML=EMPTY('성적 파일을 올려 주세요','나이스에서 내려받은 학급 성적 파일을 올리면<br>과목별 추이와 상담 자료가 자동으로 만들어집니다.');return}
   if(!on&&!cls){const k=students.map(prio).filter(p=>p.score>0).length;v.innerHTML=EMPTY('학생을 고르고 분석을 눌러 주세요',`학생 ${students.length}명의 자료를 불러왔습니다.`,[1,cur?1:0,0],k?`<button class="cta" id="ctaP"><span><b>먼저 상담할 학생 보기</b><small>${students.length}명 중 ${k}명에게 살펴볼 신호가 있습니다</small></span><em>${k}명</em></button>`:'');const c=$('#ctaP');if(c)c.onclick=()=>{shown=true;tab='p';document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='p'));render()};return}
   if(cls){v.innerHTML=tab==='p'?prioHtml():tab==='r'?ourHtml():classHtml();v.firstElementChild.classList.add('cls','no-print');bindCls(v);return}
-  mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur),charts,tab==='j'?jPlay:b=>cardify(b,tab==='n'));if(tab==='j')v.firstElementChild?.classList.add('no-print');
+  mount(v,tab==='n'?report(cur):tab==='m'?mockReport(cur):jeongsi(cur),charts,tab==='j'?jPlay:b=>cardify(b,tab==='n',tab==='n'));if(tab==='j')v.firstElementChild?.classList.add('no-print');
   if(tab==='j'){v.querySelectorAll('[data-pj]').forEach(b=>b.onclick=()=>pickT(b.dataset.pj));if($('#jrp'))$('#jrp').onclick=()=>jPlay(v)}
   stagger(v);
   if(tab==='n'){v.insertAdjacentHTML('beforeend',classHtml());const c=v.lastElementChild;c.classList.add('cd2','cls','no-print');bindCls(v)}
