@@ -1414,7 +1414,7 @@ function itemHtml(name){
     if((st==='N'||st==='D')&&i/len<.75)late=false}});
   let sc=0,mx=0,scOk=false,mxOk=true;
   S.forEach(e=>{const m=mock.find(m=>m.name===name&&m.round===ITR&&m.area===e.area),mm=(e.sub||[]).reduce((p,v)=>p+(v[1]||0),0);
-    if(m&&isFinite(m.raw)){sc+=m.raw;scOk=true}if(mm)mx+=mm;else mxOk=false});
+    if(m&&isFinite(m.raw)){sc+=m.raw;scOk=true}const fm=mm||(/^(한국사|통합사회|통합과학)$/.test(e.area)?50:0);if(fm)mx+=fm;else mxOk=false});
   const scTxt=scOk?`${+sc.toFixed(1)}<small>점${mxOk&&mx?` / ${mx}점`:''}</small>`:'—';
   const tot=o+x+n+d,LB={A:'80%+',B:'60%+',C:'40%+',D:'20%+',E:'20%-'};
   const bars=Object.keys(B).filter(k=>B[k][0]+B[k][1]+B[k][2]).map(k=>{const [a,b,c]=B[k],t=a+b+c;
